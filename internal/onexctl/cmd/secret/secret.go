@@ -13,7 +13,7 @@ import (
 
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	"github.com/superproj/onex/pkg/cli/genericiooptions"
 )
 
 var secretLong = templates.LongDesc(`
@@ -22,7 +22,7 @@ var secretLong = templates.LongDesc(`
 	This commands allow you to manage your secret on onex platform.`)
 
 // NewCmdSecret returns new initialized instance of 'secret' sub command.
-func NewCmdSecret(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmdSecret(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "secret SUBCOMMAND",
 		DisableFlagsInUseLine: true,

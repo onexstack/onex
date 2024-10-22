@@ -14,11 +14,12 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/spf13/cobra"
+	"k8s.io/cli-runtime/pkg/genericiooptions"
 
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
 	jwtauthn "github.com/superproj/onex/pkg/authn/jwt"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	//"github.com/superproj/onex/pkg/cli/genericiooptions"
 )
 
 const (
@@ -36,7 +37,7 @@ type SignOptions struct {
 	Issuer    string
 	Header    ArgList
 
-	genericclioptions.IOStreams
+	genericiooptions.IOStreams
 }
 
 var (
@@ -54,7 +55,7 @@ var (
 )
 
 // NewSignOptions returns an initialized SignOptions instance.
-func NewSignOptions(ioStreams genericclioptions.IOStreams) *SignOptions {
+func NewSignOptions(ioStreams genericiooptions.IOStreams) *SignOptions {
 	return &SignOptions{
 		Timeout:   2 * time.Hour,
 		Algorithm: "HS256",
@@ -66,7 +67,7 @@ func NewSignOptions(ioStreams genericclioptions.IOStreams) *SignOptions {
 }
 
 // NewCmdSign returns new initialized instance of sign sub command.
-func NewCmdSign(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmdSign(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	o := NewSignOptions(ioStreams)
 
 	cmd := &cobra.Command{

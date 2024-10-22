@@ -14,10 +14,11 @@ import (
 	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
+	"k8s.io/cli-runtime/pkg/genericiooptions"
 
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	//"github.com/superproj/onex/pkg/cli/genericiooptions"
 	stringsutil "github.com/superproj/onex/pkg/util/strings"
 )
 
@@ -26,7 +27,7 @@ type ColorOptions struct {
 	Type    []string
 	Example bool
 
-	genericclioptions.IOStreams
+	genericiooptions.IOStreams
 }
 
 var (
@@ -177,7 +178,7 @@ c.Println("This prints again cyan...")`)
 )
 
 // NewColorOptions returns an initialized ColorOptions instance.
-func NewColorOptions(ioStreams genericclioptions.IOStreams) *ColorOptions {
+func NewColorOptions(ioStreams genericiooptions.IOStreams) *ColorOptions {
 	return &ColorOptions{
 		Type:      []string{},
 		Example:   false,
@@ -186,7 +187,7 @@ func NewColorOptions(ioStreams genericclioptions.IOStreams) *ColorOptions {
 }
 
 // NewCmdColor returns new initialized instance of color sub command.
-func NewCmdColor(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmdColor(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	o := NewColorOptions(ioStreams)
 
 	cmd := &cobra.Command{

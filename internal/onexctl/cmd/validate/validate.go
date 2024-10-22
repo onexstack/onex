@@ -14,12 +14,13 @@ import (
 	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
+	"k8s.io/cli-runtime/pkg/genericiooptions"
 
 	"github.com/superproj/onex/internal/onexctl"
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
 	v1 "github.com/superproj/onex/pkg/api/usercenter/v1"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	//"github.com/superproj/onex/pkg/cli/genericiooptions"
 )
 
 var (
@@ -30,7 +31,7 @@ var (
 // ValidateOptions is an options struct to support 'validate' sub command.
 type ValidateOptions struct {
 	client v1.UserCenterHTTPClient
-	genericclioptions.IOStreams
+	genericiooptions.IOStreams
 }
 
 // ValidateInfo defines the validate information.
@@ -57,14 +58,14 @@ var validateExample = templates.Examples(`
 		onexctl validate`)
 
 // NewValidateOptions returns an initialized ValidateOptions instance.
-func NewValidateOptions(ioStreams genericclioptions.IOStreams) *ValidateOptions {
+func NewValidateOptions(ioStreams genericiooptions.IOStreams) *ValidateOptions {
 	return &ValidateOptions{
 		IOStreams: ioStreams,
 	}
 }
 
 // NewCmdValidate returns new initialized instance of 'validate' sub command.
-func NewCmdValidate(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmdValidate(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	o := NewValidateOptions(ioStreams)
 
 	cmd := &cobra.Command{

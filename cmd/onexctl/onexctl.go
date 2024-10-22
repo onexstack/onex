@@ -10,7 +10,8 @@ import (
 	"k8s.io/component-base/cli"
 
 	"github.com/superproj/onex/internal/onexctl/cmd"
-	"github.com/superproj/onex/internal/onexctl/cmd/util"
+	//"github.com/superproj/onex/internal/onexctl/cmd/util"
+	"k8s.io/kubectl/pkg/cmd/util"
 )
 
 func main() {

@@ -15,8 +15,7 @@ import (
 
 	"github.com/spf13/cobra"
 	flag "github.com/spf13/pflag"
-
-	"github.com/superproj/onex/internal/onexctl/util/term"
+	"k8s.io/kubectl/pkg/util/term"
 )
 
 type FlagExposer interface {

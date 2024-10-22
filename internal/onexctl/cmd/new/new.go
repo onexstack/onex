@@ -19,10 +19,11 @@ import (
 	"github.com/spf13/cobra"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
+	"k8s.io/cli-runtime/pkg/genericiooptions"
 
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	//"github.com/superproj/onex/pkg/cli/genericiooptions"
 	fileutil "github.com/superproj/onex/pkg/util/file"
 )
 
@@ -68,7 +69,7 @@ import (
 
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	"github.com/superproj/onex/pkg/cli/genericiooptions"
 )
 
 const (
@@ -88,7 +89,7 @@ type {{.CommandFunctionName}}Options struct {
 	Username string
 	Password string
 
-	genericclioptions.IOStreams
+	genericiooptions.IOStreams
 }
 
 var (
@@ -107,7 +108,7 @@ to quickly create a Cobra application.{{.Dot}})
 )
 
 // New{{.CommandFunctionName}}Options returns an initialized {{.CommandFunctionName}}Options instance.
-func New{{.CommandFunctionName}}Options(ioStreams genericclioptions.IOStreams) *{{.CommandFunctionName}}Options {
+func New{{.CommandFunctionName}}Options(ioStreams genericiooptions.IOStreams) *{{.CommandFunctionName}}Options {
 	return &{{.CommandFunctionName}}Options{
 		StringOption: "default",
 		IOStreams:    ioStreams,
@@ -115,7 +116,7 @@ func New{{.CommandFunctionName}}Options(ioStreams genericclioptions.IOStreams) *
 }
 
 // NewCmd{{.CommandFunctionName}} returns new initialized instance of '{{.CommandName}}' sub command.
-func NewCmd{{.CommandFunctionName}}(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmd{{.CommandFunctionName}}(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	o := New{{.CommandFunctionName}}Options(ioStreams)
 
 	cmd := &cobra.Command{
@@ -210,7 +211,7 @@ import (
 
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	"github.com/superproj/onex/pkg/cli/genericiooptions"
 )
 
 const maxStringLength = 17
@@ -223,7 +224,7 @@ var (
 )
 
 // NewCmd{{.CommandFunctionName}} returns new initialized instance of '{{.CommandName}}' sub command.
-func NewCmd{{.CommandFunctionName}}(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmd{{.CommandFunctionName}}(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "{{.CommandName}} SUBCOMMAND",
 		DisableFlagsInUseLine: true,
@@ -263,7 +264,7 @@ import (
 
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	"github.com/superproj/onex/pkg/cli/genericiooptions"
 )
 
 const (
@@ -283,7 +284,7 @@ type SubCmd1Options struct {
 	Username string
 	Password string
 
-	genericclioptions.IOStreams
+	genericiooptions.IOStreams
 }
 
 var (
@@ -305,7 +306,7 @@ to quickly create a Cobra application.{{.Dot}})
 )
 
 // NewSubCmd1Options returns an initialized SubCmd1Options instance.
-func NewSubCmd1Options(ioStreams genericclioptions.IOStreams) *SubCmd1Options {
+func NewSubCmd1Options(ioStreams genericiooptions.IOStreams) *SubCmd1Options {
 	return &SubCmd1Options{
 		StringOption: "default",
 		IOStreams:    ioStreams,
@@ -313,7 +314,7 @@ func NewSubCmd1Options(ioStreams genericclioptions.IOStreams) *SubCmd1Options {
 }
 
 // NewCmdSubCmd1 returns new initialized instance of subcmd1 sub command.
-func NewCmdSubCmd1(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmdSubCmd1(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	o := NewSubCmd1Options(ioStreams)
 
 	cmd := &cobra.Command{
@@ -400,7 +401,7 @@ import (
 
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	"github.com/superproj/onex/pkg/cli/genericiooptions"
 )
 
 // SubCmd2Options is an options struct to support subcmd2 subcommands.
@@ -410,7 +411,7 @@ type SubCmd2Options struct {
 	IntOption         int
 	BoolOption        bool
 
-	genericclioptions.IOStreams
+	genericiooptions.IOStreams
 }
 
 var (
@@ -427,7 +428,7 @@ to quickly create a Cobra application.{{.Dot}})
 )
 
 // NewSubCmd2Options returns an initialized SubCmd2Options instance.
-func NewSubCmd2Options(ioStreams genericclioptions.IOStreams) *SubCmd2Options {
+func NewSubCmd2Options(ioStreams genericiooptions.IOStreams) *SubCmd2Options {
 	return &SubCmd2Options{
 		StringOption: "default",
 		IOStreams:    ioStreams,
@@ -435,7 +436,7 @@ func NewSubCmd2Options(ioStreams genericclioptions.IOStreams) *SubCmd2Options {
 }
 
 // NewCmdSubCmd2 returns new initialized instance of subcmd2 sub command.
-func NewCmdSubCmd2(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmdSubCmd2(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	o := NewSubCmd2Options(ioStreams)
 
 	cmd := &cobra.Command{
@@ -510,11 +511,11 @@ type NewOptions struct {
 	CommandFunctionName string
 	Dot                 string
 
-	genericclioptions.IOStreams
+	genericiooptions.IOStreams
 }
 
 // NewNewOptions returns an initialized NewOptions instance.
-func NewNewOptions(ioStreams genericclioptions.IOStreams) *NewOptions {
+func NewNewOptions(ioStreams genericiooptions.IOStreams) *NewOptions {
 	return &NewOptions{
 		Group:              false,
 		Outdir:             ".",
@@ -525,7 +526,7 @@ func NewNewOptions(ioStreams genericclioptions.IOStreams) *NewOptions {
 }
 
 // NewCmdNew returns new initialized instance of 'new' sub command.
-func NewCmdNew(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmdNew(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	o := NewNewOptions(ioStreams)
 
 	cmd := &cobra.Command{

@@ -15,7 +15,7 @@ import (
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
 	v1 "github.com/superproj/onex/pkg/api/usercenter/v1"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	"github.com/superproj/onex/pkg/cli/genericiooptions"
 )
 
 const (
@@ -30,7 +30,7 @@ type DeleteOptions struct {
 
 	client v1.UserCenterHTTPClient
 
-	genericclioptions.IOStreams
+	genericiooptions.IOStreams
 }
 
 var (
@@ -45,14 +45,14 @@ var (
 )
 
 // NewDeleteOptions returns an initialized DeleteOptions instance.
-func NewDeleteOptions(ioStreams genericclioptions.IOStreams) *DeleteOptions {
+func NewDeleteOptions(ioStreams genericiooptions.IOStreams) *DeleteOptions {
 	return &DeleteOptions{
 		IOStreams: ioStreams,
 	}
 }
 
 // NewCmdDelete returns new initialized instance of delete sub command.
-func NewCmdDelete(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmdDelete(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	o := NewDeleteOptions(ioStreams)
 
 	cmd := &cobra.Command{

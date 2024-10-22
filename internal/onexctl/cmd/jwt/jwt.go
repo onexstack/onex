@@ -9,10 +9,11 @@ package jwt
 
 import (
 	"github.com/spf13/cobra"
+	"k8s.io/cli-runtime/pkg/genericiooptions"
 
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	//"github.com/superproj/onex/pkg/cli/genericiooptions"
 )
 
 var jwtLong = templates.LongDesc(`
@@ -21,7 +22,7 @@ var jwtLong = templates.LongDesc(`
 	This commands is used to sigin/show/verify jwt token.`)
 
 // NewCmdJWT returns new initialized instance of 'jwt' sub command.
-func NewCmdJWT(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmdJWT(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "jwt SUBCOMMAND",
 		DisableFlagsInUseLine: true,
