@@ -16,11 +16,12 @@ import (
 	"github.com/ghodss/yaml"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"k8s.io/cli-runtime/pkg/genericiooptions"
 
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
 	v1 "github.com/superproj/onex/pkg/api/gateway/v1"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	//"github.com/superproj/onex/pkg/cli/genericiooptions"
 	"github.com/superproj/onex/pkg/version"
 )
 
@@ -41,18 +42,18 @@ type Options struct {
 	Output     string
 
 	client v1.GatewayHTTPClient
-	genericclioptions.IOStreams
+	genericiooptions.IOStreams
 }
 
 // NewOptions returns initialized Options.
-func NewOptions(ioStreams genericclioptions.IOStreams) *Options {
+func NewOptions(ioStreams genericiooptions.IOStreams) *Options {
 	return &Options{
 		IOStreams: ioStreams,
 	}
 }
 
 // NewCmdVersion returns a cobra command for fetching versions.
-func NewCmdVersion(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmdVersion(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	o := NewOptions(ioStreams)
 	cmd := &cobra.Command{
 		Use:     "version",

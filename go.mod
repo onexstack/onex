@@ -220,6 +220,7 @@ require (
 	k8s.io/gengo/v2 v2.0.0-20240826214909-a7b603a56eb7 // indirect
 	k8s.io/kms v0.31.1 // indirect
 	k8s.io/kube-controller-manager v0.31.1 // indirect
+	k8s.io/kubectl v0.31.1 // indirect
 	modernc.org/libc v1.19.0 // indirect
 	modernc.org/mathutil v1.5.0 // indirect
 	modernc.org/memory v1.4.0 // indirect

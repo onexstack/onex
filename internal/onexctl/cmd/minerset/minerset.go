@@ -10,10 +10,11 @@ package minerset
 import (
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
+	"k8s.io/cli-runtime/pkg/genericiooptions"
 
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	//"github.com/superproj/onex/pkg/cli/genericiooptions"
 )
 
 var minersetLong = templates.LongDesc(`
@@ -22,7 +23,7 @@ var minersetLong = templates.LongDesc(`
 	This commands allow you to manage your minerset on onex platform.`)
 
 // NewCmdMinerSet returns new initialized instance of 'minerset' sub command.
-func NewCmdMinerSet(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmdMinerSet(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "minerset SUBCOMMAND",
 		DisableFlagsInUseLine: true,

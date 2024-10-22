@@ -15,7 +15,7 @@ import (
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
 	v1 "github.com/superproj/onex/pkg/api/usercenter/v1"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	"github.com/superproj/onex/pkg/cli/genericiooptions"
 )
 
 const (
@@ -31,7 +31,7 @@ type UpdateOptions struct {
 	UpdateSecretRequest *v1.UpdateSecretRequest
 	client              v1.UserCenterHTTPClient
 
-	genericclioptions.IOStreams
+	genericiooptions.IOStreams
 }
 
 var (
@@ -46,7 +46,7 @@ var (
 )
 
 // NewUpdateOptions returns an initialized UpdateOptions instance.
-func NewUpdateOptions(ioStreams genericclioptions.IOStreams) *UpdateOptions {
+func NewUpdateOptions(ioStreams genericiooptions.IOStreams) *UpdateOptions {
 	return &UpdateOptions{
 		Expires:   -1,
 		Status:    -1,
@@ -55,7 +55,7 @@ func NewUpdateOptions(ioStreams genericclioptions.IOStreams) *UpdateOptions {
 }
 
 // NewCmdUpdate returns new initialized instance of update sub command.
-func NewCmdUpdate(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmdUpdate(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	o := NewUpdateOptions(ioStreams)
 
 	cmd := &cobra.Command{

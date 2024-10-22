@@ -16,7 +16,7 @@ import (
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
 	v1 "github.com/superproj/onex/pkg/api/usercenter/v1"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	"github.com/superproj/onex/pkg/cli/genericiooptions"
 )
 
 const (
@@ -31,7 +31,7 @@ type ListOptions struct {
 	ListUserRequest *v1.ListUserRequest
 
 	client v1.UserCenterHTTPClient
-	genericclioptions.IOStreams
+	genericiooptions.IOStreams
 }
 
 var listExample = templates.Examples(`
@@ -42,7 +42,7 @@ var listExample = templates.Examples(`
 		onexctl user list --offset=0 --limit=10`)
 
 // NewListOptions returns an initialized ListOptions instance.
-func NewListOptions(ioStreams genericclioptions.IOStreams) *ListOptions {
+func NewListOptions(ioStreams genericiooptions.IOStreams) *ListOptions {
 	return &ListOptions{
 		IOStreams: ioStreams,
 		Offset:    0,
@@ -51,7 +51,7 @@ func NewListOptions(ioStreams genericclioptions.IOStreams) *ListOptions {
 }
 
 // NewCmdList returns new initialized instance of list sub command.
-func NewCmdList(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmdList(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	o := NewListOptions(ioStreams)
 
 	cmd := &cobra.Command{

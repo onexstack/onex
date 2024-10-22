@@ -13,7 +13,7 @@ import (
 
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	"github.com/superproj/onex/pkg/cli/genericiooptions"
 )
 
 var userLong = templates.LongDesc(`
@@ -23,7 +23,7 @@ Administrator can use all subcommands, non-administrator only allow to use creat
 only allow to operate their own resources, if permission not allowed, will return an 'Permission denied' error.`)
 
 // NewCmdUser returns new initialized instance of 'user' sub command.
-func NewCmdUser(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmdUser(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "user SUBCOMMAND",
 		DisableFlagsInUseLine: true,

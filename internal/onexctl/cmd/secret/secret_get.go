@@ -18,7 +18,7 @@ import (
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
 	v1 "github.com/superproj/onex/pkg/api/usercenter/v1"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	"github.com/superproj/onex/pkg/cli/genericiooptions"
 )
 
 const (
@@ -32,7 +32,7 @@ type GetOptions struct {
 	GetSecretRequest *v1.GetSecretRequest
 	client           v1.UserCenterHTTPClient
 
-	genericclioptions.IOStreams
+	genericiooptions.IOStreams
 }
 
 var (
@@ -44,14 +44,14 @@ var (
 )
 
 // NewGetOptions returns an initialized GetOptions instance.
-func NewGetOptions(ioStreams genericclioptions.IOStreams) *GetOptions {
+func NewGetOptions(ioStreams genericiooptions.IOStreams) *GetOptions {
 	return &GetOptions{
 		IOStreams: ioStreams,
 	}
 }
 
 // NewCmdGet returns new initialized instance of get sub command.
-func NewCmdGet(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmdGet(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	o := NewGetOptions(ioStreams)
 
 	cmd := &cobra.Command{

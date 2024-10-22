@@ -10,14 +10,18 @@ package cmd
 import (
 	"flag"
 	"fmt"
-	"io"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"k8s.io/cli-runtime/pkg/genericiooptions"
 	"k8s.io/client-go/rest"
 	cliflag "k8s.io/component-base/cli/flag"
 	"k8s.io/klog/v2"
+	genericcmd "k8s.io/kubectl/pkg/cmd"
+	"k8s.io/kubectl/pkg/cmd/plugin"
+	"k8s.io/kubectl/pkg/util/term"
 
 	"github.com/superproj/onex/internal/onexctl/cmd/color"
 	"github.com/superproj/onex/internal/onexctl/cmd/completion"
@@ -28,25 +32,103 @@ import (
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/cmd/validate"
 	"github.com/superproj/onex/internal/onexctl/cmd/version"
-
 	// "github.com/superproj/onex/internal/onexctl/plugin".
 	"github.com/superproj/onex/internal/onexctl/cmd/minerset"
 	clioptions "github.com/superproj/onex/internal/onexctl/util/options"
-	"github.com/superproj/onex/internal/onexctl/util/templates"
-	"github.com/superproj/onex/internal/onexctl/util/term"
+	//"github.com/superproj/onex/internal/onexctl/util/templates"
+	"k8s.io/kubectl/pkg/util/templates"
+	//"github.com/superproj/onex/internal/onexctl/util/term"
 	"github.com/superproj/onex/pkg/cli/genericclioptions"
 )
 
 const onexCmdHeaders = "ONEX_COMMAND_HEADERS"
 
-// NewDefaultOneXCtlCommand creates the `onexctl` command with default arguments.
-func NewDefaultOneXCtlCommand() *cobra.Command {
-	return NewOneXCtlCommand(os.Stdin, os.Stdout, os.Stderr)
+type OneXctlOptions struct {
+	PluginHandler genericcmd.PluginHandler
+	Arguments     []string
+	//ConfigFlags   *genericiooptions.ConfigFlags
+
+	genericiooptions.IOStreams
 }
 
-// NewOneXCtlCommand returns new initialized instance of 'onexctl' root command.
-func NewOneXCtlCommand(in io.Reader, out, err io.Writer) *cobra.Command {
-	warningHandler := rest.NewWarningWriter(err, rest.WarningWriterOptions{Deduplicate: true, Color: term.AllowsColorOutput(err)})
+// NewDefaultOneXCtlCommand creates the `onexctl` command with default arguments.
+func NewDefaultOneXCtlCommand() *cobra.Command {
+	ioStreams := genericiooptions.IOStreams{In: os.Stdin, Out: os.Stdout, ErrOut: os.Stderr}
+	return NewDefaultOneXctlCommandWithArgs(OneXctlOptions{
+		PluginHandler: genericcmd.NewDefaultPluginHandler([]string{"onexctl"}),
+		Arguments:     os.Args,
+		//ConfigFlags:   defaultConfigFlags().WithWarningPrinter(ioStreams),
+		IOStreams: ioStreams,
+	})
+	//return NewOneXCtlCommand(os.Stdin, os.Stdout, os.Stderr)
+}
+
+// NewDefaultOneXctlCommandWithArgs creates the `onexctl` command with arguments
+func NewDefaultOneXctlCommandWithArgs(o OneXctlOptions) *cobra.Command {
+	cmd := NewOneXCtlCommand(o)
+
+	if o.PluginHandler == nil {
+		return cmd
+	}
+
+	if len(o.Arguments) > 1 {
+		cmdPathPieces := o.Arguments[1:]
+
+		// only look for suitable extension executables if
+		// the specified command does not already exist
+		if foundCmd, foundArgs, err := cmd.Find(cmdPathPieces); err != nil {
+			// Also check the commands that will be added by Cobra.
+			// These commands are only added once rootCmd.Execute() is called, so we
+			// need to check them explicitly here.
+			var cmdName string // first "non-flag" arguments
+			for _, arg := range cmdPathPieces {
+				if !strings.HasPrefix(arg, "-") {
+					cmdName = arg
+					break
+				}
+			}
+
+			switch cmdName {
+			case "help", cobra.ShellCompRequestCmd, cobra.ShellCompNoDescRequestCmd:
+				// Don't search for a plugin
+			default:
+				if err := genericcmd.HandlePluginCommand(o.PluginHandler, cmdPathPieces, 1); err != nil {
+					fmt.Fprintf(o.IOStreams.ErrOut, "Error: %v\n", err)
+					os.Exit(1)
+				}
+			}
+		} else if err == nil {
+			if !cmdutil.CmdPluginAsSubcommand.IsDisabled() {
+				// Command exists(e.g. kubectl create), but it is not certain that
+				// subcommand also exists (e.g. kubectl create networkpolicy)
+				// we also have to eliminate kubectl create -f
+				if genericcmd.IsSubcommandPluginAllowed(foundCmd.Name()) && len(foundArgs) >= 1 && !strings.HasPrefix(foundArgs[0], "-") {
+					subcommand := foundArgs[0]
+					builtinSubcmdExist := false
+					for _, subcmd := range foundCmd.Commands() {
+						if subcmd.Name() == subcommand {
+							builtinSubcmdExist = true
+							break
+						}
+					}
+
+					if !builtinSubcmdExist {
+						if err := genericcmd.HandlePluginCommand(o.PluginHandler, cmdPathPieces, len(cmdPathPieces)-len(foundArgs)+1); err != nil {
+							fmt.Fprintf(o.IOStreams.ErrOut, "Error: %v\n", err)
+							os.Exit(1)
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return cmd
+}
+
+// NewOneXctlCommand creates the `onexctl` command and its nested children.
+func NewOneXCtlCommand(o OneXctlOptions) *cobra.Command {
+	warningHandler := rest.NewWarningWriter(o.IOStreams.ErrOut, rest.WarningWriterOptions{Deduplicate: true, Color: term.AllowsColorOutput(o.IOStreams.ErrOut)})
 	warningsAsErrors := false
 	opts := clioptions.NewOptions()
 	// Parent command to which all subcommands are added.
@@ -67,7 +149,7 @@ func NewOneXCtlCommand(in io.Reader, out, err io.Writer) *cobra.Command {
 			if cmd.Name() == cobra.ShellCompRequestCmd {
 				// This is the __complete or __completeNoDesc command which
 				// indicates shell completion has been requested.
-				// plugin.SetupPluginCompletion(cmd, args)
+				plugin.SetupPluginCompletion(cmd, args)
 			}
 
 			opts.Complete()
@@ -92,7 +174,6 @@ func NewOneXCtlCommand(in io.Reader, out, err io.Writer) *cobra.Command {
 			return nil
 		},
 	}
-
 	// From this point and forward we get warnings on flags that contain "_" separators
 	// when adding them with hyphen instead of the original name.
 	cmds.SetGlobalNormalizationFunc(cliflag.WarnWordSepNormalizeFunc)
@@ -119,16 +200,14 @@ func NewOneXCtlCommand(in io.Reader, out, err io.Writer) *cobra.Command {
 
 	f := cmdutil.NewFactory(opts)
 
-	ioStreams := genericclioptions.IOStreams{In: in, Out: out, ErrOut: err}
-
 	groups := templates.CommandGroups{
 		{
-			Message: "Basic Commands:",
+			Message: "Basic Commands (Beginner):",
 			Commands: []*cobra.Command{
-				info.NewCmdInfo(f, ioStreams),
-				color.NewCmdColor(f, ioStreams),
-				new.NewCmdNew(f, ioStreams),
-				jwt.NewCmdJWT(f, ioStreams),
+				info.NewCmdInfo(f, o.IOStreams),
+				color.NewCmdColor(f, o.IOStreams),
+				new.NewCmdNew(f, o.IOStreams),
+				jwt.NewCmdJWT(f, o.IOStreams),
 			},
 		},
 		{
@@ -138,20 +217,20 @@ func NewOneXCtlCommand(in io.Reader, out, err io.Writer) *cobra.Command {
 		{
 			Message: "Gateway Commands:",
 			Commands: []*cobra.Command{
-				minerset.NewCmdMinerSet(f, ioStreams),
+				minerset.NewCmdMinerSet(f, o.IOStreams),
 			},
 		},
 		{
 			Message: "Troubleshooting and Debugging Commands:",
 			Commands: []*cobra.Command{
-				validate.NewCmdValidate(f, ioStreams),
+				validate.NewCmdValidate(f, o.IOStreams),
 			},
 		},
 		{
 			Message: "Settings Commands:",
 			Commands: []*cobra.Command{
-				// set.NewCmdSet(f, ioStreams),
-				completion.NewCmdCompletion(ioStreams.Out, ""),
+				// set.NewCmdSet(f, o.IOStreams),
+				completion.NewCmdCompletion(o.IOStreams.Out, ""),
 			},
 		},
 	}
@@ -159,20 +238,25 @@ func NewOneXCtlCommand(in io.Reader, out, err io.Writer) *cobra.Command {
 
 	filters := []string{"options"}
 
-	/*
-		// Hide the "alpha" subcommand if there are no alpha commands in this build.
-		alpha := NewCmdAlpha(f, ioStreams)
-		if !alpha.HasSubCommands() {
-			filters = append(filters, alpha.Name())
-		}
-	*/
+	// Hide the "alpha" subcommand if there are no alpha commands in this build.
+	alpha := NewCmdAlpha(f, o.IOStreams)
+	if !alpha.HasSubCommands() {
+		filters = append(filters, alpha.Name())
+	}
+
+	// Add plugin command group to the list of command groups.
+	// The commands are only injected for the scope of showing help and completion, they are not
+	// invoked directly.
+	pluginCommandGroup := plugin.GetPluginCommandGroup(cmds)
+	groups = append(groups, pluginCommandGroup)
 
 	templates.ActsAsRootCommand(cmds, filters, groups...)
 
-	// cmds.AddCommand(alpha)
-	// cmds.AddCommand(plugin.NewCmdPlugin(ioStreams))
-	cmds.AddCommand(version.NewCmdVersion(f, ioStreams))
-	cmds.AddCommand(options.NewCmdOptions(ioStreams.Out))
+	cmds.AddCommand(alpha)
+	//cmds.AddCommand(cmdconfig.NewCmdConfig(f, clientcmd.NewDefaultPathOptions(), o.IOStreams))
+	cmds.AddCommand(plugin.NewCmdPlugin(o.IOStreams))
+	cmds.AddCommand(version.NewCmdVersion(f, o.IOStreams))
+	cmds.AddCommand(options.NewCmdOptions(o.IOStreams.Out))
 
 	// Stop warning about normalization of flags. That makes it possible to
 	// add the klog flags later.

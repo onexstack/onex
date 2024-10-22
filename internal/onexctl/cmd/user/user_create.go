@@ -15,7 +15,7 @@ import (
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
 	v1 "github.com/superproj/onex/pkg/api/usercenter/v1"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	"github.com/superproj/onex/pkg/cli/genericiooptions"
 )
 
 const (
@@ -31,7 +31,7 @@ type CreateOptions struct {
 	CreateUserRequest *v1.CreateUserRequest
 
 	client v1.UserCenterHTTPClient
-	genericclioptions.IOStreams
+	genericiooptions.IOStreams
 }
 
 var (
@@ -52,7 +52,7 @@ If nickname not specified, username will be used.`)
 )
 
 // NewCreateOptions returns an initialized CreateOptions instance.
-func NewCreateOptions(ioStreams genericclioptions.IOStreams) *CreateOptions {
+func NewCreateOptions(ioStreams genericiooptions.IOStreams) *CreateOptions {
 	return &CreateOptions{
 		Email:     "colin@onex.com",
 		Phone:     "1812884xxxx",
@@ -61,7 +61,7 @@ func NewCreateOptions(ioStreams genericclioptions.IOStreams) *CreateOptions {
 }
 
 // NewCmdCreate returns new initialized instance of create sub command.
-func NewCmdCreate(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmdCreate(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	o := NewCreateOptions(ioStreams)
 
 	cmd := &cobra.Command{

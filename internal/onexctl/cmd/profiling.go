@@ -73,7 +73,7 @@ func initProfiling() error {
 	go func() {
 		<-c
 		f.Close()
-		_ = flushProfiling()
+		flushProfiling()
 		os.Exit(0)
 	}()
 
@@ -99,7 +99,7 @@ func flushProfiling() error {
 			return err
 		}
 		defer f.Close()
-		_ = profile.WriteTo(f, 0)
+		profile.WriteTo(f, 0)
 	}
 
 	return nil
