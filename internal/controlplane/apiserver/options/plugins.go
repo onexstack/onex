@@ -52,12 +52,12 @@ func RegisterAllAdmissionPlugins(plugins *admission.Plugins) {
 	deny.Register(plugins) // DEPRECATED as no real meaning
 }
 
-// DefaultOffAdmissionPlugins get admission plugins off by default for onex-apiserver.
-func DefaultOffAdmissionPlugins() sets.String {
-	defaultOnPlugins := sets.NewString(
+// DefaultOffAdmissionPlugins get admission plugins off by default for kube-apiserver.
+func DefaultOffAdmissionPlugins() sets.Set[string] {
+	defaultOnPlugins := sets.New(
 		autoprovision.PluginName, // NamespaceAutoProvision
 		lifecycle.PluginName,     // NamespaceLifecycle
 	)
 
-	return sets.NewString(AllOrderedPlugins...).Difference(defaultOnPlugins)
+	return sets.New(AllOrderedPlugins...).Difference(defaultOnPlugins)
 }

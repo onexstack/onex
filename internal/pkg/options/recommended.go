@@ -13,6 +13,7 @@ import (
 	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/apiserver/pkg/admission"
 	admissionmetrics "k8s.io/apiserver/pkg/admission/metrics"
+	"k8s.io/apiserver/pkg/apis/apiserver"
 	"k8s.io/apiserver/pkg/authentication/authenticatorfactory"
 	genericapiserver "k8s.io/apiserver/pkg/server"
 	"k8s.io/apiserver/pkg/server/dynamiccertificates"
@@ -153,10 +154,11 @@ func admissionOptionsApplyTo(
 // EnablePlugins, DisablePlugins fields
 // to prepare a list of ordered plugin names that are enabled.
 func enabledPluginNames(a *genericoptions.AdmissionOptions) []string {
-	allOffPlugins := append(a.DefaultOffPlugins.List(), a.DisablePlugins...)
+	allOffPlugins := append(sets.List[string](a.DefaultOffPlugins), a.DisablePlugins...)
 	disabledPlugins := sets.NewString(allOffPlugins...)
 	enabledPlugins := sets.NewString(a.EnablePlugins...)
 	disabledPlugins = disabledPlugins.Difference(enabledPlugins)
+
 	orderedPlugins := []string{}
 	for _, plugin := range a.RecommendedPluginOrder {
 		if !disabledPlugins.Has(plugin) {
@@ -176,7 +178,7 @@ func authenticationApplyTo(s *genericoptions.DelegatingAuthenticationOptions, au
 	}
 
 	cfg := authenticatorfactory.DelegatingAuthenticatorConfig{
-		Anonymous:                true,
+		Anonymous:                &apiserver.AnonymousAuthConfig{Enabled: true},
 		CacheTTL:                 s.CacheTTL,
 		WebhookRetryBackoff:      s.WebhookRetryBackoff,
 		TokenAccessReviewTimeout: s.TokenRequestTimeout,
