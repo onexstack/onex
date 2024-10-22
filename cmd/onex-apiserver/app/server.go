@@ -11,6 +11,7 @@
 package app
 
 import (
+	"context"
 	"crypto/tls"
 	"fmt"
 	"net/http"
@@ -180,7 +181,7 @@ onex's shared state through which all other components interact.`,
 			}
 			// add feature enablement metrics
 			utilfeature.DefaultMutableFeatureGate.AddMetrics()
-			return Run(completedOptions, genericapiserver.SetupSignalHandler())
+			return Run(cmd.Context(), completedOptions)
 		},
 		Args: func(cmd *cobra.Command, args []string) error {
 			for _, arg := range args {
@@ -210,7 +211,7 @@ onex's shared state through which all other components interact.`,
 }
 
 // Run runs the specified APIServer. This should never exit.
-func Run(opts options.CompletedOptions, stopCh <-chan struct{}) error {
+func Run(ctx context.Context, opts options.CompletedOptions) error {
 	// To help debugging, immediately log version
 	klog.Infof("Version: %+v", version.Get().String())
 
@@ -234,7 +235,7 @@ func Run(opts options.CompletedOptions, stopCh <-chan struct{}) error {
 		return err
 	}
 
-	return prepared.Run(stopCh)
+	return prepared.Run(ctx)
 }
 
 // CreateServerChain creates the apiservers connected via delegation.

@@ -13,6 +13,7 @@ package apiserver
 import (
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/blang/semver/v4"
 	oteltrace "go.opentelemetry.io/otel/trace"
@@ -47,6 +48,15 @@ import (
 	"github.com/superproj/onex/pkg/generated/clientset/versioned"
 	"github.com/superproj/onex/pkg/generated/informers"
 	"github.com/superproj/onex/pkg/version"
+)
+
+const (
+	// DefaultPeerEndpointReconcileInterval is the default amount of time for how often
+	// the peer endpoint leases are reconciled.
+	DefaultPeerEndpointReconcileInterval = 10 * time.Second
+	// DefaultPeerEndpointReconcilerTTL is the default TTL timeout for peer endpoint
+	// leases on the storage layer
+	DefaultPeerEndpointReconcilerTTL = 15 * time.Second
 )
 
 // BuildGenericConfig takes the master server options and produces the genericapiserver.Config associated with it.
@@ -139,7 +149,6 @@ func BuildGenericConfig(
 		sets.NewString("watch", "proxy"),
 		sets.NewString("attach", "exec", "proxy", "log", "portforward"),
 	)
-	genericConfig.Version = convertVersion(version.Get())
 
 	if genericConfig.EgressSelector != nil {
 		s.RecommendedOptions.Etcd.StorageConfig.Transport.EgressLookup = genericConfig.EgressSelector.Lookup
@@ -151,7 +160,9 @@ func BuildGenericConfig(
 	}
 
 	storageFactoryConfig := storage.NewStorageFactoryConfig()
+	storageFactoryConfig.CurrentVersion = genericConfig.EffectiveVersion
 	storageFactoryConfig.APIResourceConfig = genericConfig.MergedResourceConfig
+	storageFactoryConfig.DefaultResourceEncoding.SetEffectiveVersion(genericConfig.EffectiveVersion)
 	storageFactory, lastErr = storageFactoryConfig.Complete(s.RecommendedOptions.Etcd).New()
 	if lastErr != nil {
 		return
@@ -201,8 +212,8 @@ func BuildGenericConfig(
 // CreatePeerEndpointLeaseReconciler creates a apiserver endpoint lease reconciliation loop
 // The peer endpoint leases are used to find network locations of apiservers for peer proxy
 func CreatePeerEndpointLeaseReconciler(c genericapiserver.Config, storageFactory serverstorage.StorageFactory) (reconcilers.PeerEndpointLeaseReconciler, error) {
-	ttl := controlplane.DefaultEndpointReconcilerTTL
-	config, err := storageFactory.NewConfig(api.Resource("apiServerPeerIPInfo"))
+	ttl := DefaultPeerEndpointReconcilerTTL
+	config, err := storageFactory.NewConfig(api.Resource("apiServerPeerIPInfo"), &api.Endpoints{})
 	if err != nil {
 		return nil, fmt.Errorf("error creating storage factory config: %w", err)
 	}

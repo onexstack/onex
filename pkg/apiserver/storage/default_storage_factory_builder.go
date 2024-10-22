@@ -1,8 +1,18 @@
-// Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
-// Use of this source code is governed by a MIT style
-// license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
-//
+/*
+Copyright 2016 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package storage
 
@@ -15,10 +25,11 @@ import (
 	"k8s.io/apiserver/pkg/server/resourceconfig"
 	serverstorage "k8s.io/apiserver/pkg/server/storage"
 	"k8s.io/apiserver/pkg/storage/storagebackend"
+	"k8s.io/apiserver/pkg/util/version"
 	"k8s.io/kubernetes/pkg/api/legacyscheme"
 )
 
-// SpecialDefaultResourcePrefixes are prefixes compiled into Zero.
+// SpecialDefaultResourcePrefixes are prefixes compiled into Kubernetes.
 var SpecialDefaultResourcePrefixes = map[schema.GroupResource]string{
 	// Not in use, just serving as a placeholder.
 	{Group: "", Resource: "endpoints"}: "services/endpoints",
@@ -54,6 +65,7 @@ type StorageFactoryConfig struct {
 	Serializer                runtime.StorageSerializer
 	ResourceEncodingOverrides []schema.GroupVersionResource
 	EtcdServersOverrides      []string
+	CurrentVersion            version.EffectiveVersion
 }
 
 // Complete completes the StorageFactoryConfig with provided etcdOptions returning completedStorageFactoryConfig.
@@ -86,10 +98,10 @@ func (c *completedStorageFactoryConfig) New() (*serverstorage.DefaultStorageFact
 
 	// NOTICE: In most cases, we do not need this, so let's comment it out first and add a NOTICE as a reminder.
 	/*
-		storageFactory.AddCohabitatingResources(apps.Resource("chains"), extensions.Resource("chains"))
-		storageFactory.AddCohabitatingResources(apps.Resource("minersets"), extensions.Resource("minersets"))
-		storageFactory.AddCohabitatingResources(apps.Resource("miners"), extensions.Resource("miners"))
-		storageFactory.AddCohabitatingResources(api.Resource("events"), events.Resource("events"))
+	   storageFactory.AddCohabitatingResources(apps.Resource("chains"), extensions.Resource("chains"))
+	   storageFactory.AddCohabitatingResources(apps.Resource("minersets"), extensions.Resource("minersets"))
+	   storageFactory.AddCohabitatingResources(apps.Resource("miners"), extensions.Resource("miners"))
+	   storageFactory.AddCohabitatingResources(api.Resource("events"), events.Resource("events"))
 	*/
 
 	for _, override := range c.EtcdServersOverrides {
