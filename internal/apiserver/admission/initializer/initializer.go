@@ -14,8 +14,8 @@ import (
 )
 
 type pluginInitializer struct {
-	informers      informers.SharedInformerFactory
-	externalClient clientset.Interface
+	informers informers.SharedInformerFactory
+	client    clientset.Interface
 	//authorizer        authorizer.Authorizer
 	//featureGates      featuregate.FeatureGate
 	stopCh <-chan struct{}
@@ -26,11 +26,11 @@ var _ admission.PluginInitializer = pluginInitializer{}
 // New creates an instance of node admission plugins initializer.
 func New(
 	informers informers.SharedInformerFactory,
-	extClientset clientset.Interface,
+	client clientset.Interface,
 ) pluginInitializer {
 	return pluginInitializer{
-		informers:      informers,
-		externalClient: extClientset,
+		informers: informers,
+		client:    client,
 	}
 }
 
@@ -38,10 +38,10 @@ func New(
 // and provide the appropriate initialization data.
 func (i pluginInitializer) Initialize(plugin admission.Interface) {
 	if wants, ok := plugin.(WantsExternalInformerFactory); ok {
-		wants.SetInternalInformerFactory(i.informers)
+		wants.SetExternalInformerFactory(i.informers)
 	}
 
 	if wants, ok := plugin.(WantsExternalClientSet); ok {
-		wants.SetExternalClientSet(i.externalClient)
+		wants.SetExternalClientSet(i.client)
 	}
 }

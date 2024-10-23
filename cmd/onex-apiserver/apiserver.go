@@ -24,9 +24,10 @@ import (
 
 	"github.com/superproj/onex/cmd/onex-apiserver/app"
 	"github.com/superproj/onex/internal/apiserver/admission/plugin/minerset"
-	"github.com/superproj/onex/internal/controlplane/admission/initializer"
+	//"github.com/superproj/onex/internal/controlplane/admission/initializer"
 	"github.com/superproj/onex/internal/pkg/config/minerprofile"
 	//"github.com/superproj/onex/internal/pkg/options"
+	"github.com/superproj/onex/internal/apiserver/admission/initializer"
 	appsrest "github.com/superproj/onex/internal/apiserver/registry/apps/rest"
 	"github.com/superproj/onex/pkg/apis/apps/v1beta1"
 	"github.com/superproj/onex/pkg/generated/clientset/versioned"

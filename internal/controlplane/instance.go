@@ -24,6 +24,7 @@ import (
 	utilfeature "k8s.io/apiserver/pkg/util/feature"
 	utilpeerproxy "k8s.io/apiserver/pkg/util/peerproxy"
 	kubeinformers "k8s.io/client-go/informers"
+	clientset "k8s.io/client-go/kubernetes"
 	"k8s.io/klog/v2"
 	"k8s.io/kubernetes/pkg/routes"
 
@@ -32,8 +33,6 @@ import (
 	corerest "github.com/superproj/onex/internal/registry/core/rest"
 	flowcontrolrest "github.com/superproj/onex/internal/registry/flowcontrol/rest"
 	"github.com/superproj/onex/pkg/apiserver/storage"
-	"github.com/superproj/onex/pkg/generated/clientset/versioned"
-	"github.com/superproj/onex/pkg/generated/informers"
 )
 
 const (
@@ -86,8 +85,8 @@ type ExtraConfig struct {
 	// same value for this field. (Numbers > 1 currently untested.)
 	MasterCount int
 
-	KubeVersionedInformers     kubeinformers.SharedInformerFactory
-	InternalVersionedInformers informers.SharedInformerFactory
+	//KubeVersionedInformers     kubeinformers.SharedInformerFactory
+	InternalVersionedInformers kubeinformers.SharedInformerFactory
 	ExternalVersionedInformers ExternalSharedInformerFactory
 	ExternalPostStartHooks     map[string]genericapiserver.PostStartHookFunc
 }
@@ -137,7 +136,7 @@ func (c completedConfig) New(delegationTarget genericapiserver.DelegationTarget)
 		GenericAPIServer: s,
 	}
 
-	clientset, err := versioned.NewForConfig(c.GenericConfig.LoopbackClientConfig)
+	clientset, err := clientset.NewForConfig(c.GenericConfig.LoopbackClientConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -179,7 +178,7 @@ func (c completedConfig) New(delegationTarget genericapiserver.DelegationTarget)
 		"start-internal-informers",
 		func(context genericapiserver.PostStartHookContext) error {
 			// remove dependence with kube-apiserver
-			c.ExtraConfig.KubeVersionedInformers.Start(context.StopCh)
+			//c.ExtraConfig.KubeVersionedInformers.Start(context.StopCh)
 			c.ExtraConfig.InternalVersionedInformers.Start(context.StopCh)
 			return nil
 		},

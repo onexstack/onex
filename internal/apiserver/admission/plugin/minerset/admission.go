@@ -155,7 +155,7 @@ func (p *Plugin) SetExternalClientSet(client clientset.Interface) {
 // ValidateInitialization checks whether the plugin was correctly initialized.
 func (p *Plugin) ValidateInitialization() error {
 	if p.lister == nil {
-		return fmt.Errorf("%s requires a machineset lister", PluginName)
+		return fmt.Errorf("%s requires a MachineSet lister", PluginName)
 	}
 	return nil
 }

@@ -21,12 +21,12 @@ import (
 	utilcache "k8s.io/apimachinery/pkg/util/cache"
 	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/apiserver/pkg/admission"
+	"k8s.io/client-go/informers"
+	clientset "k8s.io/client-go/kubernetes"
+	corelisters "k8s.io/client-go/listers/core/v1"
 	"k8s.io/utils/clock"
 
 	"github.com/superproj/onex/internal/controlplane/admission/initializer"
-	clientset "github.com/superproj/onex/pkg/generated/clientset/versioned"
-	"github.com/superproj/onex/pkg/generated/informers"
-	corelisters "github.com/superproj/onex/pkg/generated/listers/core/v1"
 )
 
 const (
