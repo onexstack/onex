@@ -21,7 +21,6 @@ import (
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
 	v1 "github.com/superproj/onex/pkg/api/gateway/v1"
-	//"github.com/superproj/onex/pkg/cli/genericiooptions"
 	"github.com/superproj/onex/pkg/version"
 )
 
