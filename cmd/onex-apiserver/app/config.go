@@ -69,7 +69,7 @@ func NewConfig(opts options.CompletedOptions) (*Config, error) {
 
 	apiExtensions, err := apiserver.CreateAPIExtensionsConfig(
 		controlPlane.GenericConfig.Config,
-		controlPlane.ExtraConfig.KubeVersionedInformers,
+		controlPlane.ExtraConfig.InternalVersionedInformers,
 		nil,
 		opts.CompletedOptions,
 		3,
@@ -89,7 +89,7 @@ func NewConfig(opts options.CompletedOptions) (*Config, error) {
 	aggregator, err := createAggregatorConfig(
 		controlPlane.GenericConfig.Config,
 		opts.CompletedOptions,
-		controlPlane.ExtraConfig.KubeVersionedInformers,
+		controlPlane.ExtraConfig.InternalVersionedInformers,
 		serviceResolver,
 		controlPlane.ExtraConfig.ProxyTransport,
 		controlPlane.ExtraConfig.PeerProxy,

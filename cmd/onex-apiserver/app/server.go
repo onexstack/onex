@@ -282,7 +282,7 @@ func CreateOneXAPIServerConfig(opts options.CompletedOptions) (
 ) {
 	proxyTransport := CreateProxyTransport()
 
-	genericConfig, _, kubeSharedInformers, storageFactory, err := controlplaneapiserver.BuildGenericConfig(
+	genericConfig, kubeSharedInformers, storageFactory, err := controlplaneapiserver.BuildGenericConfig(
 		opts.CompletedOptions,
 		[]*runtime.Scheme{legacyscheme.Scheme, extensionsapiserver.Scheme, aggregatorscheme.Scheme},
 		opts.GetOpenAPIDefinitions,
@@ -306,7 +306,7 @@ func CreateOneXAPIServerConfig(opts options.CompletedOptions) (
 			MasterCount:                  opts.MasterCount,
 			//VersionedInformers:           opts.SharedInformerFactory,
 			// Here we will use the config file of "onex" to create a client-go informers.
-			KubeVersionedInformers:     kubeSharedInformers,
+			//KubeVersionedInformers:     kubeSharedInformers,
 			InternalVersionedInformers: opts.InternalVersionedInformers,
 			ExternalVersionedInformers: opts.ExternalVersionedInformers,
 			ExternalPostStartHooks:     opts.ExternalPostStartHooks,

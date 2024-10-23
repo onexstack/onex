@@ -33,8 +33,8 @@ import (
 	utilfeature "k8s.io/apiserver/pkg/util/feature"
 	"k8s.io/apiserver/pkg/util/openapi"
 	utilpeerproxy "k8s.io/apiserver/pkg/util/peerproxy"
-	kubeinformers "k8s.io/client-go/informers"
-	kubeclientset "k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/informers"
+	clientset "k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/transport"
 	"k8s.io/klog/v2"
 	openapicommon "k8s.io/kube-openapi/pkg/common"
@@ -45,8 +45,6 @@ import (
 	"github.com/superproj/onex/internal/controlplane/admission/initializer"
 	controlplaneoptions "github.com/superproj/onex/internal/controlplane/apiserver/options"
 	"github.com/superproj/onex/pkg/apiserver/storage"
-	"github.com/superproj/onex/pkg/generated/clientset/versioned"
-	"github.com/superproj/onex/pkg/generated/informers"
 	"github.com/superproj/onex/pkg/version"
 )
 
@@ -66,8 +64,7 @@ func BuildGenericConfig(
 	getOpenAPIDefinitions func(ref openapicommon.ReferenceCallback) map[string]openapicommon.OpenAPIDefinition,
 ) (
 	genericConfig *genericapiserver.RecommendedConfig,
-	versionedInformers informers.SharedInformerFactory,
-	kubeSharedInformers kubeinformers.SharedInformerFactory,
+	kubeSharedInformers informers.SharedInformerFactory,
 	storageFactory *serverstorage.DefaultStorageFactory,
 	lastErr error,
 ) {
@@ -79,7 +76,7 @@ func BuildGenericConfig(
 	}
 
 	s.RecommendedOptions.ExtraAdmissionInitializers = func(c *genericapiserver.RecommendedConfig) ([]admission.PluginInitializer, error) {
-		client, err := versioned.NewForConfig(c.LoopbackClientConfig)
+		client, err := clientset.NewForConfig(c.LoopbackClientConfig)
 		if err != nil {
 			return nil, err
 		}
@@ -104,22 +101,15 @@ func BuildGenericConfig(
 	genericConfig.LoopbackClientConfig.DisableCompression = true
 
 	loopbackClientConfig := genericConfig.LoopbackClientConfig
-	// Build onex client
-	internalClient, err := versioned.NewForConfig(loopbackClientConfig)
-	if err != nil {
-		lastErr = fmt.Errorf("failed to create real external clientset: %w", err)
-		return
-	}
-	versionedInformers = informers.NewSharedInformerFactory(internalClient, loopbackClientConfig.Timeout)
 
 	// Build kubernetes client
 	// Use onex's config to mock a kubernetes client.
-	kubeClient, err := kubeclientset.NewForConfig(loopbackClientConfig)
+	kubeClient, err := clientset.NewForConfig(loopbackClientConfig)
 	if err != nil {
 		lastErr = fmt.Errorf("failed to create real external clientset: %v", err)
 		return
 	}
-	kubeSharedInformers = kubeinformers.NewSharedInformerFactory(kubeClient, loopbackClientConfig.Timeout)
+	kubeSharedInformers = informers.NewSharedInformerFactory(kubeClient, loopbackClientConfig.Timeout)
 
 	if lastErr = s.Features.ApplyTo(&genericConfig.Config, kubeClient, kubeSharedInformers); lastErr != nil {
 		return
@@ -221,7 +211,7 @@ func CreatePeerEndpointLeaseReconciler(c genericapiserver.Config, storageFactory
 	return reconciler, err
 }
 
-func BuildPeerProxy(versionedInformer kubeinformers.SharedInformerFactory, svm storageversion.Manager,
+func BuildPeerProxy(versionedInformer informers.SharedInformerFactory, svm storageversion.Manager,
 	proxyClientCertFile string, proxyClientKeyFile string, peerCAFile string, peerAdvertiseAddress reconcilers.PeerAdvertiseAddress,
 	apiServerID string, reconciler reconcilers.PeerEndpointLeaseReconciler, serializer runtime.NegotiatedSerializer) (utilpeerproxy.Interface, error) {
 	if proxyClientCertFile == "" {

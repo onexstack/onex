@@ -18,18 +18,18 @@ import (
 	"k8s.io/apiserver/pkg/registry/rest"
 	genericapiserver "k8s.io/apiserver/pkg/server"
 	serverstorage "k8s.io/apiserver/pkg/server/storage"
+	"k8s.io/client-go/informers"
+	flowcontrolclient "k8s.io/client-go/kubernetes/typed/flowcontrol/v1"
+	flowcontrollisters "k8s.io/client-go/listers/flowcontrol/v1"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/klog/v2"
 	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	"k8s.io/kubernetes/pkg/apis/flowcontrol"
+	"k8s.io/kubernetes/pkg/registry/flowcontrol/ensurer"
 	flowschemastore "k8s.io/kubernetes/pkg/registry/flowcontrol/flowschema/storage"
 	prioritylevelconfigurationstore "k8s.io/kubernetes/pkg/registry/flowcontrol/prioritylevelconfiguration/storage"
 
 	serializerutil "github.com/superproj/onex/internal/pkg/util/serializer"
-	"github.com/superproj/onex/internal/registry/flowcontrol/ensurer"
-	flowcontrolclient "github.com/superproj/onex/pkg/generated/clientset/versioned/typed/flowcontrol/v1"
-	"github.com/superproj/onex/pkg/generated/informers"
-	flowcontrollisters "github.com/superproj/onex/pkg/generated/listers/flowcontrol/v1"
 )
 
 var _ genericapiserver.PostStartHookProvider = RESTStorageProvider{}

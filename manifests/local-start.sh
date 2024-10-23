@@ -20,9 +20,9 @@ start_api_server() {
   check_binary "${BIN_DIR}/onex-apiserver"
 
   ${BIN_DIR}/onex-apiserver \
-    --secure-port=62443 \
+    --secure-port=52443 \
     --bind-address=0.0.0.0 \
-    --etcd-servers=k8s-01:30002 \
+    --etcd-servers=127.0.0.1:32379 \
     --client-ca-file="${CONFIG_DIR}/cert/ca.pem" \
     --tls-cert-file="${CONFIG_DIR}/cert/onex-apiserver.pem" \
     --tls-private-key-file="${CONFIG_DIR}/cert/onex-apiserver-key.pem" \

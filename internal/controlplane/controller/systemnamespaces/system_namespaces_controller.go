@@ -26,16 +26,14 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/apimachinery/pkg/util/wait"
+	versioned "k8s.io/client-go/kubernetes"
+	listers "k8s.io/client-go/listers/core/v1"
 
-	//coreinformers "k8s.io/client-go/informers/core/v1"
+	coreinformers "k8s.io/client-go/informers/core/v1"
 
 	//listers "k8s.io/client-go/listers/core/v1"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/klog/v2"
-
-	"github.com/superproj/onex/pkg/generated/clientset/versioned"
-	coreinformers "github.com/superproj/onex/pkg/generated/informers/core/v1"
-	listers "github.com/superproj/onex/pkg/generated/listers/core/v1"
 )
 
 // Controller ensure system namespaces exist.

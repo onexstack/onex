@@ -9,18 +9,18 @@ package initializer
 import (
 	"k8s.io/apiserver/pkg/admission"
 
-	clientset "github.com/superproj/onex/pkg/generated/clientset/versioned"
-	"github.com/superproj/onex/pkg/generated/informers"
+	kubeinformers "k8s.io/client-go/informers"
+	kubeclientset "k8s.io/client-go/kubernetes"
 )
 
 // WantsInternalInformerFactory defines a function which sets InformerFactory for admission plugins that need it.
 type WantsInternalInformerFactory interface {
 	admission.InitializationValidator
-	SetInternalInformerFactory(informers.SharedInformerFactory)
+	SetInternalInformerFactory(kubeinformers.SharedInformerFactory)
 }
 
 // WantsInternalClientSet defines a function which sets external ClientSet for admission plugins that need it.
 type WantsInternalClientSet interface {
 	admission.InitializationValidator
-	SetInternalClientSet(clientset.Interface)
+	SetInternalClientSet(kubeclientset.Interface)
 }

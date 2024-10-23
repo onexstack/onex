@@ -20,6 +20,7 @@ import (
 	"k8s.io/apiserver/pkg/admission"
 	peerreconcilers "k8s.io/apiserver/pkg/reconcilers"
 	genericoptions "k8s.io/apiserver/pkg/server/options"
+	"k8s.io/client-go/informers"
 	cliflag "k8s.io/component-base/cli/flag"
 	"k8s.io/component-base/logs"
 	logsapi "k8s.io/component-base/logs/api/v1"
@@ -29,7 +30,6 @@ import (
 	netutils "k8s.io/utils/net"
 
 	"github.com/superproj/onex/internal/pkg/options"
-	"github.com/superproj/onex/pkg/generated/informers"
 )
 
 const defaultEtcdPathPrefix = "/registry/onex.io"
