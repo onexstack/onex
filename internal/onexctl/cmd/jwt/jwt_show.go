@@ -17,7 +17,6 @@ import (
 
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
-	//"github.com/superproj/onex/pkg/cli/genericiooptions"
 )
 
 const (

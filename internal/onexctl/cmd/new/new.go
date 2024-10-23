@@ -23,7 +23,6 @@ import (
 
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
-	//"github.com/superproj/onex/pkg/cli/genericiooptions"
 	fileutil "github.com/superproj/onex/pkg/util/file"
 )
 
@@ -66,10 +65,10 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"k8s.io/cli-runtime/pkg/genericiooptions"
 
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
-	"github.com/superproj/onex/pkg/cli/genericiooptions"
 )
 
 const (
@@ -208,10 +207,10 @@ package {{.CommandName}}
 import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"k8s.io/cli-runtime/pkg/genericiooptions"
 
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
-	"github.com/superproj/onex/pkg/cli/genericiooptions"
 )
 
 const maxStringLength = 17
@@ -261,10 +260,10 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"k8s.io/cli-runtime/pkg/genericiooptions"
 
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
-	"github.com/superproj/onex/pkg/cli/genericiooptions"
 )
 
 const (
@@ -398,10 +397,10 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"k8s.io/cli-runtime/pkg/genericiooptions"
 
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
-	"github.com/superproj/onex/pkg/cli/genericiooptions"
 )
 
 // SubCmd2Options is an options struct to support subcmd2 subcommands.

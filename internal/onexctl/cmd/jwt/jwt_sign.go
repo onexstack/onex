@@ -19,7 +19,6 @@ import (
 	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
 	"github.com/superproj/onex/internal/onexctl/util/templates"
 	jwtauthn "github.com/superproj/onex/pkg/authn/jwt"
-	//"github.com/superproj/onex/pkg/cli/genericiooptions"
 )
 
 const (
