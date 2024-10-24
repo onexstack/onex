@@ -8,13 +8,13 @@
 package v1beta1
 
 import (
-	"context"
+	context "context"
 	time "time"
 
-	appsv1beta1 "github.com/superproj/onex/pkg/apis/apps/v1beta1"
+	apisappsv1beta1 "github.com/superproj/onex/pkg/apis/apps/v1beta1"
 	versioned "github.com/superproj/onex/pkg/generated/clientset/versioned"
 	internalinterfaces "github.com/superproj/onex/pkg/generated/informers/internalinterfaces"
-	v1beta1 "github.com/superproj/onex/pkg/generated/listers/apps/v1beta1"
+	appsv1beta1 "github.com/superproj/onex/pkg/generated/listers/apps/v1beta1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"
@@ -25,7 +25,7 @@ import (
 // ChargeRequests.
 type ChargeRequestInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1beta1.ChargeRequestLister
+	Lister() appsv1beta1.ChargeRequestLister
 }
 
 type chargeRequestInformer struct {
@@ -60,7 +60,7 @@ func NewFilteredChargeRequestInformer(client versioned.Interface, namespace stri
 				return client.AppsV1beta1().ChargeRequests(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&appsv1beta1.ChargeRequest{},
+		&apisappsv1beta1.ChargeRequest{},
 		resyncPeriod,
 		indexers,
 	)
@@ -71,9 +71,9 @@ func (f *chargeRequestInformer) defaultInformer(client versioned.Interface, resy
 }
 
 func (f *chargeRequestInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&appsv1beta1.ChargeRequest{}, f.defaultInformer)
+	return f.factory.InformerFor(&apisappsv1beta1.ChargeRequest{}, f.defaultInformer)
 }
 
-func (f *chargeRequestInformer) Lister() v1beta1.ChargeRequestLister {
-	return v1beta1.NewChargeRequestLister(f.Informer().GetIndexer())
+func (f *chargeRequestInformer) Lister() appsv1beta1.ChargeRequestLister {
+	return appsv1beta1.NewChargeRequestLister(f.Informer().GetIndexer())
 }

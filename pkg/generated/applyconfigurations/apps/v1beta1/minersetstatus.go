@@ -12,7 +12,7 @@ import (
 	errors "github.com/superproj/onex/pkg/errors"
 )
 
-// MinerSetStatusApplyConfiguration represents an declarative configuration of the MinerSetStatus type for use
+// MinerSetStatusApplyConfiguration represents a declarative configuration of the MinerSetStatus type for use
 // with apply.
 type MinerSetStatusApplyConfiguration struct {
 	Replicas             *int32                      `json:"replicas,omitempty"`
@@ -25,7 +25,7 @@ type MinerSetStatusApplyConfiguration struct {
 	Conditions           *v1beta1.Conditions         `json:"conditions,omitempty"`
 }
 
-// MinerSetStatusApplyConfiguration constructs an declarative configuration of the MinerSetStatus type for use with
+// MinerSetStatusApplyConfiguration constructs a declarative configuration of the MinerSetStatus type for use with
 // apply.
 func MinerSetStatus() *MinerSetStatusApplyConfiguration {
 	return &MinerSetStatusApplyConfiguration{}

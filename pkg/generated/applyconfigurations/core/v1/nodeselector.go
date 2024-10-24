@@ -7,13 +7,13 @@
 
 package v1
 
-// NodeSelectorApplyConfiguration represents an declarative configuration of the NodeSelector type for use
+// NodeSelectorApplyConfiguration represents a declarative configuration of the NodeSelector type for use
 // with apply.
 type NodeSelectorApplyConfiguration struct {
 	NodeSelectorTerms []NodeSelectorTermApplyConfiguration `json:"nodeSelectorTerms,omitempty"`
 }
 
-// NodeSelectorApplyConfiguration constructs an declarative configuration of the NodeSelector type for use with
+// NodeSelectorApplyConfiguration constructs a declarative configuration of the NodeSelector type for use with
 // apply.
 func NodeSelector() *NodeSelectorApplyConfiguration {
 	return &NodeSelectorApplyConfiguration{}

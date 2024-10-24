@@ -7,7 +7,7 @@
 
 package v1
 
-// RBDVolumeSourceApplyConfiguration represents an declarative configuration of the RBDVolumeSource type for use
+// RBDVolumeSourceApplyConfiguration represents a declarative configuration of the RBDVolumeSource type for use
 // with apply.
 type RBDVolumeSourceApplyConfiguration struct {
 	CephMonitors []string                                `json:"monitors,omitempty"`
@@ -20,7 +20,7 @@ type RBDVolumeSourceApplyConfiguration struct {
 	ReadOnly     *bool                                   `json:"readOnly,omitempty"`
 }
 
-// RBDVolumeSourceApplyConfiguration constructs an declarative configuration of the RBDVolumeSource type for use with
+// RBDVolumeSourceApplyConfiguration constructs a declarative configuration of the RBDVolumeSource type for use with
 // apply.
 func RBDVolumeSource() *RBDVolumeSourceApplyConfiguration {
 	return &RBDVolumeSourceApplyConfiguration{}

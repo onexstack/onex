@@ -7,7 +7,7 @@
 
 package v1
 
-// CustomResourceDefinitionNamesApplyConfiguration represents an declarative configuration of the CustomResourceDefinitionNames type for use
+// CustomResourceDefinitionNamesApplyConfiguration represents a declarative configuration of the CustomResourceDefinitionNames type for use
 // with apply.
 type CustomResourceDefinitionNamesApplyConfiguration struct {
 	Plural     *string  `json:"plural,omitempty"`
@@ -18,7 +18,7 @@ type CustomResourceDefinitionNamesApplyConfiguration struct {
 	Categories []string `json:"categories,omitempty"`
 }
 
-// CustomResourceDefinitionNamesApplyConfiguration constructs an declarative configuration of the CustomResourceDefinitionNames type for use with
+// CustomResourceDefinitionNamesApplyConfiguration constructs a declarative configuration of the CustomResourceDefinitionNames type for use with
 // apply.
 func CustomResourceDefinitionNames() *CustomResourceDefinitionNamesApplyConfiguration {
 	return &CustomResourceDefinitionNamesApplyConfiguration{}

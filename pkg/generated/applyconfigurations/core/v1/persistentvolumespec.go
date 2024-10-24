@@ -11,7 +11,7 @@ import (
 	v1 "k8s.io/api/core/v1"
 )
 
-// PersistentVolumeSpecApplyConfiguration represents an declarative configuration of the PersistentVolumeSpec type for use
+// PersistentVolumeSpecApplyConfiguration represents a declarative configuration of the PersistentVolumeSpec type for use
 // with apply.
 type PersistentVolumeSpecApplyConfiguration struct {
 	Capacity                                 *v1.ResourceList `json:"capacity,omitempty"`
@@ -26,7 +26,7 @@ type PersistentVolumeSpecApplyConfiguration struct {
 	VolumeAttributesClassName                *string                               `json:"volumeAttributesClassName,omitempty"`
 }
 
-// PersistentVolumeSpecApplyConfiguration constructs an declarative configuration of the PersistentVolumeSpec type for use with
+// PersistentVolumeSpecApplyConfiguration constructs a declarative configuration of the PersistentVolumeSpec type for use with
 // apply.
 func PersistentVolumeSpec() *PersistentVolumeSpecApplyConfiguration {
 	return &PersistentVolumeSpecApplyConfiguration{}

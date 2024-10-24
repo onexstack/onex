@@ -14,7 +14,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// MinerStatusApplyConfiguration represents an declarative configuration of the MinerStatus type for use
+// MinerStatusApplyConfiguration represents a declarative configuration of the MinerStatus type for use
 // with apply.
 type MinerStatusApplyConfiguration struct {
 	PodRef             *v1.ObjectReferenceApplyConfiguration `json:"podRef,omitempty"`
@@ -27,7 +27,7 @@ type MinerStatusApplyConfiguration struct {
 	Conditions         *v1beta1.Conditions                   `json:"conditions,omitempty"`
 }
 
-// MinerStatusApplyConfiguration constructs an declarative configuration of the MinerStatus type for use with
+// MinerStatusApplyConfiguration constructs a declarative configuration of the MinerStatus type for use with
 // apply.
 func MinerStatus() *MinerStatusApplyConfiguration {
 	return &MinerStatusApplyConfiguration{}

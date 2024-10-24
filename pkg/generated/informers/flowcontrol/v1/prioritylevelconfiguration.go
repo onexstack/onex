@@ -8,13 +8,13 @@
 package v1
 
 import (
-	"context"
+	context "context"
 	time "time"
 
 	versioned "github.com/superproj/onex/pkg/generated/clientset/versioned"
 	internalinterfaces "github.com/superproj/onex/pkg/generated/informers/internalinterfaces"
-	v1 "github.com/superproj/onex/pkg/generated/listers/flowcontrol/v1"
-	flowcontrolv1 "k8s.io/api/flowcontrol/v1"
+	flowcontrolv1 "github.com/superproj/onex/pkg/generated/listers/flowcontrol/v1"
+	apiflowcontrolv1 "k8s.io/api/flowcontrol/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"
@@ -25,7 +25,7 @@ import (
 // PriorityLevelConfigurations.
 type PriorityLevelConfigurationInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1.PriorityLevelConfigurationLister
+	Lister() flowcontrolv1.PriorityLevelConfigurationLister
 }
 
 type priorityLevelConfigurationInformer struct {
@@ -59,7 +59,7 @@ func NewFilteredPriorityLevelConfigurationInformer(client versioned.Interface, r
 				return client.FlowcontrolV1().PriorityLevelConfigurations().Watch(context.TODO(), options)
 			},
 		},
-		&flowcontrolv1.PriorityLevelConfiguration{},
+		&apiflowcontrolv1.PriorityLevelConfiguration{},
 		resyncPeriod,
 		indexers,
 	)
@@ -70,9 +70,9 @@ func (f *priorityLevelConfigurationInformer) defaultInformer(client versioned.In
 }
 
 func (f *priorityLevelConfigurationInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&flowcontrolv1.PriorityLevelConfiguration{}, f.defaultInformer)
+	return f.factory.InformerFor(&apiflowcontrolv1.PriorityLevelConfiguration{}, f.defaultInformer)
 }
 
-func (f *priorityLevelConfigurationInformer) Lister() v1.PriorityLevelConfigurationLister {
-	return v1.NewPriorityLevelConfigurationLister(f.Informer().GetIndexer())
+func (f *priorityLevelConfigurationInformer) Lister() flowcontrolv1.PriorityLevelConfigurationLister {
+	return flowcontrolv1.NewPriorityLevelConfigurationLister(f.Informer().GetIndexer())
 }

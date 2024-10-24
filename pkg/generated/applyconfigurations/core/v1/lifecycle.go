@@ -7,14 +7,14 @@
 
 package v1
 
-// LifecycleApplyConfiguration represents an declarative configuration of the Lifecycle type for use
+// LifecycleApplyConfiguration represents a declarative configuration of the Lifecycle type for use
 // with apply.
 type LifecycleApplyConfiguration struct {
 	PostStart *LifecycleHandlerApplyConfiguration `json:"postStart,omitempty"`
 	PreStop   *LifecycleHandlerApplyConfiguration `json:"preStop,omitempty"`
 }
 
-// LifecycleApplyConfiguration constructs an declarative configuration of the Lifecycle type for use with
+// LifecycleApplyConfiguration constructs a declarative configuration of the Lifecycle type for use with
 // apply.
 func Lifecycle() *LifecycleApplyConfiguration {
 	return &LifecycleApplyConfiguration{}

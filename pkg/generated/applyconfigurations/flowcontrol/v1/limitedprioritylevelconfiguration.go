@@ -7,7 +7,7 @@
 
 package v1
 
-// LimitedPriorityLevelConfigurationApplyConfiguration represents an declarative configuration of the LimitedPriorityLevelConfiguration type for use
+// LimitedPriorityLevelConfigurationApplyConfiguration represents a declarative configuration of the LimitedPriorityLevelConfiguration type for use
 // with apply.
 type LimitedPriorityLevelConfigurationApplyConfiguration struct {
 	NominalConcurrencyShares *int32                           `json:"nominalConcurrencyShares,omitempty"`
@@ -16,7 +16,7 @@ type LimitedPriorityLevelConfigurationApplyConfiguration struct {
 	BorrowingLimitPercent    *int32                           `json:"borrowingLimitPercent,omitempty"`
 }
 
-// LimitedPriorityLevelConfigurationApplyConfiguration constructs an declarative configuration of the LimitedPriorityLevelConfiguration type for use with
+// LimitedPriorityLevelConfigurationApplyConfiguration constructs a declarative configuration of the LimitedPriorityLevelConfiguration type for use with
 // apply.
 func LimitedPriorityLevelConfiguration() *LimitedPriorityLevelConfigurationApplyConfiguration {
 	return &LimitedPriorityLevelConfigurationApplyConfiguration{}

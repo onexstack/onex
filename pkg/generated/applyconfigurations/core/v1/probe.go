@@ -7,7 +7,7 @@
 
 package v1
 
-// ProbeApplyConfiguration represents an declarative configuration of the Probe type for use
+// ProbeApplyConfiguration represents a declarative configuration of the Probe type for use
 // with apply.
 type ProbeApplyConfiguration struct {
 	ProbeHandlerApplyConfiguration `json:",inline"`
@@ -19,7 +19,7 @@ type ProbeApplyConfiguration struct {
 	TerminationGracePeriodSeconds  *int64 `json:"terminationGracePeriodSeconds,omitempty"`
 }
 
-// ProbeApplyConfiguration constructs an declarative configuration of the Probe type for use with
+// ProbeApplyConfiguration constructs a declarative configuration of the Probe type for use with
 // apply.
 func Probe() *ProbeApplyConfiguration {
 	return &ProbeApplyConfiguration{}

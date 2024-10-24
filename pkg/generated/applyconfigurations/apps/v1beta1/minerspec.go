@@ -12,7 +12,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// MinerSpecApplyConfiguration represents an declarative configuration of the MinerSpec type for use
+// MinerSpecApplyConfiguration represents a declarative configuration of the MinerSpec type for use
 // with apply.
 type MinerSpecApplyConfiguration struct {
 	*ObjectMetaApplyConfiguration `json:"metadata,omitempty"`
@@ -23,7 +23,7 @@ type MinerSpecApplyConfiguration struct {
 	PodDeletionTimeout            *metav1.Duration  `json:"podDeletionTimeout,omitempty"`
 }
 
-// MinerSpecApplyConfiguration constructs an declarative configuration of the MinerSpec type for use with
+// MinerSpecApplyConfiguration constructs a declarative configuration of the MinerSpec type for use with
 // apply.
 func MinerSpec() *MinerSpecApplyConfiguration {
 	return &MinerSpecApplyConfiguration{}

@@ -16,7 +16,7 @@ import (
 	managedfields "k8s.io/apimachinery/pkg/util/managedfields"
 )
 
-// ComponentStatusApplyConfiguration represents an declarative configuration of the ComponentStatus type for use
+// ComponentStatusApplyConfiguration represents a declarative configuration of the ComponentStatus type for use
 // with apply.
 type ComponentStatusApplyConfiguration struct {
 	v1.TypeMetaApplyConfiguration    `json:",inline"`
@@ -24,7 +24,7 @@ type ComponentStatusApplyConfiguration struct {
 	Conditions                       []ComponentConditionApplyConfiguration `json:"conditions,omitempty"`
 }
 
-// ComponentStatus constructs an declarative configuration of the ComponentStatus type for use with
+// ComponentStatus constructs a declarative configuration of the ComponentStatus type for use with
 // apply.
 func ComponentStatus(name string) *ComponentStatusApplyConfiguration {
 	b := &ComponentStatusApplyConfiguration{}
@@ -238,4 +238,10 @@ func (b *ComponentStatusApplyConfiguration) WithConditions(values ...*ComponentC
 		b.Conditions = append(b.Conditions, *values[i])
 	}
 	return b
+}
+
+// GetName retrieves the value of the Name field in the declarative configuration.
+func (b *ComponentStatusApplyConfiguration) GetName() *string {
+	b.ensureObjectMetaApplyConfigurationExists()
+	return b.Name
 }

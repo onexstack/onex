@@ -7,7 +7,7 @@
 
 package v1
 
-// VsphereVirtualDiskVolumeSourceApplyConfiguration represents an declarative configuration of the VsphereVirtualDiskVolumeSource type for use
+// VsphereVirtualDiskVolumeSourceApplyConfiguration represents a declarative configuration of the VsphereVirtualDiskVolumeSource type for use
 // with apply.
 type VsphereVirtualDiskVolumeSourceApplyConfiguration struct {
 	VolumePath        *string `json:"volumePath,omitempty"`
@@ -16,7 +16,7 @@ type VsphereVirtualDiskVolumeSourceApplyConfiguration struct {
 	StoragePolicyID   *string `json:"storagePolicyID,omitempty"`
 }
 
-// VsphereVirtualDiskVolumeSourceApplyConfiguration constructs an declarative configuration of the VsphereVirtualDiskVolumeSource type for use with
+// VsphereVirtualDiskVolumeSourceApplyConfiguration constructs a declarative configuration of the VsphereVirtualDiskVolumeSource type for use with
 // apply.
 func VsphereVirtualDiskVolumeSource() *VsphereVirtualDiskVolumeSourceApplyConfiguration {
 	return &VsphereVirtualDiskVolumeSourceApplyConfiguration{}

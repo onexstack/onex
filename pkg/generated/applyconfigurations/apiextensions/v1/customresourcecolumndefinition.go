@@ -7,7 +7,7 @@
 
 package v1
 
-// CustomResourceColumnDefinitionApplyConfiguration represents an declarative configuration of the CustomResourceColumnDefinition type for use
+// CustomResourceColumnDefinitionApplyConfiguration represents a declarative configuration of the CustomResourceColumnDefinition type for use
 // with apply.
 type CustomResourceColumnDefinitionApplyConfiguration struct {
 	Name        *string `json:"name,omitempty"`
@@ -18,7 +18,7 @@ type CustomResourceColumnDefinitionApplyConfiguration struct {
 	JSONPath    *string `json:"jsonPath,omitempty"`
 }
 
-// CustomResourceColumnDefinitionApplyConfiguration constructs an declarative configuration of the CustomResourceColumnDefinition type for use with
+// CustomResourceColumnDefinitionApplyConfiguration constructs a declarative configuration of the CustomResourceColumnDefinition type for use with
 // apply.
 func CustomResourceColumnDefinition() *CustomResourceColumnDefinitionApplyConfiguration {
 	return &CustomResourceColumnDefinitionApplyConfiguration{}

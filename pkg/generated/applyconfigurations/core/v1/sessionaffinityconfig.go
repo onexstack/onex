@@ -7,13 +7,13 @@
 
 package v1
 
-// SessionAffinityConfigApplyConfiguration represents an declarative configuration of the SessionAffinityConfig type for use
+// SessionAffinityConfigApplyConfiguration represents a declarative configuration of the SessionAffinityConfig type for use
 // with apply.
 type SessionAffinityConfigApplyConfiguration struct {
 	ClientIP *ClientIPConfigApplyConfiguration `json:"clientIP,omitempty"`
 }
 
-// SessionAffinityConfigApplyConfiguration constructs an declarative configuration of the SessionAffinityConfig type for use with
+// SessionAffinityConfigApplyConfiguration constructs a declarative configuration of the SessionAffinityConfig type for use with
 // apply.
 func SessionAffinityConfig() *SessionAffinityConfigApplyConfiguration {
 	return &SessionAffinityConfigApplyConfiguration{}

@@ -7,14 +7,14 @@
 
 package v1beta1
 
-// ChargeRequestSpecApplyConfiguration represents an declarative configuration of the ChargeRequestSpec type for use
+// ChargeRequestSpecApplyConfiguration represents a declarative configuration of the ChargeRequestSpec type for use
 // with apply.
 type ChargeRequestSpecApplyConfiguration struct {
 	From     *string `json:"from,omitempty"`
 	Password *string `json:"password,omitempty"`
 }
 
-// ChargeRequestSpecApplyConfiguration constructs an declarative configuration of the ChargeRequestSpec type for use with
+// ChargeRequestSpecApplyConfiguration constructs a declarative configuration of the ChargeRequestSpec type for use with
 // apply.
 func ChargeRequestSpec() *ChargeRequestSpecApplyConfiguration {
 	return &ChargeRequestSpecApplyConfiguration{}

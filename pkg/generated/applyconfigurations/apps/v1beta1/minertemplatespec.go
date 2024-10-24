@@ -7,14 +7,14 @@
 
 package v1beta1
 
-// MinerTemplateSpecApplyConfiguration represents an declarative configuration of the MinerTemplateSpec type for use
+// MinerTemplateSpecApplyConfiguration represents a declarative configuration of the MinerTemplateSpec type for use
 // with apply.
 type MinerTemplateSpecApplyConfiguration struct {
 	*ObjectMetaApplyConfiguration `json:"metadata,omitempty"`
 	Spec                          *MinerSpecApplyConfiguration `json:"spec,omitempty"`
 }
 
-// MinerTemplateSpecApplyConfiguration constructs an declarative configuration of the MinerTemplateSpec type for use with
+// MinerTemplateSpecApplyConfiguration constructs a declarative configuration of the MinerTemplateSpec type for use with
 // apply.
 func MinerTemplateSpec() *MinerTemplateSpecApplyConfiguration {
 	return &MinerTemplateSpecApplyConfiguration{}

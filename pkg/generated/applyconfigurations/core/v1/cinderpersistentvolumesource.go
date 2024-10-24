@@ -7,7 +7,7 @@
 
 package v1
 
-// CinderPersistentVolumeSourceApplyConfiguration represents an declarative configuration of the CinderPersistentVolumeSource type for use
+// CinderPersistentVolumeSourceApplyConfiguration represents a declarative configuration of the CinderPersistentVolumeSource type for use
 // with apply.
 type CinderPersistentVolumeSourceApplyConfiguration struct {
 	VolumeID  *string                            `json:"volumeID,omitempty"`
@@ -16,7 +16,7 @@ type CinderPersistentVolumeSourceApplyConfiguration struct {
 	SecretRef *SecretReferenceApplyConfiguration `json:"secretRef,omitempty"`
 }
 
-// CinderPersistentVolumeSourceApplyConfiguration constructs an declarative configuration of the CinderPersistentVolumeSource type for use with
+// CinderPersistentVolumeSourceApplyConfiguration constructs a declarative configuration of the CinderPersistentVolumeSource type for use with
 // apply.
 func CinderPersistentVolumeSource() *CinderPersistentVolumeSourceApplyConfiguration {
 	return &CinderPersistentVolumeSourceApplyConfiguration{}

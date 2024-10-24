@@ -7,7 +7,7 @@
 
 package v1
 
-// EnvFromSourceApplyConfiguration represents an declarative configuration of the EnvFromSource type for use
+// EnvFromSourceApplyConfiguration represents a declarative configuration of the EnvFromSource type for use
 // with apply.
 type EnvFromSourceApplyConfiguration struct {
 	Prefix       *string                               `json:"prefix,omitempty"`
@@ -15,7 +15,7 @@ type EnvFromSourceApplyConfiguration struct {
 	SecretRef    *SecretEnvSourceApplyConfiguration    `json:"secretRef,omitempty"`
 }
 
-// EnvFromSourceApplyConfiguration constructs an declarative configuration of the EnvFromSource type for use with
+// EnvFromSourceApplyConfiguration constructs a declarative configuration of the EnvFromSource type for use with
 // apply.
 func EnvFromSource() *EnvFromSourceApplyConfiguration {
 	return &EnvFromSourceApplyConfiguration{}

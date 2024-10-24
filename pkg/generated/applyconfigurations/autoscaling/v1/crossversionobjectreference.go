@@ -7,7 +7,7 @@
 
 package v1
 
-// CrossVersionObjectReferenceApplyConfiguration represents an declarative configuration of the CrossVersionObjectReference type for use
+// CrossVersionObjectReferenceApplyConfiguration represents a declarative configuration of the CrossVersionObjectReference type for use
 // with apply.
 type CrossVersionObjectReferenceApplyConfiguration struct {
 	Kind       *string `json:"kind,omitempty"`
@@ -15,7 +15,7 @@ type CrossVersionObjectReferenceApplyConfiguration struct {
 	APIVersion *string `json:"apiVersion,omitempty"`
 }
 
-// CrossVersionObjectReferenceApplyConfiguration constructs an declarative configuration of the CrossVersionObjectReference type for use with
+// CrossVersionObjectReferenceApplyConfiguration constructs a declarative configuration of the CrossVersionObjectReference type for use with
 // apply.
 func CrossVersionObjectReference() *CrossVersionObjectReferenceApplyConfiguration {
 	return &CrossVersionObjectReferenceApplyConfiguration{}

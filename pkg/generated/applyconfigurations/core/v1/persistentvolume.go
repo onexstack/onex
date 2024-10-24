@@ -16,7 +16,7 @@ import (
 	managedfields "k8s.io/apimachinery/pkg/util/managedfields"
 )
 
-// PersistentVolumeApplyConfiguration represents an declarative configuration of the PersistentVolume type for use
+// PersistentVolumeApplyConfiguration represents a declarative configuration of the PersistentVolume type for use
 // with apply.
 type PersistentVolumeApplyConfiguration struct {
 	v1.TypeMetaApplyConfiguration    `json:",inline"`
@@ -25,7 +25,7 @@ type PersistentVolumeApplyConfiguration struct {
 	Status                           *PersistentVolumeStatusApplyConfiguration `json:"status,omitempty"`
 }
 
-// PersistentVolume constructs an declarative configuration of the PersistentVolume type for use with
+// PersistentVolume constructs a declarative configuration of the PersistentVolume type for use with
 // apply.
 func PersistentVolume(name string) *PersistentVolumeApplyConfiguration {
 	b := &PersistentVolumeApplyConfiguration{}
@@ -242,4 +242,10 @@ func (b *PersistentVolumeApplyConfiguration) WithSpec(value *PersistentVolumeSpe
 func (b *PersistentVolumeApplyConfiguration) WithStatus(value *PersistentVolumeStatusApplyConfiguration) *PersistentVolumeApplyConfiguration {
 	b.Status = value
 	return b
+}
+
+// GetName retrieves the value of the Name field in the declarative configuration.
+func (b *PersistentVolumeApplyConfiguration) GetName() *string {
+	b.ensureObjectMetaApplyConfigurationExists()
+	return b.Name
 }

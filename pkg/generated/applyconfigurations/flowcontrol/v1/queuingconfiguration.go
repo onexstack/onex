@@ -7,7 +7,7 @@
 
 package v1
 
-// QueuingConfigurationApplyConfiguration represents an declarative configuration of the QueuingConfiguration type for use
+// QueuingConfigurationApplyConfiguration represents a declarative configuration of the QueuingConfiguration type for use
 // with apply.
 type QueuingConfigurationApplyConfiguration struct {
 	Queues           *int32 `json:"queues,omitempty"`
@@ -15,7 +15,7 @@ type QueuingConfigurationApplyConfiguration struct {
 	QueueLengthLimit *int32 `json:"queueLengthLimit,omitempty"`
 }
 
-// QueuingConfigurationApplyConfiguration constructs an declarative configuration of the QueuingConfiguration type for use with
+// QueuingConfigurationApplyConfiguration constructs a declarative configuration of the QueuingConfiguration type for use with
 // apply.
 func QueuingConfiguration() *QueuingConfigurationApplyConfiguration {
 	return &QueuingConfigurationApplyConfiguration{}

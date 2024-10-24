@@ -7,7 +7,7 @@
 
 package v1
 
-// GlusterfsPersistentVolumeSourceApplyConfiguration represents an declarative configuration of the GlusterfsPersistentVolumeSource type for use
+// GlusterfsPersistentVolumeSourceApplyConfiguration represents a declarative configuration of the GlusterfsPersistentVolumeSource type for use
 // with apply.
 type GlusterfsPersistentVolumeSourceApplyConfiguration struct {
 	EndpointsName      *string `json:"endpoints,omitempty"`
@@ -16,7 +16,7 @@ type GlusterfsPersistentVolumeSourceApplyConfiguration struct {
 	EndpointsNamespace *string `json:"endpointsNamespace,omitempty"`
 }
 
-// GlusterfsPersistentVolumeSourceApplyConfiguration constructs an declarative configuration of the GlusterfsPersistentVolumeSource type for use with
+// GlusterfsPersistentVolumeSourceApplyConfiguration constructs a declarative configuration of the GlusterfsPersistentVolumeSource type for use with
 // apply.
 func GlusterfsPersistentVolumeSource() *GlusterfsPersistentVolumeSourceApplyConfiguration {
 	return &GlusterfsPersistentVolumeSourceApplyConfiguration{}

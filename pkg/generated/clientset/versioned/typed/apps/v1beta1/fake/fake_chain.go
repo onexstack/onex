@@ -33,22 +33,24 @@ var chainsKind = v1beta1.SchemeGroupVersion.WithKind("Chain")
 
 // Get takes name of the chain, and returns the corresponding chain object, and an error if there is any.
 func (c *FakeChains) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1beta1.Chain, err error) {
+	emptyResult := &v1beta1.Chain{}
 	obj, err := c.Fake.
-		Invokes(testing.NewGetAction(chainsResource, c.ns, name), &v1beta1.Chain{})
+		Invokes(testing.NewGetActionWithOptions(chainsResource, c.ns, name, options), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.Chain), err
 }
 
 // List takes label and field selectors, and returns the list of Chains that match those selectors.
 func (c *FakeChains) List(ctx context.Context, opts v1.ListOptions) (result *v1beta1.ChainList, err error) {
+	emptyResult := &v1beta1.ChainList{}
 	obj, err := c.Fake.
-		Invokes(testing.NewListAction(chainsResource, chainsKind, c.ns, opts), &v1beta1.ChainList{})
+		Invokes(testing.NewListActionWithOptions(chainsResource, chainsKind, c.ns, opts), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 
 	label, _, _ := testing.ExtractFromListOptions(opts)
@@ -67,40 +69,43 @@ func (c *FakeChains) List(ctx context.Context, opts v1.ListOptions) (result *v1b
 // Watch returns a watch.Interface that watches the requested chains.
 func (c *FakeChains) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
-		InvokesWatch(testing.NewWatchAction(chainsResource, c.ns, opts))
+		InvokesWatch(testing.NewWatchActionWithOptions(chainsResource, c.ns, opts))
 
 }
 
 // Create takes the representation of a chain and creates it.  Returns the server's representation of the chain, and an error, if there is any.
 func (c *FakeChains) Create(ctx context.Context, chain *v1beta1.Chain, opts v1.CreateOptions) (result *v1beta1.Chain, err error) {
+	emptyResult := &v1beta1.Chain{}
 	obj, err := c.Fake.
-		Invokes(testing.NewCreateAction(chainsResource, c.ns, chain), &v1beta1.Chain{})
+		Invokes(testing.NewCreateActionWithOptions(chainsResource, c.ns, chain, opts), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.Chain), err
 }
 
 // Update takes the representation of a chain and updates it. Returns the server's representation of the chain, and an error, if there is any.
 func (c *FakeChains) Update(ctx context.Context, chain *v1beta1.Chain, opts v1.UpdateOptions) (result *v1beta1.Chain, err error) {
+	emptyResult := &v1beta1.Chain{}
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateAction(chainsResource, c.ns, chain), &v1beta1.Chain{})
+		Invokes(testing.NewUpdateActionWithOptions(chainsResource, c.ns, chain, opts), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.Chain), err
 }
 
 // UpdateStatus was generated because the type contains a Status member.
 // Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-func (c *FakeChains) UpdateStatus(ctx context.Context, chain *v1beta1.Chain, opts v1.UpdateOptions) (*v1beta1.Chain, error) {
+func (c *FakeChains) UpdateStatus(ctx context.Context, chain *v1beta1.Chain, opts v1.UpdateOptions) (result *v1beta1.Chain, err error) {
+	emptyResult := &v1beta1.Chain{}
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateSubresourceAction(chainsResource, "status", c.ns, chain), &v1beta1.Chain{})
+		Invokes(testing.NewUpdateSubresourceActionWithOptions(chainsResource, "status", c.ns, chain, opts), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.Chain), err
 }
@@ -115,7 +120,7 @@ func (c *FakeChains) Delete(ctx context.Context, name string, opts v1.DeleteOpti
 
 // DeleteCollection deletes a collection of objects.
 func (c *FakeChains) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewDeleteCollectionAction(chainsResource, c.ns, listOpts)
+	action := testing.NewDeleteCollectionActionWithOptions(chainsResource, c.ns, opts, listOpts)
 
 	_, err := c.Fake.Invokes(action, &v1beta1.ChainList{})
 	return err
@@ -123,11 +128,12 @@ func (c *FakeChains) DeleteCollection(ctx context.Context, opts v1.DeleteOptions
 
 // Patch applies the patch and returns the patched chain.
 func (c *FakeChains) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.Chain, err error) {
+	emptyResult := &v1beta1.Chain{}
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(chainsResource, c.ns, name, pt, data, subresources...), &v1beta1.Chain{})
+		Invokes(testing.NewPatchSubresourceActionWithOptions(chainsResource, c.ns, name, pt, data, opts, subresources...), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.Chain), err
 }
@@ -145,11 +151,12 @@ func (c *FakeChains) Apply(ctx context.Context, chain *appsv1beta1.ChainApplyCon
 	if name == nil {
 		return nil, fmt.Errorf("chain.Name must be provided to Apply")
 	}
+	emptyResult := &v1beta1.Chain{}
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(chainsResource, c.ns, *name, types.ApplyPatchType, data), &v1beta1.Chain{})
+		Invokes(testing.NewPatchSubresourceActionWithOptions(chainsResource, c.ns, *name, types.ApplyPatchType, data, opts.ToPatchOptions()), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.Chain), err
 }
@@ -168,11 +175,12 @@ func (c *FakeChains) ApplyStatus(ctx context.Context, chain *appsv1beta1.ChainAp
 	if name == nil {
 		return nil, fmt.Errorf("chain.Name must be provided to Apply")
 	}
+	emptyResult := &v1beta1.Chain{}
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(chainsResource, c.ns, *name, types.ApplyPatchType, data, "status"), &v1beta1.Chain{})
+		Invokes(testing.NewPatchSubresourceActionWithOptions(chainsResource, c.ns, *name, types.ApplyPatchType, data, opts.ToPatchOptions(), "status"), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.Chain), err
 }

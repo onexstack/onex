@@ -11,7 +11,7 @@ import (
 	v1 "k8s.io/api/flowcontrol/v1"
 )
 
-// PriorityLevelConfigurationSpecApplyConfiguration represents an declarative configuration of the PriorityLevelConfigurationSpec type for use
+// PriorityLevelConfigurationSpecApplyConfiguration represents a declarative configuration of the PriorityLevelConfigurationSpec type for use
 // with apply.
 type PriorityLevelConfigurationSpecApplyConfiguration struct {
 	Type    *v1.PriorityLevelEnablement                          `json:"type,omitempty"`
@@ -19,7 +19,7 @@ type PriorityLevelConfigurationSpecApplyConfiguration struct {
 	Exempt  *ExemptPriorityLevelConfigurationApplyConfiguration  `json:"exempt,omitempty"`
 }
 
-// PriorityLevelConfigurationSpecApplyConfiguration constructs an declarative configuration of the PriorityLevelConfigurationSpec type for use with
+// PriorityLevelConfigurationSpecApplyConfiguration constructs a declarative configuration of the PriorityLevelConfigurationSpec type for use with
 // apply.
 func PriorityLevelConfigurationSpec() *PriorityLevelConfigurationSpecApplyConfiguration {
 	return &PriorityLevelConfigurationSpecApplyConfiguration{}

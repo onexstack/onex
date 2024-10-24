@@ -7,7 +7,7 @@
 
 package v1
 
-// EnvVarApplyConfiguration represents an declarative configuration of the EnvVar type for use
+// EnvVarApplyConfiguration represents a declarative configuration of the EnvVar type for use
 // with apply.
 type EnvVarApplyConfiguration struct {
 	Name      *string                         `json:"name,omitempty"`
@@ -15,7 +15,7 @@ type EnvVarApplyConfiguration struct {
 	ValueFrom *EnvVarSourceApplyConfiguration `json:"valueFrom,omitempty"`
 }
 
-// EnvVarApplyConfiguration constructs an declarative configuration of the EnvVar type for use with
+// EnvVarApplyConfiguration constructs a declarative configuration of the EnvVar type for use with
 // apply.
 func EnvVar() *EnvVarApplyConfiguration {
 	return &EnvVarApplyConfiguration{}

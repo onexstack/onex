@@ -11,7 +11,7 @@ import (
 	v1 "k8s.io/api/core/v1"
 )
 
-// ScopedResourceSelectorRequirementApplyConfiguration represents an declarative configuration of the ScopedResourceSelectorRequirement type for use
+// ScopedResourceSelectorRequirementApplyConfiguration represents a declarative configuration of the ScopedResourceSelectorRequirement type for use
 // with apply.
 type ScopedResourceSelectorRequirementApplyConfiguration struct {
 	ScopeName *v1.ResourceQuotaScope    `json:"scopeName,omitempty"`
@@ -19,7 +19,7 @@ type ScopedResourceSelectorRequirementApplyConfiguration struct {
 	Values    []string                  `json:"values,omitempty"`
 }
 
-// ScopedResourceSelectorRequirementApplyConfiguration constructs an declarative configuration of the ScopedResourceSelectorRequirement type for use with
+// ScopedResourceSelectorRequirementApplyConfiguration constructs a declarative configuration of the ScopedResourceSelectorRequirement type for use with
 // apply.
 func ScopedResourceSelectorRequirement() *ScopedResourceSelectorRequirementApplyConfiguration {
 	return &ScopedResourceSelectorRequirementApplyConfiguration{}

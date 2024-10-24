@@ -16,7 +16,7 @@ import (
 	managedfields "k8s.io/apimachinery/pkg/util/managedfields"
 )
 
-// ReplicationControllerApplyConfiguration represents an declarative configuration of the ReplicationController type for use
+// ReplicationControllerApplyConfiguration represents a declarative configuration of the ReplicationController type for use
 // with apply.
 type ReplicationControllerApplyConfiguration struct {
 	v1.TypeMetaApplyConfiguration    `json:",inline"`
@@ -25,7 +25,7 @@ type ReplicationControllerApplyConfiguration struct {
 	Status                           *ReplicationControllerStatusApplyConfiguration `json:"status,omitempty"`
 }
 
-// ReplicationController constructs an declarative configuration of the ReplicationController type for use with
+// ReplicationController constructs a declarative configuration of the ReplicationController type for use with
 // apply.
 func ReplicationController(name, namespace string) *ReplicationControllerApplyConfiguration {
 	b := &ReplicationControllerApplyConfiguration{}
@@ -244,4 +244,10 @@ func (b *ReplicationControllerApplyConfiguration) WithSpec(value *ReplicationCon
 func (b *ReplicationControllerApplyConfiguration) WithStatus(value *ReplicationControllerStatusApplyConfiguration) *ReplicationControllerApplyConfiguration {
 	b.Status = value
 	return b
+}
+
+// GetName retrieves the value of the Name field in the declarative configuration.
+func (b *ReplicationControllerApplyConfiguration) GetName() *string {
+	b.ensureObjectMetaApplyConfigurationExists()
+	return b.Name
 }

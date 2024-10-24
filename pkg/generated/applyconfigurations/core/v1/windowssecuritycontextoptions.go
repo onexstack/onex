@@ -7,7 +7,7 @@
 
 package v1
 
-// WindowsSecurityContextOptionsApplyConfiguration represents an declarative configuration of the WindowsSecurityContextOptions type for use
+// WindowsSecurityContextOptionsApplyConfiguration represents a declarative configuration of the WindowsSecurityContextOptions type for use
 // with apply.
 type WindowsSecurityContextOptionsApplyConfiguration struct {
 	GMSACredentialSpecName *string `json:"gmsaCredentialSpecName,omitempty"`
@@ -16,7 +16,7 @@ type WindowsSecurityContextOptionsApplyConfiguration struct {
 	HostProcess            *bool   `json:"hostProcess,omitempty"`
 }
 
-// WindowsSecurityContextOptionsApplyConfiguration constructs an declarative configuration of the WindowsSecurityContextOptions type for use with
+// WindowsSecurityContextOptionsApplyConfiguration constructs a declarative configuration of the WindowsSecurityContextOptions type for use with
 // apply.
 func WindowsSecurityContextOptions() *WindowsSecurityContextOptionsApplyConfiguration {
 	return &WindowsSecurityContextOptionsApplyConfiguration{}

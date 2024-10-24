@@ -7,7 +7,7 @@
 
 package v1
 
-// NodeSpecApplyConfiguration represents an declarative configuration of the NodeSpec type for use
+// NodeSpecApplyConfiguration represents a declarative configuration of the NodeSpec type for use
 // with apply.
 type NodeSpecApplyConfiguration struct {
 	PodCIDR            *string                             `json:"podCIDR,omitempty"`
@@ -19,7 +19,7 @@ type NodeSpecApplyConfiguration struct {
 	DoNotUseExternalID *string                             `json:"externalID,omitempty"`
 }
 
-// NodeSpecApplyConfiguration constructs an declarative configuration of the NodeSpec type for use with
+// NodeSpecApplyConfiguration constructs a declarative configuration of the NodeSpec type for use with
 // apply.
 func NodeSpec() *NodeSpecApplyConfiguration {
 	return &NodeSpecApplyConfiguration{}

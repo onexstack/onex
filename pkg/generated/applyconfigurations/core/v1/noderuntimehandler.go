@@ -7,14 +7,14 @@
 
 package v1
 
-// NodeRuntimeHandlerApplyConfiguration represents an declarative configuration of the NodeRuntimeHandler type for use
+// NodeRuntimeHandlerApplyConfiguration represents a declarative configuration of the NodeRuntimeHandler type for use
 // with apply.
 type NodeRuntimeHandlerApplyConfiguration struct {
 	Name     *string                                       `json:"name,omitempty"`
 	Features *NodeRuntimeHandlerFeaturesApplyConfiguration `json:"features,omitempty"`
 }
 
-// NodeRuntimeHandlerApplyConfiguration constructs an declarative configuration of the NodeRuntimeHandler type for use with
+// NodeRuntimeHandlerApplyConfiguration constructs a declarative configuration of the NodeRuntimeHandler type for use with
 // apply.
 func NodeRuntimeHandler() *NodeRuntimeHandlerApplyConfiguration {
 	return &NodeRuntimeHandlerApplyConfiguration{}

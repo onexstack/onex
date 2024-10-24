@@ -16,7 +16,7 @@ import (
 	managedfields "k8s.io/apimachinery/pkg/util/managedfields"
 )
 
-// FlowSchemaApplyConfiguration represents an declarative configuration of the FlowSchema type for use
+// FlowSchemaApplyConfiguration represents a declarative configuration of the FlowSchema type for use
 // with apply.
 type FlowSchemaApplyConfiguration struct {
 	v1.TypeMetaApplyConfiguration    `json:",inline"`
@@ -25,7 +25,7 @@ type FlowSchemaApplyConfiguration struct {
 	Status                           *FlowSchemaStatusApplyConfiguration `json:"status,omitempty"`
 }
 
-// FlowSchema constructs an declarative configuration of the FlowSchema type for use with
+// FlowSchema constructs a declarative configuration of the FlowSchema type for use with
 // apply.
 func FlowSchema(name string) *FlowSchemaApplyConfiguration {
 	b := &FlowSchemaApplyConfiguration{}
@@ -242,4 +242,10 @@ func (b *FlowSchemaApplyConfiguration) WithSpec(value *FlowSchemaSpecApplyConfig
 func (b *FlowSchemaApplyConfiguration) WithStatus(value *FlowSchemaStatusApplyConfiguration) *FlowSchemaApplyConfiguration {
 	b.Status = value
 	return b
+}
+
+// GetName retrieves the value of the Name field in the declarative configuration.
+func (b *FlowSchemaApplyConfiguration) GetName() *string {
+	b.ensureObjectMetaApplyConfigurationExists()
+	return b.Name
 }

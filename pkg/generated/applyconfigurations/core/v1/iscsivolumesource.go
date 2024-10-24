@@ -7,7 +7,7 @@
 
 package v1
 
-// ISCSIVolumeSourceApplyConfiguration represents an declarative configuration of the ISCSIVolumeSource type for use
+// ISCSIVolumeSourceApplyConfiguration represents a declarative configuration of the ISCSIVolumeSource type for use
 // with apply.
 type ISCSIVolumeSourceApplyConfiguration struct {
 	TargetPortal      *string                                 `json:"targetPortal,omitempty"`
@@ -23,7 +23,7 @@ type ISCSIVolumeSourceApplyConfiguration struct {
 	InitiatorName     *string                                 `json:"initiatorName,omitempty"`
 }
 
-// ISCSIVolumeSourceApplyConfiguration constructs an declarative configuration of the ISCSIVolumeSource type for use with
+// ISCSIVolumeSourceApplyConfiguration constructs a declarative configuration of the ISCSIVolumeSource type for use with
 // apply.
 func ISCSIVolumeSource() *ISCSIVolumeSourceApplyConfiguration {
 	return &ISCSIVolumeSourceApplyConfiguration{}

@@ -17,10 +17,22 @@ import (
 
 type CoreV1Interface interface {
 	RESTClient() rest.Interface
+	ComponentStatusesGetter
 	ConfigMapsGetter
+	EndpointsGetter
 	EventsGetter
+	LimitRangesGetter
 	NamespacesGetter
+	NodesGetter
+	PersistentVolumesGetter
+	PersistentVolumeClaimsGetter
+	PodsGetter
+	PodTemplatesGetter
+	ReplicationControllersGetter
+	ResourceQuotasGetter
 	SecretsGetter
+	ServicesGetter
+	ServiceAccountsGetter
 }
 
 // CoreV1Client is used to interact with features provided by the  group.
@@ -28,20 +40,68 @@ type CoreV1Client struct {
 	restClient rest.Interface
 }
 
+func (c *CoreV1Client) ComponentStatuses() ComponentStatusInterface {
+	return newComponentStatuses(c)
+}
+
 func (c *CoreV1Client) ConfigMaps(namespace string) ConfigMapInterface {
 	return newConfigMaps(c, namespace)
+}
+
+func (c *CoreV1Client) Endpoints(namespace string) EndpointsInterface {
+	return newEndpoints(c, namespace)
 }
 
 func (c *CoreV1Client) Events(namespace string) EventInterface {
 	return newEvents(c, namespace)
 }
 
+func (c *CoreV1Client) LimitRanges(namespace string) LimitRangeInterface {
+	return newLimitRanges(c, namespace)
+}
+
 func (c *CoreV1Client) Namespaces() NamespaceInterface {
 	return newNamespaces(c)
 }
 
+func (c *CoreV1Client) Nodes() NodeInterface {
+	return newNodes(c)
+}
+
+func (c *CoreV1Client) PersistentVolumes() PersistentVolumeInterface {
+	return newPersistentVolumes(c)
+}
+
+func (c *CoreV1Client) PersistentVolumeClaims(namespace string) PersistentVolumeClaimInterface {
+	return newPersistentVolumeClaims(c, namespace)
+}
+
+func (c *CoreV1Client) Pods(namespace string) PodInterface {
+	return newPods(c, namespace)
+}
+
+func (c *CoreV1Client) PodTemplates(namespace string) PodTemplateInterface {
+	return newPodTemplates(c, namespace)
+}
+
+func (c *CoreV1Client) ReplicationControllers(namespace string) ReplicationControllerInterface {
+	return newReplicationControllers(c, namespace)
+}
+
+func (c *CoreV1Client) ResourceQuotas(namespace string) ResourceQuotaInterface {
+	return newResourceQuotas(c, namespace)
+}
+
 func (c *CoreV1Client) Secrets(namespace string) SecretInterface {
 	return newSecrets(c, namespace)
+}
+
+func (c *CoreV1Client) Services(namespace string) ServiceInterface {
+	return newServices(c, namespace)
+}
+
+func (c *CoreV1Client) ServiceAccounts(namespace string) ServiceAccountInterface {
+	return newServiceAccounts(c, namespace)
 }
 
 // NewForConfig creates a new CoreV1Client for the given config.

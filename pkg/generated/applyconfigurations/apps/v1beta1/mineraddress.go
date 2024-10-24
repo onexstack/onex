@@ -11,14 +11,14 @@ import (
 	v1beta1 "github.com/superproj/onex/pkg/apis/apps/v1beta1"
 )
 
-// MinerAddressApplyConfiguration represents an declarative configuration of the MinerAddress type for use
+// MinerAddressApplyConfiguration represents a declarative configuration of the MinerAddress type for use
 // with apply.
 type MinerAddressApplyConfiguration struct {
 	Type    *v1beta1.MinerAddressType `json:"type,omitempty"`
 	Address *string                   `json:"address,omitempty"`
 }
 
-// MinerAddressApplyConfiguration constructs an declarative configuration of the MinerAddress type for use with
+// MinerAddressApplyConfiguration constructs a declarative configuration of the MinerAddress type for use with
 // apply.
 func MinerAddress() *MinerAddressApplyConfiguration {
 	return &MinerAddressApplyConfiguration{}

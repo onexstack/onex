@@ -7,7 +7,7 @@
 
 package v1
 
-// ScaleIOPersistentVolumeSourceApplyConfiguration represents an declarative configuration of the ScaleIOPersistentVolumeSource type for use
+// ScaleIOPersistentVolumeSourceApplyConfiguration represents a declarative configuration of the ScaleIOPersistentVolumeSource type for use
 // with apply.
 type ScaleIOPersistentVolumeSourceApplyConfiguration struct {
 	Gateway          *string                            `json:"gateway,omitempty"`
@@ -22,7 +22,7 @@ type ScaleIOPersistentVolumeSourceApplyConfiguration struct {
 	ReadOnly         *bool                              `json:"readOnly,omitempty"`
 }
 
-// ScaleIOPersistentVolumeSourceApplyConfiguration constructs an declarative configuration of the ScaleIOPersistentVolumeSource type for use with
+// ScaleIOPersistentVolumeSourceApplyConfiguration constructs a declarative configuration of the ScaleIOPersistentVolumeSource type for use with
 // apply.
 func ScaleIOPersistentVolumeSource() *ScaleIOPersistentVolumeSourceApplyConfiguration {
 	return &ScaleIOPersistentVolumeSourceApplyConfiguration{}

@@ -51,7 +51,7 @@ _install.code-generator: $(addprefix _install.code-generator., $(CODE_GENERATOR_
 
 .PHONY: _install.code-generator.%
 _install.code-generator.%: ## Install specified code-generator tool.
-	@echo "===========> Installing code-generator: $*"
+	@echo "===========> Installing code-generator tool: $*"
 	$(GO) install k8s.io/code-generator/cmd/$*@$(CODE_GENERATOR_VERSION)
 
 .PHONY: _install.swagger

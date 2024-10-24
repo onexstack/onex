@@ -7,7 +7,7 @@
 
 package v1
 
-// LifecycleHandlerApplyConfiguration represents an declarative configuration of the LifecycleHandler type for use
+// LifecycleHandlerApplyConfiguration represents a declarative configuration of the LifecycleHandler type for use
 // with apply.
 type LifecycleHandlerApplyConfiguration struct {
 	Exec      *ExecActionApplyConfiguration      `json:"exec,omitempty"`
@@ -16,7 +16,7 @@ type LifecycleHandlerApplyConfiguration struct {
 	Sleep     *SleepActionApplyConfiguration     `json:"sleep,omitempty"`
 }
 
-// LifecycleHandlerApplyConfiguration constructs an declarative configuration of the LifecycleHandler type for use with
+// LifecycleHandlerApplyConfiguration constructs a declarative configuration of the LifecycleHandler type for use with
 // apply.
 func LifecycleHandler() *LifecycleHandlerApplyConfiguration {
 	return &LifecycleHandlerApplyConfiguration{}
