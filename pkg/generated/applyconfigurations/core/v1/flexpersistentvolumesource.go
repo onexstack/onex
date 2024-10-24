@@ -7,7 +7,7 @@
 
 package v1
 
-// FlexPersistentVolumeSourceApplyConfiguration represents an declarative configuration of the FlexPersistentVolumeSource type for use
+// FlexPersistentVolumeSourceApplyConfiguration represents a declarative configuration of the FlexPersistentVolumeSource type for use
 // with apply.
 type FlexPersistentVolumeSourceApplyConfiguration struct {
 	Driver    *string                            `json:"driver,omitempty"`
@@ -17,7 +17,7 @@ type FlexPersistentVolumeSourceApplyConfiguration struct {
 	Options   map[string]string                  `json:"options,omitempty"`
 }
 
-// FlexPersistentVolumeSourceApplyConfiguration constructs an declarative configuration of the FlexPersistentVolumeSource type for use with
+// FlexPersistentVolumeSourceApplyConfiguration constructs a declarative configuration of the FlexPersistentVolumeSource type for use with
 // apply.
 func FlexPersistentVolumeSource() *FlexPersistentVolumeSourceApplyConfiguration {
 	return &FlexPersistentVolumeSourceApplyConfiguration{}

@@ -7,14 +7,14 @@
 
 package v1
 
-// PodAntiAffinityApplyConfiguration represents an declarative configuration of the PodAntiAffinity type for use
+// PodAntiAffinityApplyConfiguration represents a declarative configuration of the PodAntiAffinity type for use
 // with apply.
 type PodAntiAffinityApplyConfiguration struct {
 	RequiredDuringSchedulingIgnoredDuringExecution  []PodAffinityTermApplyConfiguration         `json:"requiredDuringSchedulingIgnoredDuringExecution,omitempty"`
 	PreferredDuringSchedulingIgnoredDuringExecution []WeightedPodAffinityTermApplyConfiguration `json:"preferredDuringSchedulingIgnoredDuringExecution,omitempty"`
 }
 
-// PodAntiAffinityApplyConfiguration constructs an declarative configuration of the PodAntiAffinity type for use with
+// PodAntiAffinityApplyConfiguration constructs a declarative configuration of the PodAntiAffinity type for use with
 // apply.
 func PodAntiAffinity() *PodAntiAffinityApplyConfiguration {
 	return &PodAntiAffinityApplyConfiguration{}

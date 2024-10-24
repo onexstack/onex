@@ -16,7 +16,7 @@ import (
 	managedfields "k8s.io/apimachinery/pkg/util/managedfields"
 )
 
-// NodeApplyConfiguration represents an declarative configuration of the Node type for use
+// NodeApplyConfiguration represents a declarative configuration of the Node type for use
 // with apply.
 type NodeApplyConfiguration struct {
 	v1.TypeMetaApplyConfiguration    `json:",inline"`
@@ -25,7 +25,7 @@ type NodeApplyConfiguration struct {
 	Status                           *NodeStatusApplyConfiguration `json:"status,omitempty"`
 }
 
-// Node constructs an declarative configuration of the Node type for use with
+// Node constructs a declarative configuration of the Node type for use with
 // apply.
 func Node(name string) *NodeApplyConfiguration {
 	b := &NodeApplyConfiguration{}
@@ -242,4 +242,10 @@ func (b *NodeApplyConfiguration) WithSpec(value *NodeSpecApplyConfiguration) *No
 func (b *NodeApplyConfiguration) WithStatus(value *NodeStatusApplyConfiguration) *NodeApplyConfiguration {
 	b.Status = value
 	return b
+}
+
+// GetName retrieves the value of the Name field in the declarative configuration.
+func (b *NodeApplyConfiguration) GetName() *string {
+	b.ensureObjectMetaApplyConfigurationExists()
+	return b.Name
 }

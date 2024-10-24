@@ -8,13 +8,13 @@
 package v1beta1
 
 import (
-	"context"
+	context "context"
 	time "time"
 
-	appsv1beta1 "github.com/superproj/onex/pkg/apis/apps/v1beta1"
+	apisappsv1beta1 "github.com/superproj/onex/pkg/apis/apps/v1beta1"
 	versioned "github.com/superproj/onex/pkg/generated/clientset/versioned"
 	internalinterfaces "github.com/superproj/onex/pkg/generated/informers/internalinterfaces"
-	v1beta1 "github.com/superproj/onex/pkg/generated/listers/apps/v1beta1"
+	appsv1beta1 "github.com/superproj/onex/pkg/generated/listers/apps/v1beta1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"
@@ -25,7 +25,7 @@ import (
 // Miners.
 type MinerInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1beta1.MinerLister
+	Lister() appsv1beta1.MinerLister
 }
 
 type minerInformer struct {
@@ -60,7 +60,7 @@ func NewFilteredMinerInformer(client versioned.Interface, namespace string, resy
 				return client.AppsV1beta1().Miners(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&appsv1beta1.Miner{},
+		&apisappsv1beta1.Miner{},
 		resyncPeriod,
 		indexers,
 	)
@@ -71,9 +71,9 @@ func (f *minerInformer) defaultInformer(client versioned.Interface, resyncPeriod
 }
 
 func (f *minerInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&appsv1beta1.Miner{}, f.defaultInformer)
+	return f.factory.InformerFor(&apisappsv1beta1.Miner{}, f.defaultInformer)
 }
 
-func (f *minerInformer) Lister() v1beta1.MinerLister {
-	return v1beta1.NewMinerLister(f.Informer().GetIndexer())
+func (f *minerInformer) Lister() appsv1beta1.MinerLister {
+	return appsv1beta1.NewMinerLister(f.Informer().GetIndexer())
 }

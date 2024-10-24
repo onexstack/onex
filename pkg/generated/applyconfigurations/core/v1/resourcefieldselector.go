@@ -11,7 +11,7 @@ import (
 	resource "k8s.io/apimachinery/pkg/api/resource"
 )
 
-// ResourceFieldSelectorApplyConfiguration represents an declarative configuration of the ResourceFieldSelector type for use
+// ResourceFieldSelectorApplyConfiguration represents a declarative configuration of the ResourceFieldSelector type for use
 // with apply.
 type ResourceFieldSelectorApplyConfiguration struct {
 	ContainerName *string            `json:"containerName,omitempty"`
@@ -19,7 +19,7 @@ type ResourceFieldSelectorApplyConfiguration struct {
 	Divisor       *resource.Quantity `json:"divisor,omitempty"`
 }
 
-// ResourceFieldSelectorApplyConfiguration constructs an declarative configuration of the ResourceFieldSelector type for use with
+// ResourceFieldSelectorApplyConfiguration constructs a declarative configuration of the ResourceFieldSelector type for use with
 // apply.
 func ResourceFieldSelector() *ResourceFieldSelectorApplyConfiguration {
 	return &ResourceFieldSelectorApplyConfiguration{}

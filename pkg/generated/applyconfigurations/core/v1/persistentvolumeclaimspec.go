@@ -12,7 +12,7 @@ import (
 	v1 "k8s.io/api/core/v1"
 )
 
-// PersistentVolumeClaimSpecApplyConfiguration represents an declarative configuration of the PersistentVolumeClaimSpec type for use
+// PersistentVolumeClaimSpecApplyConfiguration represents a declarative configuration of the PersistentVolumeClaimSpec type for use
 // with apply.
 type PersistentVolumeClaimSpecApplyConfiguration struct {
 	AccessModes               []v1.PersistentVolumeAccessMode               `json:"accessModes,omitempty"`
@@ -26,7 +26,7 @@ type PersistentVolumeClaimSpecApplyConfiguration struct {
 	VolumeAttributesClassName *string                                       `json:"volumeAttributesClassName,omitempty"`
 }
 
-// PersistentVolumeClaimSpecApplyConfiguration constructs an declarative configuration of the PersistentVolumeClaimSpec type for use with
+// PersistentVolumeClaimSpecApplyConfiguration constructs a declarative configuration of the PersistentVolumeClaimSpec type for use with
 // apply.
 func PersistentVolumeClaimSpec() *PersistentVolumeClaimSpecApplyConfiguration {
 	return &PersistentVolumeClaimSpecApplyConfiguration{}

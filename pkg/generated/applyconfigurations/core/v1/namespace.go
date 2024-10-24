@@ -16,7 +16,7 @@ import (
 	managedfields "k8s.io/apimachinery/pkg/util/managedfields"
 )
 
-// NamespaceApplyConfiguration represents an declarative configuration of the Namespace type for use
+// NamespaceApplyConfiguration represents a declarative configuration of the Namespace type for use
 // with apply.
 type NamespaceApplyConfiguration struct {
 	v1.TypeMetaApplyConfiguration    `json:",inline"`
@@ -25,7 +25,7 @@ type NamespaceApplyConfiguration struct {
 	Status                           *NamespaceStatusApplyConfiguration `json:"status,omitempty"`
 }
 
-// Namespace constructs an declarative configuration of the Namespace type for use with
+// Namespace constructs a declarative configuration of the Namespace type for use with
 // apply.
 func Namespace(name string) *NamespaceApplyConfiguration {
 	b := &NamespaceApplyConfiguration{}
@@ -242,4 +242,10 @@ func (b *NamespaceApplyConfiguration) WithSpec(value *NamespaceSpecApplyConfigur
 func (b *NamespaceApplyConfiguration) WithStatus(value *NamespaceStatusApplyConfiguration) *NamespaceApplyConfiguration {
 	b.Status = value
 	return b
+}
+
+// GetName retrieves the value of the Name field in the declarative configuration.
+func (b *NamespaceApplyConfiguration) GetName() *string {
+	b.ensureObjectMetaApplyConfigurationExists()
+	return b.Name
 }

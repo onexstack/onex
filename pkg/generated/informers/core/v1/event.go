@@ -8,13 +8,13 @@
 package v1
 
 import (
-	"context"
+	context "context"
 	time "time"
 
 	versioned "github.com/superproj/onex/pkg/generated/clientset/versioned"
 	internalinterfaces "github.com/superproj/onex/pkg/generated/informers/internalinterfaces"
-	v1 "github.com/superproj/onex/pkg/generated/listers/core/v1"
-	corev1 "k8s.io/api/core/v1"
+	corev1 "github.com/superproj/onex/pkg/generated/listers/core/v1"
+	apicorev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"
@@ -25,7 +25,7 @@ import (
 // Events.
 type EventInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1.EventLister
+	Lister() corev1.EventLister
 }
 
 type eventInformer struct {
@@ -60,7 +60,7 @@ func NewFilteredEventInformer(client versioned.Interface, namespace string, resy
 				return client.CoreV1().Events(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&corev1.Event{},
+		&apicorev1.Event{},
 		resyncPeriod,
 		indexers,
 	)
@@ -71,9 +71,9 @@ func (f *eventInformer) defaultInformer(client versioned.Interface, resyncPeriod
 }
 
 func (f *eventInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&corev1.Event{}, f.defaultInformer)
+	return f.factory.InformerFor(&apicorev1.Event{}, f.defaultInformer)
 }
 
-func (f *eventInformer) Lister() v1.EventLister {
-	return v1.NewEventLister(f.Informer().GetIndexer())
+func (f *eventInformer) Lister() corev1.EventLister {
+	return corev1.NewEventLister(f.Informer().GetIndexer())
 }

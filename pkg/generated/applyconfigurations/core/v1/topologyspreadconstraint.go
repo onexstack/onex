@@ -12,7 +12,7 @@ import (
 	v1 "k8s.io/api/core/v1"
 )
 
-// TopologySpreadConstraintApplyConfiguration represents an declarative configuration of the TopologySpreadConstraint type for use
+// TopologySpreadConstraintApplyConfiguration represents a declarative configuration of the TopologySpreadConstraint type for use
 // with apply.
 type TopologySpreadConstraintApplyConfiguration struct {
 	MaxSkew            *int32                                  `json:"maxSkew,omitempty"`
@@ -25,7 +25,7 @@ type TopologySpreadConstraintApplyConfiguration struct {
 	MatchLabelKeys     []string                                `json:"matchLabelKeys,omitempty"`
 }
 
-// TopologySpreadConstraintApplyConfiguration constructs an declarative configuration of the TopologySpreadConstraint type for use with
+// TopologySpreadConstraintApplyConfiguration constructs a declarative configuration of the TopologySpreadConstraint type for use with
 // apply.
 func TopologySpreadConstraint() *TopologySpreadConstraintApplyConfiguration {
 	return &TopologySpreadConstraintApplyConfiguration{}

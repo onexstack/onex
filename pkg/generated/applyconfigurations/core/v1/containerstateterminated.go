@@ -11,7 +11,7 @@ import (
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// ContainerStateTerminatedApplyConfiguration represents an declarative configuration of the ContainerStateTerminated type for use
+// ContainerStateTerminatedApplyConfiguration represents a declarative configuration of the ContainerStateTerminated type for use
 // with apply.
 type ContainerStateTerminatedApplyConfiguration struct {
 	ExitCode    *int32   `json:"exitCode,omitempty"`
@@ -23,7 +23,7 @@ type ContainerStateTerminatedApplyConfiguration struct {
 	ContainerID *string  `json:"containerID,omitempty"`
 }
 
-// ContainerStateTerminatedApplyConfiguration constructs an declarative configuration of the ContainerStateTerminated type for use with
+// ContainerStateTerminatedApplyConfiguration constructs a declarative configuration of the ContainerStateTerminated type for use with
 // apply.
 func ContainerStateTerminated() *ContainerStateTerminatedApplyConfiguration {
 	return &ContainerStateTerminatedApplyConfiguration{}

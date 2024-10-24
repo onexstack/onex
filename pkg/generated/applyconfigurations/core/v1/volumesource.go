@@ -7,7 +7,7 @@
 
 package v1
 
-// VolumeSourceApplyConfiguration represents an declarative configuration of the VolumeSource type for use
+// VolumeSourceApplyConfiguration represents a declarative configuration of the VolumeSource type for use
 // with apply.
 type VolumeSourceApplyConfiguration struct {
 	HostPath              *HostPathVolumeSourceApplyConfiguration              `json:"hostPath,omitempty"`
@@ -39,9 +39,10 @@ type VolumeSourceApplyConfiguration struct {
 	StorageOS             *StorageOSVolumeSourceApplyConfiguration             `json:"storageos,omitempty"`
 	CSI                   *CSIVolumeSourceApplyConfiguration                   `json:"csi,omitempty"`
 	Ephemeral             *EphemeralVolumeSourceApplyConfiguration             `json:"ephemeral,omitempty"`
+	Image                 *ImageVolumeSourceApplyConfiguration                 `json:"image,omitempty"`
 }
 
-// VolumeSourceApplyConfiguration constructs an declarative configuration of the VolumeSource type for use with
+// VolumeSourceApplyConfiguration constructs a declarative configuration of the VolumeSource type for use with
 // apply.
 func VolumeSource() *VolumeSourceApplyConfiguration {
 	return &VolumeSourceApplyConfiguration{}
@@ -276,5 +277,13 @@ func (b *VolumeSourceApplyConfiguration) WithCSI(value *CSIVolumeSourceApplyConf
 // If called multiple times, the Ephemeral field is set to the value of the last call.
 func (b *VolumeSourceApplyConfiguration) WithEphemeral(value *EphemeralVolumeSourceApplyConfiguration) *VolumeSourceApplyConfiguration {
 	b.Ephemeral = value
+	return b
+}
+
+// WithImage sets the Image field in the declarative configuration to the given value
+// and returns the receiver, so that objects can be built by chaining "With" function invocations.
+// If called multiple times, the Image field is set to the value of the last call.
+func (b *VolumeSourceApplyConfiguration) WithImage(value *ImageVolumeSourceApplyConfiguration) *VolumeSourceApplyConfiguration {
+	b.Image = value
 	return b
 }

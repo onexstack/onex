@@ -7,7 +7,7 @@
 
 package v1
 
-// EndpointSubsetApplyConfiguration represents an declarative configuration of the EndpointSubset type for use
+// EndpointSubsetApplyConfiguration represents a declarative configuration of the EndpointSubset type for use
 // with apply.
 type EndpointSubsetApplyConfiguration struct {
 	Addresses         []EndpointAddressApplyConfiguration `json:"addresses,omitempty"`
@@ -15,7 +15,7 @@ type EndpointSubsetApplyConfiguration struct {
 	Ports             []EndpointPortApplyConfiguration    `json:"ports,omitempty"`
 }
 
-// EndpointSubsetApplyConfiguration constructs an declarative configuration of the EndpointSubset type for use with
+// EndpointSubsetApplyConfiguration constructs a declarative configuration of the EndpointSubset type for use with
 // apply.
 func EndpointSubset() *EndpointSubsetApplyConfiguration {
 	return &EndpointSubsetApplyConfiguration{}

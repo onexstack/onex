@@ -11,7 +11,7 @@ import (
 	types "k8s.io/apimachinery/pkg/types"
 )
 
-// ConfigMapNodeConfigSourceApplyConfiguration represents an declarative configuration of the ConfigMapNodeConfigSource type for use
+// ConfigMapNodeConfigSourceApplyConfiguration represents a declarative configuration of the ConfigMapNodeConfigSource type for use
 // with apply.
 type ConfigMapNodeConfigSourceApplyConfiguration struct {
 	Namespace        *string    `json:"namespace,omitempty"`
@@ -21,7 +21,7 @@ type ConfigMapNodeConfigSourceApplyConfiguration struct {
 	KubeletConfigKey *string    `json:"kubeletConfigKey,omitempty"`
 }
 
-// ConfigMapNodeConfigSourceApplyConfiguration constructs an declarative configuration of the ConfigMapNodeConfigSource type for use with
+// ConfigMapNodeConfigSourceApplyConfiguration constructs a declarative configuration of the ConfigMapNodeConfigSource type for use with
 // apply.
 func ConfigMapNodeConfigSource() *ConfigMapNodeConfigSourceApplyConfiguration {
 	return &ConfigMapNodeConfigSourceApplyConfiguration{}

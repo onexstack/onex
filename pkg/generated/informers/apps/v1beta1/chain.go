@@ -8,13 +8,13 @@
 package v1beta1
 
 import (
-	"context"
+	context "context"
 	time "time"
 
-	appsv1beta1 "github.com/superproj/onex/pkg/apis/apps/v1beta1"
+	apisappsv1beta1 "github.com/superproj/onex/pkg/apis/apps/v1beta1"
 	versioned "github.com/superproj/onex/pkg/generated/clientset/versioned"
 	internalinterfaces "github.com/superproj/onex/pkg/generated/informers/internalinterfaces"
-	v1beta1 "github.com/superproj/onex/pkg/generated/listers/apps/v1beta1"
+	appsv1beta1 "github.com/superproj/onex/pkg/generated/listers/apps/v1beta1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"
@@ -25,7 +25,7 @@ import (
 // Chains.
 type ChainInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1beta1.ChainLister
+	Lister() appsv1beta1.ChainLister
 }
 
 type chainInformer struct {
@@ -60,7 +60,7 @@ func NewFilteredChainInformer(client versioned.Interface, namespace string, resy
 				return client.AppsV1beta1().Chains(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&appsv1beta1.Chain{},
+		&apisappsv1beta1.Chain{},
 		resyncPeriod,
 		indexers,
 	)
@@ -71,9 +71,9 @@ func (f *chainInformer) defaultInformer(client versioned.Interface, resyncPeriod
 }
 
 func (f *chainInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&appsv1beta1.Chain{}, f.defaultInformer)
+	return f.factory.InformerFor(&apisappsv1beta1.Chain{}, f.defaultInformer)
 }
 
-func (f *chainInformer) Lister() v1beta1.ChainLister {
-	return v1beta1.NewChainLister(f.Informer().GetIndexer())
+func (f *chainInformer) Lister() appsv1beta1.ChainLister {
+	return appsv1beta1.NewChainLister(f.Informer().GetIndexer())
 }

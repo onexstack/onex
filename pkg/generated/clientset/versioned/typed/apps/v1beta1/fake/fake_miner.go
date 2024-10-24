@@ -33,22 +33,24 @@ var minersKind = v1beta1.SchemeGroupVersion.WithKind("Miner")
 
 // Get takes name of the miner, and returns the corresponding miner object, and an error if there is any.
 func (c *FakeMiners) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1beta1.Miner, err error) {
+	emptyResult := &v1beta1.Miner{}
 	obj, err := c.Fake.
-		Invokes(testing.NewGetAction(minersResource, c.ns, name), &v1beta1.Miner{})
+		Invokes(testing.NewGetActionWithOptions(minersResource, c.ns, name, options), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.Miner), err
 }
 
 // List takes label and field selectors, and returns the list of Miners that match those selectors.
 func (c *FakeMiners) List(ctx context.Context, opts v1.ListOptions) (result *v1beta1.MinerList, err error) {
+	emptyResult := &v1beta1.MinerList{}
 	obj, err := c.Fake.
-		Invokes(testing.NewListAction(minersResource, minersKind, c.ns, opts), &v1beta1.MinerList{})
+		Invokes(testing.NewListActionWithOptions(minersResource, minersKind, c.ns, opts), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 
 	label, _, _ := testing.ExtractFromListOptions(opts)
@@ -67,40 +69,43 @@ func (c *FakeMiners) List(ctx context.Context, opts v1.ListOptions) (result *v1b
 // Watch returns a watch.Interface that watches the requested miners.
 func (c *FakeMiners) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
-		InvokesWatch(testing.NewWatchAction(minersResource, c.ns, opts))
+		InvokesWatch(testing.NewWatchActionWithOptions(minersResource, c.ns, opts))
 
 }
 
 // Create takes the representation of a miner and creates it.  Returns the server's representation of the miner, and an error, if there is any.
 func (c *FakeMiners) Create(ctx context.Context, miner *v1beta1.Miner, opts v1.CreateOptions) (result *v1beta1.Miner, err error) {
+	emptyResult := &v1beta1.Miner{}
 	obj, err := c.Fake.
-		Invokes(testing.NewCreateAction(minersResource, c.ns, miner), &v1beta1.Miner{})
+		Invokes(testing.NewCreateActionWithOptions(minersResource, c.ns, miner, opts), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.Miner), err
 }
 
 // Update takes the representation of a miner and updates it. Returns the server's representation of the miner, and an error, if there is any.
 func (c *FakeMiners) Update(ctx context.Context, miner *v1beta1.Miner, opts v1.UpdateOptions) (result *v1beta1.Miner, err error) {
+	emptyResult := &v1beta1.Miner{}
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateAction(minersResource, c.ns, miner), &v1beta1.Miner{})
+		Invokes(testing.NewUpdateActionWithOptions(minersResource, c.ns, miner, opts), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.Miner), err
 }
 
 // UpdateStatus was generated because the type contains a Status member.
 // Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-func (c *FakeMiners) UpdateStatus(ctx context.Context, miner *v1beta1.Miner, opts v1.UpdateOptions) (*v1beta1.Miner, error) {
+func (c *FakeMiners) UpdateStatus(ctx context.Context, miner *v1beta1.Miner, opts v1.UpdateOptions) (result *v1beta1.Miner, err error) {
+	emptyResult := &v1beta1.Miner{}
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateSubresourceAction(minersResource, "status", c.ns, miner), &v1beta1.Miner{})
+		Invokes(testing.NewUpdateSubresourceActionWithOptions(minersResource, "status", c.ns, miner, opts), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.Miner), err
 }
@@ -115,7 +120,7 @@ func (c *FakeMiners) Delete(ctx context.Context, name string, opts v1.DeleteOpti
 
 // DeleteCollection deletes a collection of objects.
 func (c *FakeMiners) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewDeleteCollectionAction(minersResource, c.ns, listOpts)
+	action := testing.NewDeleteCollectionActionWithOptions(minersResource, c.ns, opts, listOpts)
 
 	_, err := c.Fake.Invokes(action, &v1beta1.MinerList{})
 	return err
@@ -123,11 +128,12 @@ func (c *FakeMiners) DeleteCollection(ctx context.Context, opts v1.DeleteOptions
 
 // Patch applies the patch and returns the patched miner.
 func (c *FakeMiners) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.Miner, err error) {
+	emptyResult := &v1beta1.Miner{}
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(minersResource, c.ns, name, pt, data, subresources...), &v1beta1.Miner{})
+		Invokes(testing.NewPatchSubresourceActionWithOptions(minersResource, c.ns, name, pt, data, opts, subresources...), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.Miner), err
 }
@@ -145,11 +151,12 @@ func (c *FakeMiners) Apply(ctx context.Context, miner *appsv1beta1.MinerApplyCon
 	if name == nil {
 		return nil, fmt.Errorf("miner.Name must be provided to Apply")
 	}
+	emptyResult := &v1beta1.Miner{}
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(minersResource, c.ns, *name, types.ApplyPatchType, data), &v1beta1.Miner{})
+		Invokes(testing.NewPatchSubresourceActionWithOptions(minersResource, c.ns, *name, types.ApplyPatchType, data, opts.ToPatchOptions()), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.Miner), err
 }
@@ -168,11 +175,12 @@ func (c *FakeMiners) ApplyStatus(ctx context.Context, miner *appsv1beta1.MinerAp
 	if name == nil {
 		return nil, fmt.Errorf("miner.Name must be provided to Apply")
 	}
+	emptyResult := &v1beta1.Miner{}
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(minersResource, c.ns, *name, types.ApplyPatchType, data, "status"), &v1beta1.Miner{})
+		Invokes(testing.NewPatchSubresourceActionWithOptions(minersResource, c.ns, *name, types.ApplyPatchType, data, opts.ToPatchOptions(), "status"), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.Miner), err
 }

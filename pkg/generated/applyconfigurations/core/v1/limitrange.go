@@ -16,7 +16,7 @@ import (
 	managedfields "k8s.io/apimachinery/pkg/util/managedfields"
 )
 
-// LimitRangeApplyConfiguration represents an declarative configuration of the LimitRange type for use
+// LimitRangeApplyConfiguration represents a declarative configuration of the LimitRange type for use
 // with apply.
 type LimitRangeApplyConfiguration struct {
 	v1.TypeMetaApplyConfiguration    `json:",inline"`
@@ -24,7 +24,7 @@ type LimitRangeApplyConfiguration struct {
 	Spec                             *LimitRangeSpecApplyConfiguration `json:"spec,omitempty"`
 }
 
-// LimitRange constructs an declarative configuration of the LimitRange type for use with
+// LimitRange constructs a declarative configuration of the LimitRange type for use with
 // apply.
 func LimitRange(name, namespace string) *LimitRangeApplyConfiguration {
 	b := &LimitRangeApplyConfiguration{}
@@ -235,4 +235,10 @@ func (b *LimitRangeApplyConfiguration) ensureObjectMetaApplyConfigurationExists(
 func (b *LimitRangeApplyConfiguration) WithSpec(value *LimitRangeSpecApplyConfiguration) *LimitRangeApplyConfiguration {
 	b.Spec = value
 	return b
+}
+
+// GetName retrieves the value of the Name field in the declarative configuration.
+func (b *LimitRangeApplyConfiguration) GetName() *string {
+	b.ensureObjectMetaApplyConfigurationExists()
+	return b.Name
 }

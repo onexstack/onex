@@ -7,14 +7,14 @@
 
 package v1
 
-// WebhookConversionApplyConfiguration represents an declarative configuration of the WebhookConversion type for use
+// WebhookConversionApplyConfiguration represents a declarative configuration of the WebhookConversion type for use
 // with apply.
 type WebhookConversionApplyConfiguration struct {
 	ClientConfig             *WebhookClientConfigApplyConfiguration `json:"clientConfig,omitempty"`
 	ConversionReviewVersions []string                               `json:"conversionReviewVersions,omitempty"`
 }
 
-// WebhookConversionApplyConfiguration constructs an declarative configuration of the WebhookConversion type for use with
+// WebhookConversionApplyConfiguration constructs a declarative configuration of the WebhookConversion type for use with
 // apply.
 func WebhookConversion() *WebhookConversionApplyConfiguration {
 	return &WebhookConversionApplyConfiguration{}

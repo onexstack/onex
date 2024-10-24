@@ -7,13 +7,13 @@
 
 package v1
 
-// GroupSubjectApplyConfiguration represents an declarative configuration of the GroupSubject type for use
+// GroupSubjectApplyConfiguration represents a declarative configuration of the GroupSubject type for use
 // with apply.
 type GroupSubjectApplyConfiguration struct {
 	Name *string `json:"name,omitempty"`
 }
 
-// GroupSubjectApplyConfiguration constructs an declarative configuration of the GroupSubject type for use with
+// GroupSubjectApplyConfiguration constructs a declarative configuration of the GroupSubject type for use with
 // apply.
 func GroupSubject() *GroupSubjectApplyConfiguration {
 	return &GroupSubjectApplyConfiguration{}

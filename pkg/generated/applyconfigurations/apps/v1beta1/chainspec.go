@@ -7,7 +7,7 @@
 
 package v1beta1
 
-// ChainSpecApplyConfiguration represents an declarative configuration of the ChainSpec type for use
+// ChainSpecApplyConfiguration represents a declarative configuration of the ChainSpec type for use
 // with apply.
 type ChainSpecApplyConfiguration struct {
 	DisplayName            *string `json:"displayName,omitempty"`
@@ -17,7 +17,7 @@ type ChainSpecApplyConfiguration struct {
 	BootstrapAccount       *string `json:"bootstrapAccount,omitempty"`
 }
 
-// ChainSpecApplyConfiguration constructs an declarative configuration of the ChainSpec type for use with
+// ChainSpecApplyConfiguration constructs a declarative configuration of the ChainSpec type for use with
 // apply.
 func ChainSpec() *ChainSpecApplyConfiguration {
 	return &ChainSpecApplyConfiguration{}

@@ -7,14 +7,14 @@
 
 package v1
 
-// ConfigMapEnvSourceApplyConfiguration represents an declarative configuration of the ConfigMapEnvSource type for use
+// ConfigMapEnvSourceApplyConfiguration represents a declarative configuration of the ConfigMapEnvSource type for use
 // with apply.
 type ConfigMapEnvSourceApplyConfiguration struct {
 	LocalObjectReferenceApplyConfiguration `json:",inline"`
 	Optional                               *bool `json:"optional,omitempty"`
 }
 
-// ConfigMapEnvSourceApplyConfiguration constructs an declarative configuration of the ConfigMapEnvSource type for use with
+// ConfigMapEnvSourceApplyConfiguration constructs a declarative configuration of the ConfigMapEnvSource type for use with
 // apply.
 func ConfigMapEnvSource() *ConfigMapEnvSourceApplyConfiguration {
 	return &ConfigMapEnvSourceApplyConfiguration{}

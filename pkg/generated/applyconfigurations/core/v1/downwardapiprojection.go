@@ -7,13 +7,13 @@
 
 package v1
 
-// DownwardAPIProjectionApplyConfiguration represents an declarative configuration of the DownwardAPIProjection type for use
+// DownwardAPIProjectionApplyConfiguration represents a declarative configuration of the DownwardAPIProjection type for use
 // with apply.
 type DownwardAPIProjectionApplyConfiguration struct {
 	Items []DownwardAPIVolumeFileApplyConfiguration `json:"items,omitempty"`
 }
 
-// DownwardAPIProjectionApplyConfiguration constructs an declarative configuration of the DownwardAPIProjection type for use with
+// DownwardAPIProjectionApplyConfiguration constructs a declarative configuration of the DownwardAPIProjection type for use with
 // apply.
 func DownwardAPIProjection() *DownwardAPIProjectionApplyConfiguration {
 	return &DownwardAPIProjectionApplyConfiguration{}

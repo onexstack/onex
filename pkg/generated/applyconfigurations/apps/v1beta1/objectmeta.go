@@ -7,14 +7,14 @@
 
 package v1beta1
 
-// ObjectMetaApplyConfiguration represents an declarative configuration of the ObjectMeta type for use
+// ObjectMetaApplyConfiguration represents a declarative configuration of the ObjectMeta type for use
 // with apply.
 type ObjectMetaApplyConfiguration struct {
 	Labels      map[string]string `json:"labels,omitempty"`
 	Annotations map[string]string `json:"annotations,omitempty"`
 }
 
-// ObjectMetaApplyConfiguration constructs an declarative configuration of the ObjectMeta type for use with
+// ObjectMetaApplyConfiguration constructs a declarative configuration of the ObjectMeta type for use with
 // apply.
 func ObjectMeta() *ObjectMetaApplyConfiguration {
 	return &ObjectMetaApplyConfiguration{}

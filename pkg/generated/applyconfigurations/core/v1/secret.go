@@ -16,7 +16,7 @@ import (
 	managedfields "k8s.io/apimachinery/pkg/util/managedfields"
 )
 
-// SecretApplyConfiguration represents an declarative configuration of the Secret type for use
+// SecretApplyConfiguration represents a declarative configuration of the Secret type for use
 // with apply.
 type SecretApplyConfiguration struct {
 	v1.TypeMetaApplyConfiguration    `json:",inline"`
@@ -27,7 +27,7 @@ type SecretApplyConfiguration struct {
 	Type                             *corev1.SecretType `json:"type,omitempty"`
 }
 
-// Secret constructs an declarative configuration of the Secret type for use with
+// Secret constructs a declarative configuration of the Secret type for use with
 // apply.
 func Secret(name, namespace string) *SecretApplyConfiguration {
 	b := &SecretApplyConfiguration{}
@@ -274,4 +274,10 @@ func (b *SecretApplyConfiguration) WithStringData(entries map[string]string) *Se
 func (b *SecretApplyConfiguration) WithType(value corev1.SecretType) *SecretApplyConfiguration {
 	b.Type = &value
 	return b
+}
+
+// GetName retrieves the value of the Name field in the declarative configuration.
+func (b *SecretApplyConfiguration) GetName() *string {
+	b.ensureObjectMetaApplyConfigurationExists()
+	return b.Name
 }

@@ -37,6 +37,7 @@ API_KNOWN_VIOLATIONS_DIR="${API_KNOWN_VIOLATIONS_DIR:-"${ONEX_ROOT}/api/api-rule
 OUT_DIR="_output"
 BOILERPLATE_FILENAME="scripts/boilerplate/boilerplate.go.txt"
 ONEX_MODULE_NAME="github.com/superproj/onex"
+#PLURAL_EXCEPTIONS=""
 PLURAL_EXCEPTIONS="Endpoints:Endpoints,ResourceClaimParameters:ResourceClaimParameters,ResourceClassParameters:ResourceClassParameters"
 EXTRA_GENERATE_PKG=(k8s.io/api/core/v1 k8s.io/api/coordination/v1 k8s.io/api/flowcontrol/v1 k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1)
 OUTPUT_PKG="github.com/superproj/onex/pkg/generated"
@@ -101,7 +102,7 @@ fi
 #
 # Some of the later codegens depend on the results of this, so it needs to come
 # first in the case of regenerating everything.
-function codegen::protobuf() {
+function todo::codegen::protobuf() {
     # NOTE: All output from this script needs to be copied back to the calling
     # source tree.  This is managed in onex::build::copy_output in build/common.sh.
     # If the output set is changed update that function.
@@ -126,6 +127,12 @@ function codegen::protobuf() {
     # NOTICE: must include k8s.io/api/core/v1, otherwise it will generate the message ObjectReference
     # in pkg/apis/apps/v1beta1/generated.proto, which will cause a compilation error when compiling
     # onex-apiserver: undefined: ObjectReference.
+    # but include k8s.io/api/core/v1 will cause remove xx/pkg/mod/k8s.io/api@v0.31.2/core/v1/generated.proto: permission denied error.
+    # workaround:
+    #   $ sudo chmod -R 777 xx/pkg/mod/k8s.io/
+    #   $ ./scripts/update-codegen.sh protobuf
+    #   $ rm -rf m -rf /data00/.cache/golang/pkg/mod/k8s.io/api@v0.31.2
+    #   $ go get k8s.io/api@v0.31.2
     apis+=("${EXTRA_GENERATE_PKG}")
 
     # Comment this out, otherwise it will delete some useful protobuf files.
@@ -157,8 +164,9 @@ function codegen::protobuf() {
 #               scheme
 function codegen::deepcopy() {
     # Build the tool.
-    GOPROXY=off go install \
-        k8s.io/code-generator/cmd/deepcopy-gen
+    if ! command -v deepcopy-gen &> /dev/null ; then
+        make -C ${ONEX_ROOT} tools.install.code-generator.deepcopy-gen
+    fi
 
     # The result file, in each pkg, of deep-copy generation.
     local output_file="${GENERATED_FILE_PREFIX}deepcopy.go"
@@ -285,8 +293,9 @@ function codegen::swagger() {
 #     // +k8s:prerelease-lifecycle-gen=true
 function codegen::prerelease() {
     # Build the tool.
-    GOPROXY=off go install \
-        k8s.io/code-generator/cmd/prerelease-lifecycle-gen
+    if ! command -v prerelease-lifecycle-gen &> /dev/null ; then
+        make -C ${ONEX_ROOT} tools.install.code-generator.prerelease-lifecycle-gen
+    fi
 
     # The result file, in each pkg, of prerelease-lifecycle generation.
     local output_file="${GENERATED_FILE_PREFIX}prerelease-lifecycle.go"
@@ -349,8 +358,9 @@ function codegen::prerelease() {
 #                  for having a defaulter generated
 function codegen::defaults() {
     # Build the tool.
-    GOPROXY=off go install \
-        k8s.io/code-generator/cmd/defaulter-gen
+    if ! command -v defaulter-gen &> /dev/null ; then
+        make -C ${ONEX_ROOT} tools.install.code-generator.defaulter-gen
+    fi
 
     # The result file, in each pkg, of defaulter generation.
     local output_file="${GENERATED_FILE_PREFIX}defaults.go"
@@ -418,8 +428,9 @@ function codegen::defaults() {
 # IDL.
 function codegen::conversions() {
     # Build the tool.
-    GOPROXY=off go install \
-        k8s.io/code-generator/cmd/conversion-gen
+    if ! command -v conversion-gen &> /dev/null ; then
+        make -C ${ONEX_ROOT} tools.install.code-generator.conversion-gen
+    fi
 
     # The result file, in each pkg, of conversion generation.
     local output_file="${GENERATED_FILE_PREFIX}conversion.go"
@@ -496,8 +507,9 @@ function k8s_tag_files_except() {
 #     // +k8s:openapi-gen=true
 function todo::codegen::openapi() {
     # Build the tool.
-    GOPROXY=off go install \
-        k8s.io/kube-openapi/cmd/openapi-gen
+    if ! command -v openapi-gen &> /dev/null ; then
+        make -C ${ONEX_ROOT} tools.install.code-generator.openapi-gen
+    fi
 
     # The result file, in each pkg, of open-api generation.
     local output_file="${GENERATED_FILE_PREFIX}openapi.go"
@@ -581,7 +593,7 @@ function codegen::openapi() {
     # Build the tool.
     # Please make sure to use openapi-gen version v0.29.3 here.
     if ! command -v openapi-gen &> /dev/null ; then
-        GOPROXY=off go install k8s.io/code-generator/cmd/openapi-gen@v0.29.3
+        go install k8s.io/code-generator/cmd/openapi-gen@v0.29.3
     fi
 
     # The result file, in each pkg, of open-api generation.
@@ -652,9 +664,10 @@ function codegen::openapi() {
 }
 
 function codegen::applyconfigs() {
-    GOPROXY=off go install \
-        k8s.io/kubernetes/pkg/generated/openapi/cmd/models-schema \
-        k8s.io/code-generator/cmd/applyconfiguration-gen
+    if ! command -v applyconfiguration-gen &> /dev/null ; then
+        GOPROXY=off go install k8s.io/kubernetes/pkg/generated/openapi/cmd/models-schema
+        make -C ${ONEX_ROOT} tools.install.code-generator.applyconfiguration-gen
+    fi
 
     local ext_apis=()
     onex::util::read-array ext_apis < <(
@@ -695,8 +708,9 @@ function codegen::applyconfigs() {
 }
 
 function codegen::clients() {
-    GOPROXY=off go install \
-        k8s.io/code-generator/cmd/client-gen
+    if ! command -v client-gen &> /dev/null ; then
+        make -C ${ONEX_ROOT} tools.install.code-generator.client-gen
+    fi
 
     IFS=" " read -r -a group_versions <<< "${ONEX_AVAILABLE_GROUP_VERSIONS}"
     local gv_dirs=()
@@ -755,8 +769,8 @@ function codegen::clients() {
 }
 
 function codegen::listers() {
-    if ! command -v gen-swaggertype-docs &> /dev/null ; then
-        GOPROXY=off go install k8s.io/code-generator/cmd/lister-gen
+    if ! command -v lister-gen &> /dev/null ; then
+        make -C ${ONEX_ROOT} tools.install.code-generator.client-gen
     fi
 
     local ext_apis=()
@@ -798,8 +812,8 @@ function codegen::listers() {
 }
 
 function codegen::informers() {
-    if ! command -v gen-swaggertype-docs &> /dev/null ; then
-        GOPROXY=off go install k8s.io/code-generator/cmd/informer-gen
+    if ! command -v informer-gen &> /dev/null ; then
+        make -C ${ONEX_ROOT} tools.install.code-generator.informer-gen
     fi
 
     local ext_apis=()

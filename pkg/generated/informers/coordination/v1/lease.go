@@ -8,13 +8,13 @@
 package v1
 
 import (
-	"context"
+	context "context"
 	time "time"
 
 	versioned "github.com/superproj/onex/pkg/generated/clientset/versioned"
 	internalinterfaces "github.com/superproj/onex/pkg/generated/informers/internalinterfaces"
-	v1 "github.com/superproj/onex/pkg/generated/listers/coordination/v1"
-	coordinationv1 "k8s.io/api/coordination/v1"
+	coordinationv1 "github.com/superproj/onex/pkg/generated/listers/coordination/v1"
+	apicoordinationv1 "k8s.io/api/coordination/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"
@@ -25,7 +25,7 @@ import (
 // Leases.
 type LeaseInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1.LeaseLister
+	Lister() coordinationv1.LeaseLister
 }
 
 type leaseInformer struct {
@@ -60,7 +60,7 @@ func NewFilteredLeaseInformer(client versioned.Interface, namespace string, resy
 				return client.CoordinationV1().Leases(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&coordinationv1.Lease{},
+		&apicoordinationv1.Lease{},
 		resyncPeriod,
 		indexers,
 	)
@@ -71,9 +71,9 @@ func (f *leaseInformer) defaultInformer(client versioned.Interface, resyncPeriod
 }
 
 func (f *leaseInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&coordinationv1.Lease{}, f.defaultInformer)
+	return f.factory.InformerFor(&apicoordinationv1.Lease{}, f.defaultInformer)
 }
 
-func (f *leaseInformer) Lister() v1.LeaseLister {
-	return v1.NewLeaseLister(f.Informer().GetIndexer())
+func (f *leaseInformer) Lister() coordinationv1.LeaseLister {
+	return coordinationv1.NewLeaseLister(f.Informer().GetIndexer())
 }

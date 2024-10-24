@@ -11,7 +11,7 @@ import (
 	v1 "github.com/superproj/onex/pkg/generated/applyconfigurations/meta/v1"
 )
 
-// MinerSetSpecApplyConfiguration represents an declarative configuration of the MinerSetSpec type for use
+// MinerSetSpecApplyConfiguration represents a declarative configuration of the MinerSetSpec type for use
 // with apply.
 type MinerSetSpecApplyConfiguration struct {
 	Replicas                *int32                               `json:"replicas,omitempty"`
@@ -23,7 +23,7 @@ type MinerSetSpecApplyConfiguration struct {
 	ProgressDeadlineSeconds *int32                               `json:"progressDeadlineSeconds,omitempty"`
 }
 
-// MinerSetSpecApplyConfiguration constructs an declarative configuration of the MinerSetSpec type for use with
+// MinerSetSpecApplyConfiguration constructs a declarative configuration of the MinerSetSpec type for use with
 // apply.
 func MinerSetSpec() *MinerSetSpecApplyConfiguration {
 	return &MinerSetSpecApplyConfiguration{}

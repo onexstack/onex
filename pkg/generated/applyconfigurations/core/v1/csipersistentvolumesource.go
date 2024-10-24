@@ -7,7 +7,7 @@
 
 package v1
 
-// CSIPersistentVolumeSourceApplyConfiguration represents an declarative configuration of the CSIPersistentVolumeSource type for use
+// CSIPersistentVolumeSourceApplyConfiguration represents a declarative configuration of the CSIPersistentVolumeSource type for use
 // with apply.
 type CSIPersistentVolumeSourceApplyConfiguration struct {
 	Driver                     *string                            `json:"driver,omitempty"`
@@ -22,7 +22,7 @@ type CSIPersistentVolumeSourceApplyConfiguration struct {
 	NodeExpandSecretRef        *SecretReferenceApplyConfiguration `json:"nodeExpandSecretRef,omitempty"`
 }
 
-// CSIPersistentVolumeSourceApplyConfiguration constructs an declarative configuration of the CSIPersistentVolumeSource type for use with
+// CSIPersistentVolumeSourceApplyConfiguration constructs a declarative configuration of the CSIPersistentVolumeSource type for use with
 // apply.
 func CSIPersistentVolumeSource() *CSIPersistentVolumeSourceApplyConfiguration {
 	return &CSIPersistentVolumeSourceApplyConfiguration{}

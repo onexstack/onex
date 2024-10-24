@@ -8,13 +8,13 @@
 package v1
 
 import (
-	"context"
+	context "context"
 	time "time"
 
 	versioned "github.com/superproj/onex/pkg/generated/clientset/versioned"
 	internalinterfaces "github.com/superproj/onex/pkg/generated/informers/internalinterfaces"
-	v1 "github.com/superproj/onex/pkg/generated/listers/core/v1"
-	corev1 "k8s.io/api/core/v1"
+	corev1 "github.com/superproj/onex/pkg/generated/listers/core/v1"
+	apicorev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"
@@ -25,7 +25,7 @@ import (
 // ConfigMaps.
 type ConfigMapInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1.ConfigMapLister
+	Lister() corev1.ConfigMapLister
 }
 
 type configMapInformer struct {
@@ -60,7 +60,7 @@ func NewFilteredConfigMapInformer(client versioned.Interface, namespace string, 
 				return client.CoreV1().ConfigMaps(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&corev1.ConfigMap{},
+		&apicorev1.ConfigMap{},
 		resyncPeriod,
 		indexers,
 	)
@@ -71,9 +71,9 @@ func (f *configMapInformer) defaultInformer(client versioned.Interface, resyncPe
 }
 
 func (f *configMapInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&corev1.ConfigMap{}, f.defaultInformer)
+	return f.factory.InformerFor(&apicorev1.ConfigMap{}, f.defaultInformer)
 }
 
-func (f *configMapInformer) Lister() v1.ConfigMapLister {
-	return v1.NewConfigMapLister(f.Informer().GetIndexer())
+func (f *configMapInformer) Lister() corev1.ConfigMapLister {
+	return corev1.NewConfigMapLister(f.Informer().GetIndexer())
 }

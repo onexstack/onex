@@ -7,7 +7,7 @@
 
 package v1
 
-// ResourcePolicyRuleApplyConfiguration represents an declarative configuration of the ResourcePolicyRule type for use
+// ResourcePolicyRuleApplyConfiguration represents a declarative configuration of the ResourcePolicyRule type for use
 // with apply.
 type ResourcePolicyRuleApplyConfiguration struct {
 	Verbs        []string `json:"verbs,omitempty"`
@@ -17,7 +17,7 @@ type ResourcePolicyRuleApplyConfiguration struct {
 	Namespaces   []string `json:"namespaces,omitempty"`
 }
 
-// ResourcePolicyRuleApplyConfiguration constructs an declarative configuration of the ResourcePolicyRule type for use with
+// ResourcePolicyRuleApplyConfiguration constructs a declarative configuration of the ResourcePolicyRule type for use with
 // apply.
 func ResourcePolicyRule() *ResourcePolicyRuleApplyConfiguration {
 	return &ResourcePolicyRuleApplyConfiguration{}

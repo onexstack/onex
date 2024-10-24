@@ -16,7 +16,7 @@ import (
 	managedfields "k8s.io/apimachinery/pkg/util/managedfields"
 )
 
-// EndpointsApplyConfiguration represents an declarative configuration of the Endpoints type for use
+// EndpointsApplyConfiguration represents a declarative configuration of the Endpoints type for use
 // with apply.
 type EndpointsApplyConfiguration struct {
 	v1.TypeMetaApplyConfiguration    `json:",inline"`
@@ -24,7 +24,7 @@ type EndpointsApplyConfiguration struct {
 	Subsets                          []EndpointSubsetApplyConfiguration `json:"subsets,omitempty"`
 }
 
-// Endpoints constructs an declarative configuration of the Endpoints type for use with
+// Endpoints constructs a declarative configuration of the Endpoints type for use with
 // apply.
 func Endpoints(name, namespace string) *EndpointsApplyConfiguration {
 	b := &EndpointsApplyConfiguration{}
@@ -240,4 +240,10 @@ func (b *EndpointsApplyConfiguration) WithSubsets(values ...*EndpointSubsetApply
 		b.Subsets = append(b.Subsets, *values[i])
 	}
 	return b
+}
+
+// GetName retrieves the value of the Name field in the declarative configuration.
+func (b *EndpointsApplyConfiguration) GetName() *string {
+	b.ensureObjectMetaApplyConfigurationExists()
+	return b.Name
 }

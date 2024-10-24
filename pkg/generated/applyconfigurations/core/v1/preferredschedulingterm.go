@@ -7,14 +7,14 @@
 
 package v1
 
-// PreferredSchedulingTermApplyConfiguration represents an declarative configuration of the PreferredSchedulingTerm type for use
+// PreferredSchedulingTermApplyConfiguration represents a declarative configuration of the PreferredSchedulingTerm type for use
 // with apply.
 type PreferredSchedulingTermApplyConfiguration struct {
 	Weight     *int32                              `json:"weight,omitempty"`
 	Preference *NodeSelectorTermApplyConfiguration `json:"preference,omitempty"`
 }
 
-// PreferredSchedulingTermApplyConfiguration constructs an declarative configuration of the PreferredSchedulingTerm type for use with
+// PreferredSchedulingTermApplyConfiguration constructs a declarative configuration of the PreferredSchedulingTerm type for use with
 // apply.
 func PreferredSchedulingTerm() *PreferredSchedulingTermApplyConfiguration {
 	return &PreferredSchedulingTermApplyConfiguration{}

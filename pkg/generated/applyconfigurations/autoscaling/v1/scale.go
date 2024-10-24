@@ -13,7 +13,7 @@ import (
 	types "k8s.io/apimachinery/pkg/types"
 )
 
-// ScaleApplyConfiguration represents an declarative configuration of the Scale type for use
+// ScaleApplyConfiguration represents a declarative configuration of the Scale type for use
 // with apply.
 type ScaleApplyConfiguration struct {
 	v1.TypeMetaApplyConfiguration    `json:",inline"`
@@ -22,7 +22,7 @@ type ScaleApplyConfiguration struct {
 	Status                           *ScaleStatusApplyConfiguration `json:"status,omitempty"`
 }
 
-// ScaleApplyConfiguration constructs an declarative configuration of the Scale type for use with
+// ScaleApplyConfiguration constructs a declarative configuration of the Scale type for use with
 // apply.
 func Scale() *ScaleApplyConfiguration {
 	b := &ScaleApplyConfiguration{}
@@ -203,4 +203,10 @@ func (b *ScaleApplyConfiguration) WithSpec(value *ScaleSpecApplyConfiguration) *
 func (b *ScaleApplyConfiguration) WithStatus(value *ScaleStatusApplyConfiguration) *ScaleApplyConfiguration {
 	b.Status = value
 	return b
+}
+
+// GetName retrieves the value of the Name field in the declarative configuration.
+func (b *ScaleApplyConfiguration) GetName() *string {
+	b.ensureObjectMetaApplyConfigurationExists()
+	return b.Name
 }

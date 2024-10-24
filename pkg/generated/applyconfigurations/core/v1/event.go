@@ -16,7 +16,7 @@ import (
 	managedfields "k8s.io/apimachinery/pkg/util/managedfields"
 )
 
-// EventApplyConfiguration represents an declarative configuration of the Event type for use
+// EventApplyConfiguration represents a declarative configuration of the Event type for use
 // with apply.
 type EventApplyConfiguration struct {
 	v1.TypeMetaApplyConfiguration    `json:",inline"`
@@ -37,7 +37,7 @@ type EventApplyConfiguration struct {
 	ReportingInstance                *string                            `json:"reportingInstance,omitempty"`
 }
 
-// Event constructs an declarative configuration of the Event type for use with
+// Event constructs a declarative configuration of the Event type for use with
 // apply.
 func Event(name, namespace string) *EventApplyConfiguration {
 	b := &EventApplyConfiguration{}
@@ -352,4 +352,10 @@ func (b *EventApplyConfiguration) WithReportingController(value string) *EventAp
 func (b *EventApplyConfiguration) WithReportingInstance(value string) *EventApplyConfiguration {
 	b.ReportingInstance = &value
 	return b
+}
+
+// GetName retrieves the value of the Name field in the declarative configuration.
+func (b *EventApplyConfiguration) GetName() *string {
+	b.ensureObjectMetaApplyConfigurationExists()
+	return b.Name
 }

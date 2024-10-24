@@ -11,13 +11,13 @@ import (
 	v1beta1 "github.com/superproj/onex/pkg/apis/apps/v1beta1"
 )
 
-// ChargeRequestStatusApplyConfiguration represents an declarative configuration of the ChargeRequestStatus type for use
+// ChargeRequestStatusApplyConfiguration represents a declarative configuration of the ChargeRequestStatus type for use
 // with apply.
 type ChargeRequestStatusApplyConfiguration struct {
 	Conditions *v1beta1.Conditions `json:"conditions,omitempty"`
 }
 
-// ChargeRequestStatusApplyConfiguration constructs an declarative configuration of the ChargeRequestStatus type for use with
+// ChargeRequestStatusApplyConfiguration constructs a declarative configuration of the ChargeRequestStatus type for use with
 // apply.
 func ChargeRequestStatus() *ChargeRequestStatusApplyConfiguration {
 	return &ChargeRequestStatusApplyConfiguration{}

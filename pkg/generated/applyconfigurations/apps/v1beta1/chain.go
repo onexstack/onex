@@ -16,7 +16,7 @@ import (
 	managedfields "k8s.io/apimachinery/pkg/util/managedfields"
 )
 
-// ChainApplyConfiguration represents an declarative configuration of the Chain type for use
+// ChainApplyConfiguration represents a declarative configuration of the Chain type for use
 // with apply.
 type ChainApplyConfiguration struct {
 	v1.TypeMetaApplyConfiguration    `json:",inline"`
@@ -25,7 +25,7 @@ type ChainApplyConfiguration struct {
 	Status                           *ChainStatusApplyConfiguration `json:"status,omitempty"`
 }
 
-// Chain constructs an declarative configuration of the Chain type for use with
+// Chain constructs a declarative configuration of the Chain type for use with
 // apply.
 func Chain(name, namespace string) *ChainApplyConfiguration {
 	b := &ChainApplyConfiguration{}
@@ -244,4 +244,10 @@ func (b *ChainApplyConfiguration) WithSpec(value *ChainSpecApplyConfiguration) *
 func (b *ChainApplyConfiguration) WithStatus(value *ChainStatusApplyConfiguration) *ChainApplyConfiguration {
 	b.Status = value
 	return b
+}
+
+// GetName retrieves the value of the Name field in the declarative configuration.
+func (b *ChainApplyConfiguration) GetName() *string {
+	b.ensureObjectMetaApplyConfigurationExists()
+	return b.Name
 }

@@ -7,14 +7,14 @@
 
 package v1
 
-// PodResourceClaimStatusApplyConfiguration represents an declarative configuration of the PodResourceClaimStatus type for use
+// PodResourceClaimStatusApplyConfiguration represents a declarative configuration of the PodResourceClaimStatus type for use
 // with apply.
 type PodResourceClaimStatusApplyConfiguration struct {
 	Name              *string `json:"name,omitempty"`
 	ResourceClaimName *string `json:"resourceClaimName,omitempty"`
 }
 
-// PodResourceClaimStatusApplyConfiguration constructs an declarative configuration of the PodResourceClaimStatus type for use with
+// PodResourceClaimStatusApplyConfiguration constructs a declarative configuration of the PodResourceClaimStatus type for use with
 // apply.
 func PodResourceClaimStatus() *PodResourceClaimStatusApplyConfiguration {
 	return &PodResourceClaimStatusApplyConfiguration{}

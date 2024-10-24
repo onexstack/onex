@@ -33,22 +33,24 @@ var chargerequestsKind = v1beta1.SchemeGroupVersion.WithKind("ChargeRequest")
 
 // Get takes name of the chargeRequest, and returns the corresponding chargeRequest object, and an error if there is any.
 func (c *FakeChargeRequests) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1beta1.ChargeRequest, err error) {
+	emptyResult := &v1beta1.ChargeRequest{}
 	obj, err := c.Fake.
-		Invokes(testing.NewGetAction(chargerequestsResource, c.ns, name), &v1beta1.ChargeRequest{})
+		Invokes(testing.NewGetActionWithOptions(chargerequestsResource, c.ns, name, options), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.ChargeRequest), err
 }
 
 // List takes label and field selectors, and returns the list of ChargeRequests that match those selectors.
 func (c *FakeChargeRequests) List(ctx context.Context, opts v1.ListOptions) (result *v1beta1.ChargeRequestList, err error) {
+	emptyResult := &v1beta1.ChargeRequestList{}
 	obj, err := c.Fake.
-		Invokes(testing.NewListAction(chargerequestsResource, chargerequestsKind, c.ns, opts), &v1beta1.ChargeRequestList{})
+		Invokes(testing.NewListActionWithOptions(chargerequestsResource, chargerequestsKind, c.ns, opts), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 
 	label, _, _ := testing.ExtractFromListOptions(opts)
@@ -67,40 +69,43 @@ func (c *FakeChargeRequests) List(ctx context.Context, opts v1.ListOptions) (res
 // Watch returns a watch.Interface that watches the requested chargeRequests.
 func (c *FakeChargeRequests) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
-		InvokesWatch(testing.NewWatchAction(chargerequestsResource, c.ns, opts))
+		InvokesWatch(testing.NewWatchActionWithOptions(chargerequestsResource, c.ns, opts))
 
 }
 
 // Create takes the representation of a chargeRequest and creates it.  Returns the server's representation of the chargeRequest, and an error, if there is any.
 func (c *FakeChargeRequests) Create(ctx context.Context, chargeRequest *v1beta1.ChargeRequest, opts v1.CreateOptions) (result *v1beta1.ChargeRequest, err error) {
+	emptyResult := &v1beta1.ChargeRequest{}
 	obj, err := c.Fake.
-		Invokes(testing.NewCreateAction(chargerequestsResource, c.ns, chargeRequest), &v1beta1.ChargeRequest{})
+		Invokes(testing.NewCreateActionWithOptions(chargerequestsResource, c.ns, chargeRequest, opts), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.ChargeRequest), err
 }
 
 // Update takes the representation of a chargeRequest and updates it. Returns the server's representation of the chargeRequest, and an error, if there is any.
 func (c *FakeChargeRequests) Update(ctx context.Context, chargeRequest *v1beta1.ChargeRequest, opts v1.UpdateOptions) (result *v1beta1.ChargeRequest, err error) {
+	emptyResult := &v1beta1.ChargeRequest{}
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateAction(chargerequestsResource, c.ns, chargeRequest), &v1beta1.ChargeRequest{})
+		Invokes(testing.NewUpdateActionWithOptions(chargerequestsResource, c.ns, chargeRequest, opts), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.ChargeRequest), err
 }
 
 // UpdateStatus was generated because the type contains a Status member.
 // Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-func (c *FakeChargeRequests) UpdateStatus(ctx context.Context, chargeRequest *v1beta1.ChargeRequest, opts v1.UpdateOptions) (*v1beta1.ChargeRequest, error) {
+func (c *FakeChargeRequests) UpdateStatus(ctx context.Context, chargeRequest *v1beta1.ChargeRequest, opts v1.UpdateOptions) (result *v1beta1.ChargeRequest, err error) {
+	emptyResult := &v1beta1.ChargeRequest{}
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateSubresourceAction(chargerequestsResource, "status", c.ns, chargeRequest), &v1beta1.ChargeRequest{})
+		Invokes(testing.NewUpdateSubresourceActionWithOptions(chargerequestsResource, "status", c.ns, chargeRequest, opts), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.ChargeRequest), err
 }
@@ -115,7 +120,7 @@ func (c *FakeChargeRequests) Delete(ctx context.Context, name string, opts v1.De
 
 // DeleteCollection deletes a collection of objects.
 func (c *FakeChargeRequests) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewDeleteCollectionAction(chargerequestsResource, c.ns, listOpts)
+	action := testing.NewDeleteCollectionActionWithOptions(chargerequestsResource, c.ns, opts, listOpts)
 
 	_, err := c.Fake.Invokes(action, &v1beta1.ChargeRequestList{})
 	return err
@@ -123,11 +128,12 @@ func (c *FakeChargeRequests) DeleteCollection(ctx context.Context, opts v1.Delet
 
 // Patch applies the patch and returns the patched chargeRequest.
 func (c *FakeChargeRequests) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.ChargeRequest, err error) {
+	emptyResult := &v1beta1.ChargeRequest{}
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(chargerequestsResource, c.ns, name, pt, data, subresources...), &v1beta1.ChargeRequest{})
+		Invokes(testing.NewPatchSubresourceActionWithOptions(chargerequestsResource, c.ns, name, pt, data, opts, subresources...), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.ChargeRequest), err
 }
@@ -145,11 +151,12 @@ func (c *FakeChargeRequests) Apply(ctx context.Context, chargeRequest *appsv1bet
 	if name == nil {
 		return nil, fmt.Errorf("chargeRequest.Name must be provided to Apply")
 	}
+	emptyResult := &v1beta1.ChargeRequest{}
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(chargerequestsResource, c.ns, *name, types.ApplyPatchType, data), &v1beta1.ChargeRequest{})
+		Invokes(testing.NewPatchSubresourceActionWithOptions(chargerequestsResource, c.ns, *name, types.ApplyPatchType, data, opts.ToPatchOptions()), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.ChargeRequest), err
 }
@@ -168,11 +175,12 @@ func (c *FakeChargeRequests) ApplyStatus(ctx context.Context, chargeRequest *app
 	if name == nil {
 		return nil, fmt.Errorf("chargeRequest.Name must be provided to Apply")
 	}
+	emptyResult := &v1beta1.ChargeRequest{}
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(chargerequestsResource, c.ns, *name, types.ApplyPatchType, data, "status"), &v1beta1.ChargeRequest{})
+		Invokes(testing.NewPatchSubresourceActionWithOptions(chargerequestsResource, c.ns, *name, types.ApplyPatchType, data, opts.ToPatchOptions(), "status"), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.ChargeRequest), err
 }

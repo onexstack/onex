@@ -16,7 +16,7 @@ import (
 	managedfields "k8s.io/apimachinery/pkg/util/managedfields"
 )
 
-// ServiceApplyConfiguration represents an declarative configuration of the Service type for use
+// ServiceApplyConfiguration represents a declarative configuration of the Service type for use
 // with apply.
 type ServiceApplyConfiguration struct {
 	v1.TypeMetaApplyConfiguration    `json:",inline"`
@@ -25,7 +25,7 @@ type ServiceApplyConfiguration struct {
 	Status                           *ServiceStatusApplyConfiguration `json:"status,omitempty"`
 }
 
-// Service constructs an declarative configuration of the Service type for use with
+// Service constructs a declarative configuration of the Service type for use with
 // apply.
 func Service(name, namespace string) *ServiceApplyConfiguration {
 	b := &ServiceApplyConfiguration{}
@@ -244,4 +244,10 @@ func (b *ServiceApplyConfiguration) WithSpec(value *ServiceSpecApplyConfiguratio
 func (b *ServiceApplyConfiguration) WithStatus(value *ServiceStatusApplyConfiguration) *ServiceApplyConfiguration {
 	b.Status = value
 	return b
+}
+
+// GetName retrieves the value of the Name field in the declarative configuration.
+func (b *ServiceApplyConfiguration) GetName() *string {
+	b.ensureObjectMetaApplyConfigurationExists()
+	return b.Name
 }

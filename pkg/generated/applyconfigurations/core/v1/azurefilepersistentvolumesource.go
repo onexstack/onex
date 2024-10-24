@@ -7,7 +7,7 @@
 
 package v1
 
-// AzureFilePersistentVolumeSourceApplyConfiguration represents an declarative configuration of the AzureFilePersistentVolumeSource type for use
+// AzureFilePersistentVolumeSourceApplyConfiguration represents a declarative configuration of the AzureFilePersistentVolumeSource type for use
 // with apply.
 type AzureFilePersistentVolumeSourceApplyConfiguration struct {
 	SecretName      *string `json:"secretName,omitempty"`
@@ -16,7 +16,7 @@ type AzureFilePersistentVolumeSourceApplyConfiguration struct {
 	SecretNamespace *string `json:"secretNamespace,omitempty"`
 }
 
-// AzureFilePersistentVolumeSourceApplyConfiguration constructs an declarative configuration of the AzureFilePersistentVolumeSource type for use with
+// AzureFilePersistentVolumeSourceApplyConfiguration constructs a declarative configuration of the AzureFilePersistentVolumeSource type for use with
 // apply.
 func AzureFilePersistentVolumeSource() *AzureFilePersistentVolumeSourceApplyConfiguration {
 	return &AzureFilePersistentVolumeSourceApplyConfiguration{}

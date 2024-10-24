@@ -16,7 +16,7 @@ import (
 	managedfields "k8s.io/apimachinery/pkg/util/managedfields"
 )
 
-// ChargeRequestApplyConfiguration represents an declarative configuration of the ChargeRequest type for use
+// ChargeRequestApplyConfiguration represents a declarative configuration of the ChargeRequest type for use
 // with apply.
 type ChargeRequestApplyConfiguration struct {
 	v1.TypeMetaApplyConfiguration    `json:",inline"`
@@ -25,7 +25,7 @@ type ChargeRequestApplyConfiguration struct {
 	Status                           *ChargeRequestStatusApplyConfiguration `json:"status,omitempty"`
 }
 
-// ChargeRequest constructs an declarative configuration of the ChargeRequest type for use with
+// ChargeRequest constructs a declarative configuration of the ChargeRequest type for use with
 // apply.
 func ChargeRequest(name, namespace string) *ChargeRequestApplyConfiguration {
 	b := &ChargeRequestApplyConfiguration{}
@@ -244,4 +244,10 @@ func (b *ChargeRequestApplyConfiguration) WithSpec(value *ChargeRequestSpecApply
 func (b *ChargeRequestApplyConfiguration) WithStatus(value *ChargeRequestStatusApplyConfiguration) *ChargeRequestApplyConfiguration {
 	b.Status = value
 	return b
+}
+
+// GetName retrieves the value of the Name field in the declarative configuration.
+func (b *ChargeRequestApplyConfiguration) GetName() *string {
+	b.ensureObjectMetaApplyConfigurationExists()
+	return b.Name
 }

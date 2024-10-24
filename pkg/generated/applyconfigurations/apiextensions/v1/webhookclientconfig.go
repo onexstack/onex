@@ -7,7 +7,7 @@
 
 package v1
 
-// WebhookClientConfigApplyConfiguration represents an declarative configuration of the WebhookClientConfig type for use
+// WebhookClientConfigApplyConfiguration represents a declarative configuration of the WebhookClientConfig type for use
 // with apply.
 type WebhookClientConfigApplyConfiguration struct {
 	URL      *string                             `json:"url,omitempty"`
@@ -15,7 +15,7 @@ type WebhookClientConfigApplyConfiguration struct {
 	CABundle []byte                              `json:"caBundle,omitempty"`
 }
 
-// WebhookClientConfigApplyConfiguration constructs an declarative configuration of the WebhookClientConfig type for use with
+// WebhookClientConfigApplyConfiguration constructs a declarative configuration of the WebhookClientConfig type for use with
 // apply.
 func WebhookClientConfig() *WebhookClientConfigApplyConfiguration {
 	return &WebhookClientConfigApplyConfiguration{}

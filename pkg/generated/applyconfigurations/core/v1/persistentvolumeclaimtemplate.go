@@ -13,14 +13,14 @@ import (
 	types "k8s.io/apimachinery/pkg/types"
 )
 
-// PersistentVolumeClaimTemplateApplyConfiguration represents an declarative configuration of the PersistentVolumeClaimTemplate type for use
+// PersistentVolumeClaimTemplateApplyConfiguration represents a declarative configuration of the PersistentVolumeClaimTemplate type for use
 // with apply.
 type PersistentVolumeClaimTemplateApplyConfiguration struct {
 	*v1.ObjectMetaApplyConfiguration `json:"metadata,omitempty"`
 	Spec                             *PersistentVolumeClaimSpecApplyConfiguration `json:"spec,omitempty"`
 }
 
-// PersistentVolumeClaimTemplateApplyConfiguration constructs an declarative configuration of the PersistentVolumeClaimTemplate type for use with
+// PersistentVolumeClaimTemplateApplyConfiguration constructs a declarative configuration of the PersistentVolumeClaimTemplate type for use with
 // apply.
 func PersistentVolumeClaimTemplate() *PersistentVolumeClaimTemplateApplyConfiguration {
 	return &PersistentVolumeClaimTemplateApplyConfiguration{}
@@ -174,4 +174,10 @@ func (b *PersistentVolumeClaimTemplateApplyConfiguration) ensureObjectMetaApplyC
 func (b *PersistentVolumeClaimTemplateApplyConfiguration) WithSpec(value *PersistentVolumeClaimSpecApplyConfiguration) *PersistentVolumeClaimTemplateApplyConfiguration {
 	b.Spec = value
 	return b
+}
+
+// GetName retrieves the value of the Name field in the declarative configuration.
+func (b *PersistentVolumeClaimTemplateApplyConfiguration) GetName() *string {
+	b.ensureObjectMetaApplyConfigurationExists()
+	return b.Name
 }

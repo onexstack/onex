@@ -7,7 +7,7 @@
 
 package v1
 
-// TypedLocalObjectReferenceApplyConfiguration represents an declarative configuration of the TypedLocalObjectReference type for use
+// TypedLocalObjectReferenceApplyConfiguration represents a declarative configuration of the TypedLocalObjectReference type for use
 // with apply.
 type TypedLocalObjectReferenceApplyConfiguration struct {
 	APIGroup *string `json:"apiGroup,omitempty"`
@@ -15,7 +15,7 @@ type TypedLocalObjectReferenceApplyConfiguration struct {
 	Name     *string `json:"name,omitempty"`
 }
 
-// TypedLocalObjectReferenceApplyConfiguration constructs an declarative configuration of the TypedLocalObjectReference type for use with
+// TypedLocalObjectReferenceApplyConfiguration constructs a declarative configuration of the TypedLocalObjectReference type for use with
 // apply.
 func TypedLocalObjectReference() *TypedLocalObjectReferenceApplyConfiguration {
 	return &TypedLocalObjectReferenceApplyConfiguration{}

@@ -7,14 +7,14 @@
 
 package v1
 
-// LocalVolumeSourceApplyConfiguration represents an declarative configuration of the LocalVolumeSource type for use
+// LocalVolumeSourceApplyConfiguration represents a declarative configuration of the LocalVolumeSource type for use
 // with apply.
 type LocalVolumeSourceApplyConfiguration struct {
 	Path   *string `json:"path,omitempty"`
 	FSType *string `json:"fsType,omitempty"`
 }
 
-// LocalVolumeSourceApplyConfiguration constructs an declarative configuration of the LocalVolumeSource type for use with
+// LocalVolumeSourceApplyConfiguration constructs a declarative configuration of the LocalVolumeSource type for use with
 // apply.
 func LocalVolumeSource() *LocalVolumeSourceApplyConfiguration {
 	return &LocalVolumeSourceApplyConfiguration{}

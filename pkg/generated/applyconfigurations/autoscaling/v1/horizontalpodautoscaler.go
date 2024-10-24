@@ -16,7 +16,7 @@ import (
 	managedfields "k8s.io/apimachinery/pkg/util/managedfields"
 )
 
-// HorizontalPodAutoscalerApplyConfiguration represents an declarative configuration of the HorizontalPodAutoscaler type for use
+// HorizontalPodAutoscalerApplyConfiguration represents a declarative configuration of the HorizontalPodAutoscaler type for use
 // with apply.
 type HorizontalPodAutoscalerApplyConfiguration struct {
 	v1.TypeMetaApplyConfiguration    `json:",inline"`
@@ -25,7 +25,7 @@ type HorizontalPodAutoscalerApplyConfiguration struct {
 	Status                           *HorizontalPodAutoscalerStatusApplyConfiguration `json:"status,omitempty"`
 }
 
-// HorizontalPodAutoscaler constructs an declarative configuration of the HorizontalPodAutoscaler type for use with
+// HorizontalPodAutoscaler constructs a declarative configuration of the HorizontalPodAutoscaler type for use with
 // apply.
 func HorizontalPodAutoscaler(name, namespace string) *HorizontalPodAutoscalerApplyConfiguration {
 	b := &HorizontalPodAutoscalerApplyConfiguration{}
@@ -244,4 +244,10 @@ func (b *HorizontalPodAutoscalerApplyConfiguration) WithSpec(value *HorizontalPo
 func (b *HorizontalPodAutoscalerApplyConfiguration) WithStatus(value *HorizontalPodAutoscalerStatusApplyConfiguration) *HorizontalPodAutoscalerApplyConfiguration {
 	b.Status = value
 	return b
+}
+
+// GetName retrieves the value of the Name field in the declarative configuration.
+func (b *HorizontalPodAutoscalerApplyConfiguration) GetName() *string {
+	b.ensureObjectMetaApplyConfigurationExists()
+	return b.Name
 }

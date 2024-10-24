@@ -87,17 +87,17 @@ require (
 	gorm.io/gen v0.3.23
 	gorm.io/gorm v1.25.1-0.20230505075827-e61b98d69677
 	gorm.io/plugin/dbresolver v1.3.0
-	k8s.io/api v0.31.1
-	k8s.io/apimachinery v0.31.1
-	k8s.io/apiserver v0.31.1
-	k8s.io/cli-runtime v0.31.1
-	k8s.io/client-go v0.31.1
-	k8s.io/code-generator v0.31.1
-	k8s.io/component-base v0.31.1
+	k8s.io/api v0.31.2
+	k8s.io/apimachinery v0.31.2
+	k8s.io/apiserver v0.31.2
+	k8s.io/cli-runtime v0.31.2
+	k8s.io/client-go v0.31.2
+	k8s.io/code-generator v0.31.2
+	k8s.io/component-base v0.31.2
 	k8s.io/klog/v2 v2.130.1
 	k8s.io/kube-aggregator v0.0.0
 	k8s.io/kube-openapi v0.0.0-20241009091222-67ed5848f094
-	k8s.io/kubectl v0.31.1
+	k8s.io/kubectl v0.31.2
 	k8s.io/kubernetes v0.0.0-00010101000000-000000000000
 	k8s.io/utils v0.0.0-20240921022957-49e7df575cb6
 	sigs.k8s.io/cluster-api v1.5.2
@@ -225,11 +225,11 @@ require (
 	gorm.io/driver/postgres v1.4.5 // indirect
 	gorm.io/driver/sqlserver v1.4.1 // indirect
 	gorm.io/hints v1.1.0 // indirect
-	k8s.io/cloud-provider v0.31.1 // indirect
+	k8s.io/cloud-provider v0.31.2 // indirect
 	k8s.io/gengo/v2 v2.0.0-20240826214909-a7b603a56eb7 // indirect
-	k8s.io/kms v0.31.1 // indirect
-	k8s.io/kube-controller-manager v0.31.1 // indirect
-	k8s.io/metrics v0.31.1 // indirect
+	k8s.io/kms v0.31.2 // indirect
+	k8s.io/kube-controller-manager v0.31.2 // indirect
+	k8s.io/metrics v0.31.2 // indirect
 	modernc.org/libc v1.19.0 // indirect
 	modernc.org/mathutil v1.5.0 // indirect
 	modernc.org/memory v1.4.0 // indirect
@@ -308,11 +308,11 @@ require (
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1
-	k8s.io/apiextensions-apiserver v0.31.1
-	k8s.io/component-helpers v0.31.1 // indirect
-	k8s.io/controller-manager v0.31.1
+	k8s.io/apiextensions-apiserver v0.31.2
+	k8s.io/component-helpers v0.31.2 // indirect
+	k8s.io/controller-manager v0.31.2
 	k8s.io/gengo v0.0.0-20230829151522-9cce18d56c01
-	k8s.io/kubelet v0.31.1 // indirect
+	k8s.io/kubelet v0.31.2 // indirect
 	sigs.k8s.io/apiserver-network-proxy/konnectivity-client v0.30.3 // indirect
 	sigs.k8s.io/json v0.0.0-20241014173422-cfa47c3a1cc8 // indirect
 	sigs.k8s.io/yaml v1.4.0
@@ -321,30 +321,31 @@ require (
 // Version conflicts often occur in go.opentelemetry.io. In order to avoid version confusion
 // caused by auto-upgrades, here use replace to solid version.
 replace (
-	k8s.io/apiserver => k8s.io/apiserver v0.31.1
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.31.1
-	k8s.io/cloud-provider => k8s.io/cloud-provider v0.31.1
-	k8s.io/cluster-bootstrap => k8s.io/cluster-bootstrap v0.31.1
-	k8s.io/code-generator => k8s.io/code-generator v0.31.1
-	k8s.io/component-base => k8s.io/component-base v0.31.1
-	k8s.io/component-helpers => k8s.io/component-helpers v0.31.1
-	k8s.io/controller-manager => k8s.io/controller-manager v0.31.1
-	k8s.io/cri-api => k8s.io/cri-api v0.31.1
-	k8s.io/csi-translation-lib => k8s.io/csi-translation-lib v0.31.1
-	k8s.io/dynamic-resource-allocation => k8s.io/dynamic-resource-allocation v0.31.1
-	k8s.io/endpointslice => k8s.io/endpointslice v0.31.1
-	k8s.io/kms => k8s.io/kms v0.31.1
-	k8s.io/kube-aggregator => k8s.io/kube-aggregator v0.31.1
-	k8s.io/kube-controller-manager => k8s.io/kube-controller-manager v0.31.1
-	k8s.io/kube-proxy => k8s.io/kube-proxy v0.31.1
-	k8s.io/kube-scheduler => k8s.io/kube-scheduler v0.31.1
-	k8s.io/kubectl => k8s.io/kubectl v0.31.1
-	k8s.io/kubelet => k8s.io/kubelet v0.31.1
+	k8s.io/apimachinery => k8s.io/apimachinery v0.31.2
+	k8s.io/apiserver => k8s.io/apiserver v0.31.2
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.31.2
+	k8s.io/cloud-provider => k8s.io/cloud-provider v0.31.2
+	k8s.io/cluster-bootstrap => k8s.io/cluster-bootstrap v0.31.2
+	k8s.io/code-generator => k8s.io/code-generator v0.31.2
+	k8s.io/component-base => k8s.io/component-base v0.31.2
+	k8s.io/component-helpers => k8s.io/component-helpers v0.31.2
+	k8s.io/controller-manager => k8s.io/controller-manager v0.31.2
+	k8s.io/cri-api => k8s.io/cri-api v0.31.2
+	k8s.io/csi-translation-lib => k8s.io/csi-translation-lib v0.31.2
+	k8s.io/dynamic-resource-allocation => k8s.io/dynamic-resource-allocation v0.31.2
+	k8s.io/endpointslice => k8s.io/endpointslice v0.31.2
+	k8s.io/kms => k8s.io/kms v0.31.2
+	k8s.io/kube-aggregator => k8s.io/kube-aggregator v0.31.2
+	k8s.io/kube-controller-manager => k8s.io/kube-controller-manager v0.31.2
+	k8s.io/kube-proxy => k8s.io/kube-proxy v0.31.2
+	k8s.io/kube-scheduler => k8s.io/kube-scheduler v0.31.2
+	k8s.io/kubectl => k8s.io/kubectl v0.31.2
+	k8s.io/kubelet => k8s.io/kubelet v0.31.2
 	// k8s.io/kubernetes 经常会被自动变更为v1.15.0-alpha.0，这里使用replace解决掉
-	k8s.io/kubernetes => k8s.io/kubernetes v1.31.1
-	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.31.1
-	k8s.io/metrics => k8s.io/metrics v0.31.1
-	k8s.io/mount-utils => k8s.io/mount-utils v0.31.1
-	k8s.io/pod-security-admission => k8s.io/pod-security-admission v0.31.1
-	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.31.1
+	k8s.io/kubernetes => k8s.io/kubernetes v1.31.2
+	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.31.2
+	k8s.io/metrics => k8s.io/metrics v0.31.2
+	k8s.io/mount-utils => k8s.io/mount-utils v0.31.2
+	k8s.io/pod-security-admission => k8s.io/pod-security-admission v0.31.2
+	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.31.2
 )

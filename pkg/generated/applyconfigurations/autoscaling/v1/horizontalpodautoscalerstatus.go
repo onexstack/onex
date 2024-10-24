@@ -11,7 +11,7 @@ import (
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// HorizontalPodAutoscalerStatusApplyConfiguration represents an declarative configuration of the HorizontalPodAutoscalerStatus type for use
+// HorizontalPodAutoscalerStatusApplyConfiguration represents a declarative configuration of the HorizontalPodAutoscalerStatus type for use
 // with apply.
 type HorizontalPodAutoscalerStatusApplyConfiguration struct {
 	ObservedGeneration              *int64   `json:"observedGeneration,omitempty"`
@@ -21,7 +21,7 @@ type HorizontalPodAutoscalerStatusApplyConfiguration struct {
 	CurrentCPUUtilizationPercentage *int32   `json:"currentCPUUtilizationPercentage,omitempty"`
 }
 
-// HorizontalPodAutoscalerStatusApplyConfiguration constructs an declarative configuration of the HorizontalPodAutoscalerStatus type for use with
+// HorizontalPodAutoscalerStatusApplyConfiguration constructs a declarative configuration of the HorizontalPodAutoscalerStatus type for use with
 // apply.
 func HorizontalPodAutoscalerStatus() *HorizontalPodAutoscalerStatusApplyConfiguration {
 	return &HorizontalPodAutoscalerStatusApplyConfiguration{}

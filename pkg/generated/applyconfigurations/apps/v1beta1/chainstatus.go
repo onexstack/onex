@@ -11,7 +11,7 @@ import (
 	appsv1beta1 "github.com/superproj/onex/pkg/apis/apps/v1beta1"
 )
 
-// ChainStatusApplyConfiguration represents an declarative configuration of the ChainStatus type for use
+// ChainStatusApplyConfiguration represents a declarative configuration of the ChainStatus type for use
 // with apply.
 type ChainStatusApplyConfiguration struct {
 	ConfigMapRef       *LocalObjectReferenceApplyConfiguration `json:"configMapRef,omitempty"`
@@ -20,7 +20,7 @@ type ChainStatusApplyConfiguration struct {
 	Conditions         *appsv1beta1.Conditions                 `json:"conditions,omitempty"`
 }
 
-// ChainStatusApplyConfiguration constructs an declarative configuration of the ChainStatus type for use with
+// ChainStatusApplyConfiguration constructs a declarative configuration of the ChainStatus type for use with
 // apply.
 func ChainStatus() *ChainStatusApplyConfiguration {
 	return &ChainStatusApplyConfiguration{}

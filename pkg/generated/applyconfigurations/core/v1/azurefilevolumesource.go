@@ -7,7 +7,7 @@
 
 package v1
 
-// AzureFileVolumeSourceApplyConfiguration represents an declarative configuration of the AzureFileVolumeSource type for use
+// AzureFileVolumeSourceApplyConfiguration represents a declarative configuration of the AzureFileVolumeSource type for use
 // with apply.
 type AzureFileVolumeSourceApplyConfiguration struct {
 	SecretName *string `json:"secretName,omitempty"`
@@ -15,7 +15,7 @@ type AzureFileVolumeSourceApplyConfiguration struct {
 	ReadOnly   *bool   `json:"readOnly,omitempty"`
 }
 
-// AzureFileVolumeSourceApplyConfiguration constructs an declarative configuration of the AzureFileVolumeSource type for use with
+// AzureFileVolumeSourceApplyConfiguration constructs a declarative configuration of the AzureFileVolumeSource type for use with
 // apply.
 func AzureFileVolumeSource() *AzureFileVolumeSourceApplyConfiguration {
 	return &AzureFileVolumeSourceApplyConfiguration{}

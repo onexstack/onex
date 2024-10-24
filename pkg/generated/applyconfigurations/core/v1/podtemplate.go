@@ -16,7 +16,7 @@ import (
 	managedfields "k8s.io/apimachinery/pkg/util/managedfields"
 )
 
-// PodTemplateApplyConfiguration represents an declarative configuration of the PodTemplate type for use
+// PodTemplateApplyConfiguration represents a declarative configuration of the PodTemplate type for use
 // with apply.
 type PodTemplateApplyConfiguration struct {
 	v1.TypeMetaApplyConfiguration    `json:",inline"`
@@ -24,7 +24,7 @@ type PodTemplateApplyConfiguration struct {
 	Template                         *PodTemplateSpecApplyConfiguration `json:"template,omitempty"`
 }
 
-// PodTemplate constructs an declarative configuration of the PodTemplate type for use with
+// PodTemplate constructs a declarative configuration of the PodTemplate type for use with
 // apply.
 func PodTemplate(name, namespace string) *PodTemplateApplyConfiguration {
 	b := &PodTemplateApplyConfiguration{}
@@ -235,4 +235,10 @@ func (b *PodTemplateApplyConfiguration) ensureObjectMetaApplyConfigurationExists
 func (b *PodTemplateApplyConfiguration) WithTemplate(value *PodTemplateSpecApplyConfiguration) *PodTemplateApplyConfiguration {
 	b.Template = value
 	return b
+}
+
+// GetName retrieves the value of the Name field in the declarative configuration.
+func (b *PodTemplateApplyConfiguration) GetName() *string {
+	b.ensureObjectMetaApplyConfigurationExists()
+	return b.Name
 }

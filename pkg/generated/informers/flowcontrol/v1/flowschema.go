@@ -8,13 +8,13 @@
 package v1
 
 import (
-	"context"
+	context "context"
 	time "time"
 
 	versioned "github.com/superproj/onex/pkg/generated/clientset/versioned"
 	internalinterfaces "github.com/superproj/onex/pkg/generated/informers/internalinterfaces"
-	v1 "github.com/superproj/onex/pkg/generated/listers/flowcontrol/v1"
-	flowcontrolv1 "k8s.io/api/flowcontrol/v1"
+	flowcontrolv1 "github.com/superproj/onex/pkg/generated/listers/flowcontrol/v1"
+	apiflowcontrolv1 "k8s.io/api/flowcontrol/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"
@@ -25,7 +25,7 @@ import (
 // FlowSchemas.
 type FlowSchemaInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1.FlowSchemaLister
+	Lister() flowcontrolv1.FlowSchemaLister
 }
 
 type flowSchemaInformer struct {
@@ -59,7 +59,7 @@ func NewFilteredFlowSchemaInformer(client versioned.Interface, resyncPeriod time
 				return client.FlowcontrolV1().FlowSchemas().Watch(context.TODO(), options)
 			},
 		},
-		&flowcontrolv1.FlowSchema{},
+		&apiflowcontrolv1.FlowSchema{},
 		resyncPeriod,
 		indexers,
 	)
@@ -70,9 +70,9 @@ func (f *flowSchemaInformer) defaultInformer(client versioned.Interface, resyncP
 }
 
 func (f *flowSchemaInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&flowcontrolv1.FlowSchema{}, f.defaultInformer)
+	return f.factory.InformerFor(&apiflowcontrolv1.FlowSchema{}, f.defaultInformer)
 }
 
-func (f *flowSchemaInformer) Lister() v1.FlowSchemaLister {
-	return v1.NewFlowSchemaLister(f.Informer().GetIndexer())
+func (f *flowSchemaInformer) Lister() flowcontrolv1.FlowSchemaLister {
+	return flowcontrolv1.NewFlowSchemaLister(f.Informer().GetIndexer())
 }

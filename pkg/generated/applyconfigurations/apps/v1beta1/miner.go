@@ -16,7 +16,7 @@ import (
 	managedfields "k8s.io/apimachinery/pkg/util/managedfields"
 )
 
-// MinerApplyConfiguration represents an declarative configuration of the Miner type for use
+// MinerApplyConfiguration represents a declarative configuration of the Miner type for use
 // with apply.
 type MinerApplyConfiguration struct {
 	v1.TypeMetaApplyConfiguration    `json:",inline"`
@@ -25,7 +25,7 @@ type MinerApplyConfiguration struct {
 	Status                           *MinerStatusApplyConfiguration `json:"status,omitempty"`
 }
 
-// Miner constructs an declarative configuration of the Miner type for use with
+// Miner constructs a declarative configuration of the Miner type for use with
 // apply.
 func Miner(name, namespace string) *MinerApplyConfiguration {
 	b := &MinerApplyConfiguration{}
@@ -244,4 +244,10 @@ func (b *MinerApplyConfiguration) WithSpec(value *MinerSpecApplyConfiguration) *
 func (b *MinerApplyConfiguration) WithStatus(value *MinerStatusApplyConfiguration) *MinerApplyConfiguration {
 	b.Status = value
 	return b
+}
+
+// GetName retrieves the value of the Name field in the declarative configuration.
+func (b *MinerApplyConfiguration) GetName() *string {
+	b.ensureObjectMetaApplyConfigurationExists()
+	return b.Name
 }
