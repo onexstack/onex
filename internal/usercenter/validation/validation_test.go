@@ -14,7 +14,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"gorm.io/gorm"
 
-	"github.com/superproj/onex/internal/pkg/onexx"
+	"github.com/superproj/onex/internal/pkg/contextx"
 	"github.com/superproj/onex/internal/usercenter/store"
 	v1 "github.com/superproj/onex/pkg/api/usercenter/v1"
 )
@@ -126,7 +126,7 @@ func Test_validator_ValidateListUserRequest(t *testing.T) {
 				ds: nil,
 			},
 			args: args{
-				ctx: onexx.NewUserID(context.Background(), "user-admin"),
+				ctx: contextx.NewUserID(context.Background(), "user-admin"),
 				rq: &v1.ListUserRequest{
 					Limit:  0,
 					Offset: 10,
@@ -140,7 +140,7 @@ func Test_validator_ValidateListUserRequest(t *testing.T) {
 				ds: nil,
 			},
 			args: args{
-				ctx: onexx.NewUserID(context.Background(), "user-xxx"),
+				ctx: contextx.NewUserID(context.Background(), "user-xxx"),
 				rq: &v1.ListUserRequest{
 					Limit:  0,
 					Offset: 10,
@@ -189,7 +189,7 @@ func Test_validator_ValidateCreateSecretRequest(t *testing.T) {
 				ds: mockStore,
 			},
 			args: args{
-				ctx: onexx.NewUserID(context.Background(), "user-test"),
+				ctx: contextx.NewUserID(context.Background(), "user-test"),
 				rq: &v1.CreateSecretRequest{
 					Name:        "test",
 					Expires:     0,

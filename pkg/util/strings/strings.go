@@ -120,6 +120,15 @@ func Filter(list []string, strToFilter string) (newList []string) {
 	return
 }
 
+func Add(list []string, str string) []string {
+	for _, item := range list {
+		if item == str {
+			return list
+		}
+	}
+	return append(list, str)
+}
+
 // Contains returns true if a list contains a string.
 func Contains(list []string, strToSearch string) bool {
 	for _, item := range list {

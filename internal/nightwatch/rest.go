@@ -17,7 +17,7 @@ import (
 
 	"github.com/superproj/onex/internal/nightwatch/middleware"
 	_ "github.com/superproj/onex/internal/nightwatch/watcher/all"
-	"github.com/superproj/onex/internal/pkg/core"
+	"github.com/superproj/onex/pkg/core"
 	"github.com/superproj/onex/pkg/api/zerrors"
 	"github.com/superproj/onex/pkg/log"
 	genericmw "github.com/superproj/onex/pkg/middleware/gin"

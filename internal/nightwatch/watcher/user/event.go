@@ -8,7 +8,7 @@ import (
 
 	"github.com/superproj/onex/internal/pkg/client/store"
 	known "github.com/superproj/onex/internal/pkg/known/usercenter"
-	"github.com/superproj/onex/internal/pkg/onexx"
+	"github.com/superproj/onex/internal/pkg/contextx"
 	"github.com/superproj/onex/internal/usercenter/model"
 	"github.com/superproj/onex/pkg/log"
 	"github.com/superproj/onex/pkg/store/where"
@@ -21,7 +21,7 @@ const (
 // NewActiveUserCallback creates a callback function for the "active user" event in a finite state machine (FSM).
 func NewActiveUserCallback(store store.Interface) fsm.Callback {
 	return func(ctx context.Context, event *fsm.Event) {
-		userM := onexx.FromUserM(ctx)
+		userM := contextx.FromUserM(ctx)
 		log.Infow("Now active user", "event", event.Event, "username", userM.Username)
 
 		// Active secrets if needed.
@@ -37,7 +37,7 @@ func NewActiveUserCallback(store store.Interface) fsm.Callback {
 // NewDisableUserCallback creates a callback function for the "disable user" event in a finite state machine (FSM).
 func NewDisableUserCallback(store store.Interface) fsm.Callback {
 	return func(ctx context.Context, event *fsm.Event) {
-		userM := onexx.FromUserM(ctx)
+		userM := contextx.FromUserM(ctx)
 		log.Infow("Now disable user", "event", event.Event, "username", userM.Username)
 
 		// Disable secrets if needed.
@@ -53,7 +53,7 @@ func NewDisableUserCallback(store store.Interface) fsm.Callback {
 // NewDeleteUserCallback creates a callback function for the "delete user" event in a finite state machine (FSM).
 func NewDeleteUserCallback(store store.Interface) fsm.Callback {
 	return func(ctx context.Context, event *fsm.Event) {
-		userM := onexx.FromUserM(ctx)
+		userM := contextx.FromUserM(ctx)
 		log.Infow("Now delete user if needed", "event", event.Event, "username", userM.Username)
 
 		// If a user remains in an disalbed state for more than 5 years,
@@ -79,7 +79,7 @@ func NewDeleteUserCallback(store store.Interface) fsm.Callback {
 func NewUserEventAfterEvent(store store.Interface) fsm.Callback {
 	return func(ctx context.Context, event *fsm.Event) {
 		alarmStatus := "success"
-		userM := onexx.FromUserM(ctx)
+		userM := contextx.FromUserM(ctx)
 
 		defer func() {
 			log.Infow("This is a fake alarm message", "status", alarmStatus, "username", userM.Username)
@@ -92,7 +92,7 @@ func NewUserEventAfterEvent(store store.Interface) fsm.Callback {
 			return
 		}
 
-		user := onexx.FromUserM(ctx)
+		user := contextx.FromUserM(ctx)
 		user.Status = event.FSM.Current()
 		if err := store.UserCenter().Users().Update(ctx, user); err != nil {
 			log.Errorw(err, "Failed to update status into database", "event", event.Event)

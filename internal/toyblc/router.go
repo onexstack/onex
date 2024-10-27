@@ -10,7 +10,7 @@ import (
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 
-	"github.com/superproj/onex/internal/pkg/core"
+	"github.com/superproj/onex/pkg/core"
 	"github.com/superproj/onex/internal/toyblc/blc"
 	"github.com/superproj/onex/internal/toyblc/controller/v1/block"
 	"github.com/superproj/onex/internal/toyblc/controller/v1/peer"

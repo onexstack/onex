@@ -11,7 +11,7 @@ package auth
 import (
 	"context"
 
-	"github.com/superproj/onex/internal/pkg/onexx"
+	"github.com/superproj/onex/internal/pkg/contextx"
 	"github.com/superproj/onex/internal/usercenter/auth"
 	"github.com/superproj/onex/internal/usercenter/locales"
 	"github.com/superproj/onex/internal/usercenter/store"
@@ -100,7 +100,7 @@ func (b *authBiz) Login(ctx context.Context, rq *v1.LoginRequest) (*v1.LoginRepl
 
 // Logout invalidates a token.
 func (b *authBiz) Logout(ctx context.Context, rq *v1.LogoutRequest) error {
-	if err := b.authn.Destroy(ctx, onexx.FromAccessToken(ctx)); err != nil {
+	if err := b.authn.Destroy(ctx, contextx.FromAccessToken(ctx)); err != nil {
 		log.C(ctx).Errorw(err, "Failed to remove token from cache")
 		return err
 	}
@@ -111,9 +111,9 @@ func (b *authBiz) Logout(ctx context.Context, rq *v1.LogoutRequest) error {
 // RefreshToken refreshes an existing token and returns a new one.
 func (b *authBiz) RefreshToken(ctx context.Context, rq *v1.RefreshTokenRequest) (*v1.LoginReply, error) {
 	// Because a new token is issued, the old token needs to be destroyed.
-	_ = b.authn.Destroy(ctx, onexx.FromAccessToken(ctx))
+	_ = b.authn.Destroy(ctx, contextx.FromAccessToken(ctx))
 
-	userID := onexx.FromUserID(ctx)
+	userID := contextx.FromUserID(ctx)
 	refreshToken, err := b.authn.Sign(ctx, userID)
 	if err != nil {
 		log.C(ctx).Errorw(err, "Failed to generate refresh token")

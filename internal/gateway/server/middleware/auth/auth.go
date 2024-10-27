@@ -14,7 +14,7 @@ import (
 
 	"github.com/superproj/onex/internal/gateway/locales"
 	"github.com/superproj/onex/internal/pkg/middleware/auth"
-	"github.com/superproj/onex/internal/pkg/onexx"
+	"github.com/superproj/onex/internal/pkg/contextx"
 	jwtutil "github.com/superproj/onex/internal/pkg/util/jwt"
 	"github.com/superproj/onex/pkg/api/zerrors"
 	"github.com/superproj/onex/pkg/i18n"
@@ -35,8 +35,8 @@ func Auth(a auth.AuthProvider) middleware.Middleware {
 				if !allowed {
 					return nil, zerrors.ErrorForbidden(i18n.FromContext(ctx).T(locales.NoPermission))
 				}
-				ctx = onexx.NewUserID(ctx, userID)
-				ctx = onexx.NewAccessToken(ctx, accessToken)
+				ctx = contextx.NewUserID(ctx, userID)
+				ctx = contextx.NewAccessToken(ctx, accessToken)
 				ctx = log.WithContext(ctx, "user.id", userID)
 			}
 

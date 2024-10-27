@@ -15,7 +15,7 @@ import (
 
 	"github.com/jinzhu/copier"
 
-	"github.com/superproj/onex/internal/pkg/onexx"
+	"github.com/superproj/onex/internal/pkg/contextx"
 	"github.com/superproj/onex/internal/usercenter/conversion"
 	"github.com/superproj/onex/internal/usercenter/model"
 	"github.com/superproj/onex/internal/usercenter/store"
@@ -65,7 +65,7 @@ func New(ds store.IStore) *secretBiz {
 func (b *secretBiz) Create(ctx context.Context, rq *v1.CreateSecretRequest) (*v1.SecretReply, error) {
 	var secretM model.SecretM
 	_ = copier.Copy(&secretM, rq)          // Copy request data to the Secret model.
-	secretM.UserID = onexx.FromUserID(ctx) // Set the user ID from the context.
+	secretM.UserID = contextx.FromUserID(ctx) // Set the user ID from the context.
 
 	// Attempt to create the secret in the data store.
 	if err := b.ds.Secrets().Create(ctx, &secretM); err != nil {

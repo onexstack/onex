@@ -17,7 +17,6 @@ import (
 
 	"github.com/jinzhu/copier"
 	"github.com/spf13/cobra"
-	apiv1 "k8s.io/api/core/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/labels"
@@ -81,7 +80,7 @@ func init() {
 	utilruntime.Must(features.AddFeatureGates(utilfeature.DefaultMutableFeatureGate))
 
 	// applies all the stored functions to the scheme created by controller-runtime
-	_ = apiv1.AddToScheme(scheme)
+	_ = corev1.AddToScheme(scheme)
 	_ = v1beta1.AddToScheme(scheme)
 	_ = configv1beta1.AddToScheme(scheme)
 	// _ = corev1.AddToScheme(scheme)

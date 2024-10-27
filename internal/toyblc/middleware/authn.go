@@ -15,7 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-kratos/kratos/v2/errors"
 
-	"github.com/superproj/onex/internal/pkg/core"
+	"github.com/superproj/onex/pkg/core"
 	known "github.com/superproj/onex/internal/pkg/known/toyblc"
 )
 

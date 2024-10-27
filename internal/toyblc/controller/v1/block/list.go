@@ -9,7 +9,7 @@ package block
 import (
 	"github.com/gin-gonic/gin"
 
-	"github.com/superproj/onex/internal/pkg/core"
+	"github.com/superproj/onex/pkg/core"
 )
 
 func (b *BlockController) List(c *gin.Context) {
