@@ -19,6 +19,10 @@ import (
 	"github.com/superproj/onex/pkg/log"
 )
 
+const (
+	defaultMaxWorkers = 100
+)
+
 // List retrieves a list of all users from the database.
 func (b *userBiz) List(ctx context.Context, rq *v1.ListUserRequest) (*v1.ListUserResponse, error) {
 	count, list, err := b.ds.Users().List(ctx, meta.WithOffset(rq.Offset), meta.WithLimit(rq.Limit))
@@ -34,7 +38,7 @@ func (b *userBiz) List(ctx context.Context, rq *v1.ListUserRequest) (*v1.ListUse
 		eg.Go(func() error {
 			select {
 			case <-ctx.Done():
-				return nil
+				return ctx.Err()
 			default:
 				count, _, err := b.ds.Secrets().List(ctx, user.UserID)
 				if err != nil {
