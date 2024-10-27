@@ -16,7 +16,7 @@ import (
 	"github.com/superproj/onex/internal/nightwatch/watcher"
 	"github.com/superproj/onex/internal/pkg/client/store"
 	known "github.com/superproj/onex/internal/pkg/known/usercenter"
-	"github.com/superproj/onex/internal/pkg/onexx"
+	"github.com/superproj/onex/internal/pkg/contextx"
 	"github.com/superproj/onex/internal/usercenter/model"
 	"github.com/superproj/onex/pkg/log"
 	stringsutil "github.com/superproj/onex/pkg/util/strings"
@@ -64,7 +64,7 @@ func (w *userWatcher) Run() {
 		}
 
 		wp.Submit(func() {
-			ctx := onexx.NewUserM(context.Background(), user)
+			ctx := contextx.NewUserM(context.Background(), user)
 
 			usm := &UserStateMachine{UserM: user, FSM: NewFSM(user.Status, w)}
 			if err := usm.FSM.Event(ctx, user.Status); err != nil {

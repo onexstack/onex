@@ -3,7 +3,7 @@ package v1
 import (
 	"github.com/gin-gonic/gin"
 
-	"github.com/superproj/onex/internal/pkg/core"
+	"github.com/superproj/onex/pkg/core"
 	nwv1 "github.com/superproj/onex/pkg/api/nightwatch/v1"
 	"github.com/superproj/onex/pkg/api/zerrors"
 )

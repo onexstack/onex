@@ -14,7 +14,7 @@ import (
 
 	"github.com/superproj/onex/internal/pkg/known"
 	ucknown "github.com/superproj/onex/internal/pkg/known/usercenter"
-	"github.com/superproj/onex/internal/pkg/onexx"
+	"github.com/superproj/onex/internal/pkg/contextx"
 	"github.com/superproj/onex/internal/usercenter/locales"
 	"github.com/superproj/onex/internal/usercenter/store"
 	v1 "github.com/superproj/onex/pkg/api/usercenter/v1"
@@ -52,7 +52,7 @@ func (vd *validator) ValidateCreateUserRequest(ctx context.Context, rq *v1.Creat
 // ValidateListUserRequest validates the rquest to list users.
 // Ensures that only a user with the AdminUserID can view the list of users, otherwise returning an error.
 func (vd *validator) ValidateListUserRequest(ctx context.Context, rq *v1.ListUserRequest) error {
-	if userID := onexx.FromUserID(ctx); userID != known.AdminUserID {
+	if userID := contextx.FromUserID(ctx); userID != known.AdminUserID {
 		return i18n.FromContext(ctx).E(locales.UserListUnauthorized)
 	}
 

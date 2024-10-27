@@ -19,7 +19,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"gorm.io/gorm"
 
-	"github.com/superproj/onex/internal/pkg/onexx"
+	"github.com/superproj/onex/internal/pkg/contextx"
 	validationutil "github.com/superproj/onex/internal/pkg/util/validation"
 	"github.com/superproj/onex/internal/usercenter/conversion"
 	"github.com/superproj/onex/internal/usercenter/model"
@@ -114,7 +114,7 @@ func (b *userBiz) Create(ctx context.Context, rq *v1.CreateUserRequest) (*v1.Use
 func (b *userBiz) Update(ctx context.Context, rq *v1.UpdateUserRequest) error {
 	whr := where.F("username", rq.Username) // Create a query filter for the username.
 	// Limit access to authorized users only.
-	if !validationutil.IsAdminUser(onexx.FromUserID(ctx)) {
+	if !validationutil.IsAdminUser(contextx.FromUserID(ctx)) {
 		whr = whr.T(ctx)
 	}
 
@@ -160,7 +160,7 @@ func (b *userBiz) UpdatePassword(ctx context.Context, rq *v1.UpdatePasswordReque
 func (b *userBiz) Delete(ctx context.Context, rq *v1.DeleteUserRequest) error {
 	whr := where.F("username", rq.Username) // Create a query filter for the username.
 	// Limit access to authorized users only.
-	if !validationutil.IsAdminUser(onexx.FromUserID(ctx)) {
+	if !validationutil.IsAdminUser(contextx.FromUserID(ctx)) {
 		whr = whr.T(ctx)
 	}
 
@@ -171,7 +171,7 @@ func (b *userBiz) Delete(ctx context.Context, rq *v1.DeleteUserRequest) error {
 func (b *userBiz) Get(ctx context.Context, rq *v1.GetUserRequest) (*v1.UserReply, error) {
 	whr := where.F("username", rq.Username) // Create a query filter for the username.
 	// Limit access to authorized users only.
-	if !validationutil.IsAdminUser(onexx.FromUserID(ctx)) {
+	if !validationutil.IsAdminUser(contextx.FromUserID(ctx)) {
 		whr = whr.T(ctx)
 	}
 

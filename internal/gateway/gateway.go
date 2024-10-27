@@ -17,7 +17,7 @@ import (
 	"github.com/superproj/onex/internal/gateway/server"
 	"github.com/superproj/onex/internal/pkg/bootstrap"
 	"github.com/superproj/onex/internal/pkg/client/usercenter"
-	"github.com/superproj/onex/internal/pkg/onexx"
+	"github.com/superproj/onex/internal/pkg/contextx"
 	"github.com/superproj/onex/pkg/db"
 	clientset "github.com/superproj/onex/pkg/generated/clientset/versioned"
 	"github.com/superproj/onex/pkg/generated/informers"
@@ -62,7 +62,7 @@ type completedConfig struct {
 // New returns a new instance of Server from the given config.
 func (c completedConfig) New(stopCh <-chan struct{}) (*Server, error) {
 	where.RegisterTenant("user_id", func(ctx context.Context) string {
-		return onexx.FromUserID(ctx)
+		return contextx.FromUserID(ctx)
 	})
 
 	if err := c.JaegerOptions.SetTracerProvider(); err != nil {

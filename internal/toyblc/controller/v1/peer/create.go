@@ -9,7 +9,7 @@ package peer
 import (
 	"github.com/gin-gonic/gin"
 
-	"github.com/superproj/onex/internal/pkg/core"
+	"github.com/superproj/onex/pkg/core"
 	"github.com/superproj/onex/internal/toyblc/ws"
 	v1 "github.com/superproj/onex/pkg/api/toyblc/v1"
 )

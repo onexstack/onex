@@ -30,10 +30,10 @@ type WhereOption func(*WhereOptions)
 type WhereOptions struct {
 	// Offset defines the starting point for pagination.
 	// +optional
-	Offset int
+	Offset int `json:"offset"`
 	// Limit defines the maximum number of results to return.
 	// +optional
-	Limit int
+	Limit int `json:"limit"`
 	// Filters contains key-value pairs for filtering records.
 	Filters map[any]any
 	// Clauses contains custom clauses to be appended to the query.
