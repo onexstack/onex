@@ -10,6 +10,9 @@ import (
 	"github.com/superproj/onex/pkg/logger/empty"
 )
 
+// DefaultLockName is the default name used for the distributed lock.
+const DefaultLockName = "onex-distributed-lock"
+
 // Locker is an interface that defines the methods for a distributed lock.
 // It provides methods to acquire, release, and renew a lock in a distributed system.
 type Locker interface {
@@ -39,10 +42,10 @@ type Option func(o *Options)
 func NewOptions() *Options {
 	ownerID, _ := os.Hostname() // Get the hostname as the default owner ID
 	return &Options{
-		lockName:    "onex-distributed-lock", // Default lock name
-		lockTimeout: 10 * time.Second,        // Default lock timeout
-		ownerID:     ownerID,                 // Set the owner ID
-		logger:      empty.NewLogger(),       // Default logger
+		lockName:    DefaultLockName,
+		lockTimeout: 10 * time.Second,  // Default lock timeout
+		ownerID:     ownerID,           // Set the owner ID
+		logger:      empty.NewLogger(), // Default logger
 	}
 }
 
