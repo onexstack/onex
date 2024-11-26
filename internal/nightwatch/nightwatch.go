@@ -72,7 +72,7 @@ func (c *Config) New(stopCh <-chan struct{}) (*nightWatch, error) {
 		watch.WithLogger(onex.NewLogger()),
 	}
 
-	watchIns, err := watch.NewWatch(c.WatchOptions, db.MustRawDB(c.DB), opts...)
+	watchIns, err := watch.NewWatch(c.WatchOptions, c.DB, opts...)
 	if err != nil {
 		return nil, err
 	}

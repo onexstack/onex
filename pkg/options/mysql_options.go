@@ -7,6 +7,7 @@
 package options
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/spf13/pflag"
@@ -69,6 +70,17 @@ func (o *MySQLOptions) AddFlags(fs *pflag.FlagSet, prefixes ...string) {
 		"Maximum connection life time allowed to connect to mysql.")
 	fs.IntVar(&o.LogLevel, join(prefixes...)+"mysql.log-mode", o.LogLevel, ""+
 		"Specify gorm log level.")
+}
+
+// DSN return DSN from MySQLOptions.
+func (o *MySQLOptions) DSN() string {
+	return fmt.Sprintf(`%s:%s@tcp(%s)/%s?charset=utf8&parseTime=%t&loc=%s`,
+		o.Username,
+		o.Password,
+		o.Addr,
+		o.Database,
+		true,
+		"Local")
 }
 
 // NewDB create mysql store with the given config.

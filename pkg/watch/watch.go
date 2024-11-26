@@ -1,7 +1,6 @@
 package watch
 
 import (
-	"database/sql"
 	"errors"
 	"fmt"
 	"net/http"
@@ -9,6 +8,8 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/robfig/cron/v3"
+	"gorm.io/gorm"
+	"k8s.io/apimachinery/pkg/util/wait"
 
 	"github.com/superproj/onex/pkg/distlock"
 	stringsutil "github.com/superproj/onex/pkg/util/strings"
@@ -21,10 +22,8 @@ import (
 var (
 	// Timeout duration for stopping jobs.
 	jobStopTimeout = 3 * time.Minute
-	// Time extension for lock expiration.
-	extendExpiration = 5 * time.Second
 	// Default expiration time for locks.
-	defaultExpiration = 10 * extendExpiration
+	defaultExpiration = 10 * time.Second
 )
 
 // Option configures a Watch instance with customizable settings.
@@ -33,7 +32,7 @@ type Option func(w *Watch)
 // Watch represents a monitoring system that schedules and runs tasks at specified intervals.
 type Watch struct {
 	// Used to implement dist lock.
-	db *sql.DB
+	db *gorm.DB
 	// Job manager to handle scheduling and execution of jobs.
 	jm *manager.JobManager
 	// Maximum number of concurrent workers for each watcher.
@@ -43,7 +42,7 @@ type Watch struct {
 	// Distributed lock name to be used across instances.
 	lockName string
 	// Distributed lock instance.
-	locker *distlock.Lock
+	locker distlock.Locker
 	// healthzPort is the port number for the health check endpoint.
 	healthzPort int
 	// List of watcher names that should be disabled.
@@ -70,7 +69,7 @@ func WithLogger(logger Logger) Option {
 }
 
 // NewWatch creates a new Watch monitoring system with the provided options.
-func NewWatch(opts *Options, db *sql.DB, withOptions ...Option) (*Watch, error) {
+func NewWatch(opts *Options, db *gorm.DB, withOptions ...Option) (*Watch, error) {
 	logger := empty.NewLogger()
 
 	// Create a new Watch with default settings.
@@ -139,17 +138,22 @@ func (w *Watch) Start(stopCh <-chan struct{}) {
 		go w.serveHealthz()
 	}
 
-	locker := distlock.NewMySQLLocker(w.db, distlock.WithRefreshInterval(extendExpiration))
+	opts := []distlock.Option{
+		distlock.WithLockTimeout(defaultExpiration),
+		distlock.WithLockName(w.lockName),
+	}
+	w.locker, _ = distlock.NewGORMLocker(w.db, opts...)
 	ticker := time.NewTicker(defaultExpiration + (5 * time.Second))
+	ctx := wait.ContextForChannel(stopCh)
 	var err error
 	for {
 		// Obtain a lock for our given mutex. After this is successful, no one else
 		// can obtain the same lock (the same mutex name) until we unlock it.
-		w.locker, err = locker.ObtainTimeout(w.lockName, 5)
-		if err == nil {
+		if err := w.locker.Lock(ctx); err == nil {
 			w.logger.Debug("Successfully acquired lock", "lockName", w.lockName)
 			break
 		}
+
 		w.logger.Debug("Failed to acquire lock.", "lockName", w.lockName, "err", err)
 		<-ticker.C
 	}
@@ -168,7 +172,7 @@ func (w *Watch) Stop() {
 		w.logger.Error(errors.New("context was not done immediately"), "timeout", jobStopTimeout.String())
 	}
 
-	if err := w.locker.Release(); err != nil {
+	if err := w.locker.Unlock(ctx); err != nil {
 		w.logger.Debug("Failed to release lock", "err", err)
 	}
 
