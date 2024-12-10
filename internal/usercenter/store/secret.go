@@ -24,13 +24,13 @@ type SecretStore interface {
 	Update(ctx context.Context, secret *model.SecretM) error
 
 	// Delete removes secrets with the specified options.
-	Delete(ctx context.Context, opts *where.WhereOptions) error
+	Delete(ctx context.Context, opts *where.Options) error
 
 	// Get retrieves a secret with the specified options.
-	Get(ctx context.Context, opts *where.WhereOptions) (*model.SecretM, error)
+	Get(ctx context.Context, opts *where.Options) (*model.SecretM, error)
 
 	// List returns a list of secrets with the specified options.
-	List(ctx context.Context, opts *where.WhereOptions) (int64, []*model.SecretM, error)
+	List(ctx context.Context, opts *where.Options) (int64, []*model.SecretM, error)
 
 	SecretExpansion
 }

@@ -25,5 +25,5 @@ func (b *PeerController) List(c *gin.Context) {
 		}
 	}
 
-	core.WriteResponse(c, nil, slice)
+	core.Respond(c, nil, slice)
 }

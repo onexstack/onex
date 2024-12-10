@@ -24,13 +24,13 @@ type UserStore interface {
 	Update(ctx context.Context, user *model.UserM) error
 
 	// Delete removes users with the specified options.
-	Delete(ctx context.Context, opts *where.WhereOptions) error
+	Delete(ctx context.Context, opts *where.Options) error
 
 	// Get retrieves a user with the specified options.
-	Get(ctx context.Context, opts *where.WhereOptions) (*model.UserM, error)
+	Get(ctx context.Context, opts *where.Options) (*model.UserM, error)
 
 	// List returns a list of users with the specified options.
-	List(ctx context.Context, opts *where.WhereOptions) (int64, []*model.UserM, error)
+	List(ctx context.Context, opts *where.Options) (int64, []*model.UserM, error)
 
 	UserExpansion
 }

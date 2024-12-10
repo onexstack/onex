@@ -17,11 +17,11 @@ import (
 func (b *PeerController) Create(c *gin.Context) {
 	var r v1.CreatePeerRequest
 	if err := c.ShouldBindJSON(&r); err != nil {
-		core.WriteResponse(c, err, nil)
+		core.Respond(c, err, nil)
 		return
 	}
 
 	ws.ConnectToPeers(c, b.bs, b.ss, []string{r.Peer})
 
-	core.WriteResponse(c, nil, nil)
+	core.Respond(c, nil, nil)
 }

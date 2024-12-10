@@ -22,7 +22,7 @@ import (
 func installRouters(g *gin.Engine, bs *blc.BlockSet, ss *ws.Sockets, accounts map[string]string) {
 	// 注册 404 Handler.
 	g.NoRoute(func(c *gin.Context) {
-		core.WriteResponse(c, v1.ErrorPageNotFound("route not found"), nil)
+		core.Respond(c, v1.ErrorPageNotFound("route not found"), nil)
 	})
 
 	// 注册 pprof 路由

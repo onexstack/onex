@@ -42,7 +42,7 @@ func (o *orders) Create(ctx context.Context, order *model.OrderM) error {
 }
 
 // Get 根据用户名查询指定 order 的数据库记录.
-func (o *orders) Get(ctx context.Context, opts *where.WhereOptions) (*model.OrderM, error) {
+func (o *orders) Get(ctx context.Context, opts *where.Options) (*model.OrderM, error) {
 	o.ds.Lock()
 	defer o.ds.Unlock()
 
@@ -70,7 +70,7 @@ func (o *orders) Update(ctx context.Context, order *model.OrderM) error {
 }
 
 // List 根据 offset 和 limit 返回 order 列表.
-func (o *orders) List(ctx context.Context, opts *where.WhereOptions) (count int64, ret []*model.OrderM, err error) {
+func (o *orders) List(ctx context.Context, opts *where.Options) (count int64, ret []*model.OrderM, err error) {
 	o.ds.Lock()
 	defer o.ds.Unlock()
 
@@ -89,7 +89,7 @@ func (o *orders) List(ctx context.Context, opts *where.WhereOptions) (count int6
 }
 
 // Delete 根据 orderID 删除数据库 order 记录.
-func (o *orders) Delete(ctx context.Context, opts *where.WhereOptions) error {
+func (o *orders) Delete(ctx context.Context, opts *where.Options) error {
 	o.ds.Lock()
 	defer o.ds.Unlock()
 

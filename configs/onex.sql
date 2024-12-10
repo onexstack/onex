@@ -137,12 +137,14 @@ DROP TABLE IF EXISTS `fs_order`;
 CREATE TABLE `fs_order` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `order_id` longtext DEFAULT NULL,
+  `user_id` varchar(253) NOT NULL DEFAULT '' COMMENT '用户 ID',
   `customer` longtext DEFAULT NULL,
   `product` longtext DEFAULT NULL,
   `quantity` bigint(20) DEFAULT NULL,
   `created_at` datetime(3) DEFAULT NULL,
   `updated_at` datetime(3) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  INDEX `idx_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='订单表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 

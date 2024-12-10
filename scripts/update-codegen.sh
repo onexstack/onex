@@ -102,7 +102,8 @@ fi
 #
 # Some of the later codegens depend on the results of this, so it needs to come
 # first in the case of regenerating everything.
-function todo::codegen::protobuf() {
+function codegen::protobuf() {
+    ${SCRIPTS_DIR}/fix-protobuf.sh
     # NOTE: All output from this script needs to be copied back to the calling
     # source tree.  This is managed in onex::build::copy_output in build/common.sh.
     # If the output set is changed update that function.
@@ -150,6 +151,7 @@ function todo::codegen::protobuf() {
 
     # Fix `pkg/apis/apps/v1beta1/generated.pb.go:49:10: undefined: ObjectReference` compile errors
     # cp ${ONEX_ROOT}/manifests/generated.pb.go.fix ${ONEX_ROOT}/pkg/apis/apps/v1beta1/generated.pb.go
+    ${SCRIPTS_DIR}/fix-protobuf.sh
 }
 
 # Deep-copy generation

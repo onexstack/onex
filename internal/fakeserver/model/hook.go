@@ -13,8 +13,8 @@ import (
 )
 
 // AfterCreate runs after creating a OrderM database record and updates the OrderID field.
-func (o *OrderM) AfterCreate(tx *gorm.DB) (err error) {
-	o.OrderID = zid.Order.New(uint64(o.ID)) // Generate and set a new order ID.
+func (m *OrderM) AfterCreate(tx *gorm.DB) (err error) {
+	m.OrderID = zid.Order.New(uint64(m.ID)) // Generate and set a new order ID.
 
-	return tx.Save(o).Error // Save the updated order record to the database.
+	return tx.Save(m).Error // Save the updated order record to the database.
 }

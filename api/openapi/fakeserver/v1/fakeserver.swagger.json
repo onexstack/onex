@@ -91,7 +91,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1OrderReply"
+              "$ref": "#/definitions/v1GetOrderResponse"
             }
           },
           "default": {
@@ -119,8 +119,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/definitions/v1DeleteOrderResponse"
             }
           },
           "default": {
@@ -148,8 +147,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/definitions/v1UpdateOrderResponse"
             }
           },
           "default": {
@@ -246,6 +244,17 @@
         }
       }
     },
+    "v1DeleteOrderResponse": {
+      "type": "object"
+    },
+    "v1GetOrderResponse": {
+      "type": "object",
+      "properties": {
+        "order": {
+          "$ref": "#/definitions/v1Order"
+        }
+      }
+    },
     "v1ListOrderResponse": {
       "type": "object",
       "properties": {
@@ -256,12 +265,12 @@
         "Orders": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/v1OrderReply"
+            "$ref": "#/definitions/v1Order"
           }
         }
       }
     },
-    "v1OrderReply": {
+    "v1Order": {
       "type": "object",
       "properties": {
         "orderID": {
@@ -286,6 +295,9 @@
           "format": "date-time"
         }
       }
+    },
+    "v1UpdateOrderResponse": {
+      "type": "object"
     }
   }
 }

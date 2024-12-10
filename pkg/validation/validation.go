@@ -8,6 +8,7 @@ package validation
 
 import (
 	"context"
+	"fmt"
 	"reflect"
 	"strings"
 
@@ -85,4 +86,42 @@ func extractValidationMethods(customValidator any) map[string]reflect.Value {
 	}
 
 	return funcs
+}
+
+// ValidRequired 验证结构体中的必需字段是否存在且不为空.
+func ValidRequired(obj any, requiredFields ...string) error {
+	val := reflect.ValueOf(obj)
+
+	// 检查 obj 是否为结构体或指向结构体的指针
+	if val.Kind() != reflect.Struct && val.Kind() != reflect.Ptr {
+		return fmt.Errorf("input must be a struct or a pointer to a struct. Got %s", val.Kind().String())
+	}
+
+	// 如果是指针，获取指向的结构体值
+	if val.Kind() == reflect.Ptr {
+		val = val.Elem()
+	}
+
+	// 仍需确保最终值是结构体
+	if val.Kind() != reflect.Struct {
+		return fmt.Errorf("input must be a struct or a pointer to a struct. Got %s", val.Kind().String())
+	}
+
+	// 遍历需要验证的字段
+	for _, field := range requiredFields {
+		// 使用反射获取字段
+		fieldVal := val.FieldByName(field)
+
+		// 判断字段是否存在
+		if !fieldVal.IsValid() {
+			return fmt.Errorf("field %s does not exist in struct", field)
+		}
+
+		// 检查字段是否为 nil
+		if fieldVal.IsNil() {
+			return fmt.Errorf("field %s must be provided", field)
+		}
+	}
+
+	return nil
 }

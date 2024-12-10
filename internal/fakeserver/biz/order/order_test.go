@@ -68,9 +68,9 @@ func Test_orderBiz_List(t *testing.T) {
 
 	// 构造期望的返回结果
 	fakeOrders := []*model.OrderM{fakeOrder(1), fakeOrder(2), fakeOrder(3)}
-	wantOrders := make([]*v1.OrderReply, 0, len(fakeOrders))
+	wantOrders := make([]*v1.Order, 0, len(fakeOrders))
 	for _, o := range fakeOrders {
-		wantOrders = append(wantOrders, &v1.OrderReply{
+		wantOrders = append(wantOrders, &v1.Order{
 			OrderID:   o.OrderID,
 			Customer:  o.Customer,
 			Product:   o.Product,

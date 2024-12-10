@@ -41,13 +41,13 @@ type OrderStore interface {
 	Update(ctx context.Context, order *model.OrderM) error
 
 	// Delete removes orders from the store based on the provided conditions.
-	Delete(ctx context.Context, opts *where.WhereOptions) error
+	Delete(ctx context.Context, opts *where.Options) error
 
 	// Get retrieves a single order from the store based on the provided conditions.
-	Get(ctx context.Context, opts *where.WhereOptions) (*model.OrderM, error)
+	Get(ctx context.Context, opts *where.Options) (*model.OrderM, error)
 
 	// List retrieves a list of orders from the store based on the provided conditions.
-	List(ctx context.Context, opts *where.WhereOptions) (int64, []*model.OrderM, error)
+	List(ctx context.Context, opts *where.Options) (int64, []*model.OrderM, error)
 
 	OrderExpansion
 }

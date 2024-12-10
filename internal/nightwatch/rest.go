@@ -81,7 +81,7 @@ func (rs *RESTServer) Start() {
 
 func InstallJobAPI(router *gin.Engine, db *gorm.DB) {
 	router.NoRoute(func(c *gin.Context) {
-		core.WriteResponse(c, zerrors.ErrorPageNotFound("route not found"), nil)
+		core.Respond(c, zerrors.ErrorPageNotFound("route not found"), nil)
 	})
 
 	svc := wireService(db)
