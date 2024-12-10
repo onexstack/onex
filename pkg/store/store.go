@@ -78,7 +78,7 @@ func (s *Store[T]) Update(ctx context.Context, obj *T) error {
 }
 
 // Delete removes an object from the database based on the provided where options.
-func (s *Store[T]) Delete(ctx context.Context, opts *where.WhereOptions) error {
+func (s *Store[T]) Delete(ctx context.Context, opts *where.Options) error {
 	err := s.db(ctx, opts).Delete(new(T)).Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		s.logger.Error(err, "Failed to delete object from database", "conditions", opts)
@@ -88,7 +88,7 @@ func (s *Store[T]) Delete(ctx context.Context, opts *where.WhereOptions) error {
 }
 
 // Get retrieves a single object from the database based on the provided where options.
-func (s *Store[T]) Get(ctx context.Context, opts *where.WhereOptions) (*T, error) {
+func (s *Store[T]) Get(ctx context.Context, opts *where.Options) (*T, error) {
 	var obj T
 	if err := s.db(ctx, opts).First(&obj).Error; err != nil {
 		s.logger.Error(err, "Failed to retrieve object from database", "conditions", opts)
@@ -98,7 +98,7 @@ func (s *Store[T]) Get(ctx context.Context, opts *where.WhereOptions) (*T, error
 }
 
 // List retrieves a list of objects from the database based on the provided where options.
-func (s *Store[T]) List(ctx context.Context, opts *where.WhereOptions) (count int64, ret []*T, err error) {
+func (s *Store[T]) List(ctx context.Context, opts *where.Options) (count int64, ret []*T, err error) {
 	err = s.db(ctx, opts).Order("id desc").Find(&ret).Offset(-1).Limit(-1).Count(&count).Error
 	if err != nil {
 		s.logger.Error(err, "Failed to list objects from database", "conditions", opts)

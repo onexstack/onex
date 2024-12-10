@@ -18,13 +18,13 @@ type CronJobStore interface {
 	Update(ctx context.Context, cronJob *model.CronJobM) error
 
 	// Delete removes cron jobs with the specified options.
-	Delete(ctx context.Context, opts *where.WhereOptions) error
+	Delete(ctx context.Context, opts *where.Options) error
 
 	// Get retrieves a cron job with the specified options.
-	Get(ctx context.Context, opts *where.WhereOptions) (*model.CronJobM, error)
+	Get(ctx context.Context, opts *where.Options) (*model.CronJobM, error)
 
 	// List returns a list of cron jobs with the specified options.
-	List(ctx context.Context, opts *where.WhereOptions) (int64, []*model.CronJobM, error)
+	List(ctx context.Context, opts *where.Options) (int64, []*model.CronJobM, error)
 
 	CronJobExpansion
 }

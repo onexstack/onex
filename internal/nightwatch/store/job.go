@@ -18,13 +18,13 @@ type JobStore interface {
 	Update(ctx context.Context, job *model.JobM) error
 
 	// Delete removes jobs with the specified options.
-	Delete(ctx context.Context, opts *where.WhereOptions) error
+	Delete(ctx context.Context, opts *where.Options) error
 
 	// Get retrieves a job with the specified options..
-	Get(ctx context.Context, opts *where.WhereOptions) (*model.JobM, error)
+	Get(ctx context.Context, opts *where.Options) (*model.JobM, error)
 
 	// List returns a list of jobs with the specified options.
-	List(ctx context.Context, opts *where.WhereOptions) (int64, []*model.JobM, error)
+	List(ctx context.Context, opts *where.Options) (int64, []*model.JobM, error)
 
 	JobExpansion
 }

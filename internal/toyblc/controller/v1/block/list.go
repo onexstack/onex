@@ -13,5 +13,5 @@ import (
 )
 
 func (b *BlockController) List(c *gin.Context) {
-	core.WriteResponse(c, nil, b.bs.List())
+	core.Respond(c, nil, b.bs.List())
 }

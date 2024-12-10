@@ -9,7 +9,6 @@ syntax = "proto3";
 package fakeserver.v1; // 告诉编译器此文件使用什么版本的语法
 
 import "google/api/annotations.proto";
-import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/superproj/onex/pkg/api/fakeserver/v1;v1";
@@ -22,25 +21,35 @@ service FakeServer {
     };
   }
 
-  rpc ListOrder(ListOrderRequest) returns (ListOrderResponse) {
-    option (google.api.http) = {get: "/v1/orders"};
-  }
-
-  rpc GetOrder(GetOrderRequest) returns (OrderReply) {
-    option (google.api.http) = {get: "/v1/orders/{orderID}"};
-  }
-
-  rpc UpdateOrder(UpdateOrderRequest) returns (google.protobuf.Empty) {
+  rpc UpdateOrder(UpdateOrderRequest) returns (UpdateOrderResponse) {
     option (google.api.http) = {
       put: "/v1/orders/{orderID}",
       body: "*",
     };
   }
 
-  rpc DeleteOrder(DeleteOrderRequest) returns (google.protobuf.Empty) {
+  rpc DeleteOrder(DeleteOrderRequest) returns (DeleteOrderResponse) {
     option (google.api.http) = {delete: "/v1/orders/{orderID}"};
   }
+
+  rpc GetOrder(GetOrderRequest) returns (GetOrderResponse) {
+    option (google.api.http) = {get: "/v1/orders/{orderID}"};
+  }
+
+  rpc ListOrder(ListOrderRequest) returns (ListOrderResponse) {
+    option (google.api.http) = {get: "/v1/orders"};
+  }
 }
+
+message Order {
+  string orderID = 1; // 订单 ID
+  string customer = 2; // 顾客姓名
+  string product = 3; // 产品名称
+  int64 quantity = 4; // 购买数量
+  google.protobuf.Timestamp createdAt = 5; // 创建时间
+  google.protobuf.Timestamp updatedAt = 6; // 更新时间
+}
+
 
 message CreateOrderRequest {
   string customer = 1; 
@@ -52,17 +61,11 @@ message CreateOrderResponse {
   string orderID = 1;
 }
 
-message OrderReply {
-  string orderID = 1; // 订单 ID
-  string customer = 2; // 顾客姓名
-  string product = 3; // 产品名称
-  int64 quantity = 4; // 购买数量
-  google.protobuf.Timestamp createdAt = 5; // 创建时间
-  google.protobuf.Timestamp updatedAt = 6; // 更新时间
-}
-
 message DeleteOrderRequest {
   string orderID = 1;
+}
+
+message DeleteOrderResponse {
 }
 
 message UpdateOrderRequest {
@@ -73,6 +76,9 @@ message UpdateOrderRequest {
   optional int64 quantity = 4;
 }
 
+message UpdateOrderResponse {
+}
+
 message ListOrderRequest {
   int64 limit = 1;
   int64 offset = 2;
@@ -80,9 +86,13 @@ message ListOrderRequest {
 
 message ListOrderResponse {
   int64 totalCount = 1;
-  repeated OrderReply Orders = 2;
+  repeated Order Orders = 2;
 }
 
 message GetOrderRequest {
   string orderID = 1;
+}
+
+message GetOrderResponse {
+  Order order = 1;
 }

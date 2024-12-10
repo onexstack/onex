@@ -24,13 +24,13 @@ type MinerStore interface {
 	Update(ctx context.Context, miner *model.MinerM) error
 
 	// Delete removes miners with the specified options.
-	Delete(ctx context.Context, opts *where.WhereOptions) error
+	Delete(ctx context.Context, opts *where.Options) error
 
 	// Get retrieves a miner with the specified options.
-	Get(ctx context.Context, opts *where.WhereOptions) (*model.MinerM, error)
+	Get(ctx context.Context, opts *where.Options) (*model.MinerM, error)
 
 	// List returns a list of miners with the specified options.
-	List(ctx context.Context, opts *where.WhereOptions) (int64, []*model.MinerM, error)
+	List(ctx context.Context, opts *where.Options) (int64, []*model.MinerM, error)
 
 	MinerExpansion
 }

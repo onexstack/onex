@@ -24,13 +24,13 @@ type ChainStore interface {
 	Update(ctx context.Context, chain *model.ChainM) error
 
 	// Delete removes chains with the specified options.
-	Delete(ctx context.Context, opts *where.WhereOptions) error
+	Delete(ctx context.Context, opts *where.Options) error
 
 	// Get retrieves a chain with the specified options.
-	Get(ctx context.Context, opts *where.WhereOptions) (*model.ChainM, error)
+	Get(ctx context.Context, opts *where.Options) (*model.ChainM, error)
 
 	// List returns a list of chains with the specified options.
-	List(ctx context.Context, opts *where.WhereOptions) (int64, []*model.ChainM, error)
+	List(ctx context.Context, opts *where.Options) (int64, []*model.ChainM, error)
 
 	ChainExpansion
 }

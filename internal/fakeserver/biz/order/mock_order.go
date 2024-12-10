@@ -71,10 +71,10 @@ func (mr *MockOrderBizMockRecorder) Delete(arg0, arg1 any) *gomock.Call {
 }
 
 // Get mocks base method.
-func (m *MockOrderBiz) Get(arg0 context.Context, arg1 *v1.GetOrderRequest) (*v1.OrderReply, error) {
+func (m *MockOrderBiz) Get(arg0 context.Context, arg1 *v1.GetOrderRequest) (*v1.Order, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Get", arg0, arg1)
-	ret0, _ := ret[0].(*v1.OrderReply)
+	ret0, _ := ret[0].(*v1.Order)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

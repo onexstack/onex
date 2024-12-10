@@ -103,10 +103,12 @@ CREATE TABLE `api_miner` (
 CREATE TABLE `fs_order` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `order_id` longtext DEFAULT NULL,
+  `user_id` varchar(253) NOT NULL DEFAULT '' COMMENT '用户 ID',
   `customer` longtext DEFAULT NULL,
   `product` longtext DEFAULT NULL,
   `quantity` bigint(20) DEFAULT NULL,
   `created_at` datetime(3) DEFAULT NULL,
   `updated_at` datetime(3) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  INDEX `idx_user_id` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COMMENT='订单表';

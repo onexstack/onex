@@ -10,7 +10,6 @@ import (
 	context "context"
 	http "github.com/go-kratos/kratos/v2/transport/http"
 	binding "github.com/go-kratos/kratos/v2/transport/http/binding"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -28,19 +27,19 @@ const OperationFakeServerUpdateOrder = "/fakeserver.v1.FakeServer/UpdateOrder"
 
 type FakeServerHTTPServer interface {
 	CreateOrder(context.Context, *CreateOrderRequest) (*CreateOrderResponse, error)
-	DeleteOrder(context.Context, *DeleteOrderRequest) (*emptypb.Empty, error)
-	GetOrder(context.Context, *GetOrderRequest) (*OrderReply, error)
+	DeleteOrder(context.Context, *DeleteOrderRequest) (*DeleteOrderResponse, error)
+	GetOrder(context.Context, *GetOrderRequest) (*GetOrderResponse, error)
 	ListOrder(context.Context, *ListOrderRequest) (*ListOrderResponse, error)
-	UpdateOrder(context.Context, *UpdateOrderRequest) (*emptypb.Empty, error)
+	UpdateOrder(context.Context, *UpdateOrderRequest) (*UpdateOrderResponse, error)
 }
 
 func RegisterFakeServerHTTPServer(s *http.Server, srv FakeServerHTTPServer) {
 	r := s.Route("/")
 	r.POST("/v1/orders", _FakeServer_CreateOrder0_HTTP_Handler(srv))
-	r.GET("/v1/orders", _FakeServer_ListOrder0_HTTP_Handler(srv))
-	r.GET("/v1/orders/{orderID}", _FakeServer_GetOrder0_HTTP_Handler(srv))
 	r.PUT("/v1/orders/{orderID}", _FakeServer_UpdateOrder0_HTTP_Handler(srv))
 	r.DELETE("/v1/orders/{orderID}", _FakeServer_DeleteOrder0_HTTP_Handler(srv))
+	r.GET("/v1/orders/{orderID}", _FakeServer_GetOrder0_HTTP_Handler(srv))
+	r.GET("/v1/orders", _FakeServer_ListOrder0_HTTP_Handler(srv))
 }
 
 func _FakeServer_CreateOrder0_HTTP_Handler(srv FakeServerHTTPServer) func(ctx http.Context) error {
@@ -65,47 +64,6 @@ func _FakeServer_CreateOrder0_HTTP_Handler(srv FakeServerHTTPServer) func(ctx ht
 	}
 }
 
-func _FakeServer_ListOrder0_HTTP_Handler(srv FakeServerHTTPServer) func(ctx http.Context) error {
-	return func(ctx http.Context) error {
-		var in ListOrderRequest
-		if err := ctx.BindQuery(&in); err != nil {
-			return err
-		}
-		http.SetOperation(ctx, OperationFakeServerListOrder)
-		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.ListOrder(ctx, req.(*ListOrderRequest))
-		})
-		out, err := h(ctx, &in)
-		if err != nil {
-			return err
-		}
-		reply := out.(*ListOrderResponse)
-		return ctx.Result(200, reply)
-	}
-}
-
-func _FakeServer_GetOrder0_HTTP_Handler(srv FakeServerHTTPServer) func(ctx http.Context) error {
-	return func(ctx http.Context) error {
-		var in GetOrderRequest
-		if err := ctx.BindQuery(&in); err != nil {
-			return err
-		}
-		if err := ctx.BindVars(&in); err != nil {
-			return err
-		}
-		http.SetOperation(ctx, OperationFakeServerGetOrder)
-		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.GetOrder(ctx, req.(*GetOrderRequest))
-		})
-		out, err := h(ctx, &in)
-		if err != nil {
-			return err
-		}
-		reply := out.(*OrderReply)
-		return ctx.Result(200, reply)
-	}
-}
-
 func _FakeServer_UpdateOrder0_HTTP_Handler(srv FakeServerHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in UpdateOrderRequest
@@ -126,7 +84,7 @@ func _FakeServer_UpdateOrder0_HTTP_Handler(srv FakeServerHTTPServer) func(ctx ht
 		if err != nil {
 			return err
 		}
-		reply := out.(*emptypb.Empty)
+		reply := out.(*UpdateOrderResponse)
 		return ctx.Result(200, reply)
 	}
 }
@@ -148,17 +106,58 @@ func _FakeServer_DeleteOrder0_HTTP_Handler(srv FakeServerHTTPServer) func(ctx ht
 		if err != nil {
 			return err
 		}
-		reply := out.(*emptypb.Empty)
+		reply := out.(*DeleteOrderResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _FakeServer_GetOrder0_HTTP_Handler(srv FakeServerHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetOrderRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationFakeServerGetOrder)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetOrder(ctx, req.(*GetOrderRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetOrderResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _FakeServer_ListOrder0_HTTP_Handler(srv FakeServerHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in ListOrderRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationFakeServerListOrder)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.ListOrder(ctx, req.(*ListOrderRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*ListOrderResponse)
 		return ctx.Result(200, reply)
 	}
 }
 
 type FakeServerHTTPClient interface {
 	CreateOrder(ctx context.Context, req *CreateOrderRequest, opts ...http.CallOption) (rsp *CreateOrderResponse, err error)
-	DeleteOrder(ctx context.Context, req *DeleteOrderRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
-	GetOrder(ctx context.Context, req *GetOrderRequest, opts ...http.CallOption) (rsp *OrderReply, err error)
+	DeleteOrder(ctx context.Context, req *DeleteOrderRequest, opts ...http.CallOption) (rsp *DeleteOrderResponse, err error)
+	GetOrder(ctx context.Context, req *GetOrderRequest, opts ...http.CallOption) (rsp *GetOrderResponse, err error)
 	ListOrder(ctx context.Context, req *ListOrderRequest, opts ...http.CallOption) (rsp *ListOrderResponse, err error)
-	UpdateOrder(ctx context.Context, req *UpdateOrderRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
+	UpdateOrder(ctx context.Context, req *UpdateOrderRequest, opts ...http.CallOption) (rsp *UpdateOrderResponse, err error)
 }
 
 type FakeServerHTTPClientImpl struct {
@@ -182,8 +181,8 @@ func (c *FakeServerHTTPClientImpl) CreateOrder(ctx context.Context, in *CreateOr
 	return &out, err
 }
 
-func (c *FakeServerHTTPClientImpl) DeleteOrder(ctx context.Context, in *DeleteOrderRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
-	var out emptypb.Empty
+func (c *FakeServerHTTPClientImpl) DeleteOrder(ctx context.Context, in *DeleteOrderRequest, opts ...http.CallOption) (*DeleteOrderResponse, error) {
+	var out DeleteOrderResponse
 	pattern := "/v1/orders/{orderID}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationFakeServerDeleteOrder))
@@ -195,8 +194,8 @@ func (c *FakeServerHTTPClientImpl) DeleteOrder(ctx context.Context, in *DeleteOr
 	return &out, err
 }
 
-func (c *FakeServerHTTPClientImpl) GetOrder(ctx context.Context, in *GetOrderRequest, opts ...http.CallOption) (*OrderReply, error) {
-	var out OrderReply
+func (c *FakeServerHTTPClientImpl) GetOrder(ctx context.Context, in *GetOrderRequest, opts ...http.CallOption) (*GetOrderResponse, error) {
+	var out GetOrderResponse
 	pattern := "/v1/orders/{orderID}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationFakeServerGetOrder))
@@ -221,8 +220,8 @@ func (c *FakeServerHTTPClientImpl) ListOrder(ctx context.Context, in *ListOrderR
 	return &out, err
 }
 
-func (c *FakeServerHTTPClientImpl) UpdateOrder(ctx context.Context, in *UpdateOrderRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
-	var out emptypb.Empty
+func (c *FakeServerHTTPClientImpl) UpdateOrder(ctx context.Context, in *UpdateOrderRequest, opts ...http.CallOption) (*UpdateOrderResponse, error) {
+	var out UpdateOrderResponse
 	pattern := "/v1/orders/{orderID}"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationFakeServerUpdateOrder))

@@ -50,7 +50,7 @@ func BasicAuth(accounts map[string]string) gin.HandlerFunc {
 		if !found {
 			// Credentials doesn't match, we return 401 and abort handlers chain.
 			c.Header("WWW-Authenticate", realm)
-			core.WriteResponse(
+			core.Respond(
 				c,
 				errors.Unauthorized("UNAUTHORIZED", "The username or password is incorrect"),
 				nil,

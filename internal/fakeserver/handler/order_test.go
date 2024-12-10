@@ -4,7 +4,7 @@
 // this file is https://github.com/superproj/onex.
 //
 
-package service
+package handler
 
 import (
 	"context"
@@ -18,7 +18,7 @@ import (
 	v1 "github.com/superproj/onex/pkg/api/fakeserver/v1"
 )
 
-func TestFakeServerService_CreateOrder(t *testing.T) {
+func TestFakeServerHandler_CreateOrder(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -59,11 +59,11 @@ func TestFakeServerService_CreateOrder(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := &FakeServerService{
+			h := &FakeServerHandler{
 				UnimplementedFakeServerServer: tt.fields.UnimplementedFakeServerServer,
 				biz:                           tt.fields.biz,
 			}
-			got, err := s.CreateOrder(tt.args.ctx, tt.args.rq)
+			got, err := h.CreateOrder(tt.args.ctx, tt.args.rq)
 			assert.Nil(t, err)
 			assert.Equal(t, tt.want, got)
 		})

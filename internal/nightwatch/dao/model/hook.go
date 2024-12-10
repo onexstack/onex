@@ -7,15 +7,15 @@ import (
 )
 
 // AfterCreate runs after creating a CronJobM database record and updates the JobID field.
-func (cj *CronJobM) AfterCreate(tx *gorm.DB) (err error) {
-	cj.CronJobID = zid.CronJob.New(uint64(cj.ID)) // Generate and set a new cronjob ID.
+func (m *CronJobM) AfterCreate(tx *gorm.DB) (err error) {
+	m.CronJobID = zid.CronJob.New(uint64(m.ID)) // Generate and set a new cronjob ID.
 
-	return tx.Save(cj).Error // Save the updated cronjob record to the database.
+	return tx.Save(m).Error // Save the updated cronjob record to the database.
 }
 
 // AfterCreate runs after creating a JobM database record and updates the JobID field.
-func (j *JobM) AfterCreate(tx *gorm.DB) (err error) {
-	j.JobID = zid.Job.New(uint64(j.ID)) // Generate and set a new job ID.
+func (m *JobM) AfterCreate(tx *gorm.DB) (err error) {
+	m.JobID = zid.Job.New(uint64(m.ID)) // Generate and set a new job ID.
 
-	return tx.Save(j).Error // Save the updated job record to the database.
+	return tx.Save(m).Error // Save the updated job record to the database.
 }

@@ -7,18 +7,21 @@
 package fakeserver
 
 import (
+	"context"
 	"os"
 
 	"github.com/jinzhu/copier"
 
 	"github.com/superproj/onex/internal/fakeserver/biz"
+	"github.com/superproj/onex/internal/fakeserver/handler"
 	"github.com/superproj/onex/internal/fakeserver/model"
-	"github.com/superproj/onex/internal/fakeserver/service"
 	"github.com/superproj/onex/internal/fakeserver/store"
 	"github.com/superproj/onex/internal/fakeserver/store/fake"
 	"github.com/superproj/onex/internal/fakeserver/store/mysql"
+	"github.com/superproj/onex/internal/pkg/contextx"
 	"github.com/superproj/onex/pkg/db"
 	genericoptions "github.com/superproj/onex/pkg/options"
+	"github.com/superproj/onex/pkg/store/where"
 )
 
 var (
@@ -50,13 +53,17 @@ type completedConfig struct {
 
 // FakeServer represents the fake server.
 type FakeServer struct {
-	httpsrv Server
-	grpcsrv Server
-	config  completedConfig
+	httpsrv    Server
+	grpcServer Server
+	config     completedConfig
 }
 
 // New returns a new instance of Server from the given config.
 func (c completedConfig) New(stopCh <-chan struct{}) (*FakeServer, error) {
+	where.RegisterTenant("user_id", func(ctx context.Context) string {
+		return contextx.FromUserID(ctx)
+	})
+
 	if err := c.JaegerOptions.SetTracerProvider(); err != nil {
 		return nil, err
 	}
@@ -77,22 +84,22 @@ func (c completedConfig) New(stopCh <-chan struct{}) (*FakeServer, error) {
 	}
 
 	biz := biz.NewBiz(ds)
-	srv := service.NewFakeServerService(biz)
+	h := handler.NewFakeServerHandler(biz)
 
-	grpcsrv, err := NewGRPCServer(c.GRPCOptions, c.TLSOptions, srv)
+	grpcServer, err := NewGRPCServer(c.GRPCOptions, c.TLSOptions, h)
 	if err != nil {
 		return nil, err
 	}
 
 	// Need start grpc server first. http server depends on grpc sever.
-	go grpcsrv.RunOrDie()
+	go grpcServer.RunOrDie()
 
 	httpsrv, err := NewHTTPServer(c.HTTPOptions, c.TLSOptions, c.GRPCOptions)
 	if err != nil {
 		return nil, err
 	}
 
-	return &FakeServer{grpcsrv: grpcsrv, httpsrv: httpsrv, config: c}, nil
+	return &FakeServer{grpcServer: grpcServer, httpsrv: httpsrv, config: c}, nil
 }
 
 func (s *FakeServer) Run(stopCh <-chan struct{}) error {
@@ -103,7 +110,7 @@ func (s *FakeServer) Run(stopCh <-chan struct{}) error {
 	// The most gracefully way is to shutdown the dependent service first,
 	// and then shutdown the depended service.
 	s.httpsrv.GracefulStop()
-	s.grpcsrv.GracefulStop()
+	s.grpcServer.GracefulStop()
 
 	return nil
 }
