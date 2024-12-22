@@ -1,9 +1,3 @@
-// Copyright 2020 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
-// Use of this source code is governed by a MIT style
-// license that can be found in the LICENSE file.
-
-// Package version supplies version information collected at build time to
-// apimachinery components.
 package version
 
 import (
@@ -15,27 +9,17 @@ import (
 )
 
 var (
-	// semantic version, derived by build scripts (see
-	// https://github.com/kubernetes/community/blob/master/contributors/design-proposals/release/versioning.md
-	// for a detailed discussion of this field)
-	//
-	// TODO: This field is still called "gitVersion" for legacy
-	// reasons. For prerelease versions, the build metadata on the
-	// semantic version is a git hash, but the version itself is no
-	// longer the direct output of "git describe", but a slight
-	// translation to be semver compliant.
-
-	// NOTE: The $Format strings are replaced during 'git archive' thanks to the
-	// companion .gitattributes file containing 'export-subst' in this same
-	// directory.  See also https://git-scm.com/docs/gitattributes
-	gitVersion   = "v0.0.0-master+$Format:%H$"
-	gitCommit    = "$Format:%H$" // sha1 from git, output of $(git rev-parse HEAD)
-	gitTreeState = ""            // state of git tree, either "clean" or "dirty"
-
-	buildDate = "1970-01-01T00:00:00Z" // build date in ISO8601 format, output of $(date -u +'%Y-%m-%dT%H:%M:%SZ')
+	// gitVersion 是语义化的版本号.
+	gitVersion = "v0.0.0-master+$Format:%h$"
+	// buildDate 是 ISO8601 格式的构建时间, $(date -u +'%Y-%m-%dT%H:%M:%SZ') 命令的输出.
+	buildDate = "1970-01-01T00:00:00Z"
+	// gitCommit 是 Git 的 SHA1 值，$(git rev-parse HEAD) 命令的输出.
+	gitCommit = "$Format:%H$"
+	// gitTreeState 代表构建时 Git 仓库的状态，可能的值有：clean, dirty.
+	gitTreeState = ""
 )
 
-// Info contains versioning information.
+// Info 包含了版本信息.
 type Info struct {
 	GitVersion   string `json:"gitVersion"`
 	GitCommit    string `json:"gitCommit"`
@@ -46,20 +30,19 @@ type Info struct {
 	Platform     string `json:"platform"`
 }
 
-// String returns info as a human-friendly version string.
+// String 返回人性化的版本信息字符串.
 func (info Info) String() string {
 	return info.GitVersion
 }
 
-// ToJSON returns the JSON string of version information.
+// ToJSON 以 JSON 格式返回版本信息.
 func (info Info) ToJSON() string {
 	s, _ := json.Marshal(info)
 
 	return string(s)
 }
 
-// Text encodes the version information into UTF-8-encoded text and
-// returns the result.
+// Text 将版本信息编码为 UTF-8 格式的文本，并返回.
 func (info Info) Text() string {
 	table := uitable.New()
 	table.RightAlign(0)
@@ -76,11 +59,9 @@ func (info Info) Text() string {
 	return table.String()
 }
 
-// Get returns the overall codebase version. It's for detecting
-// what code a binary was built from.
+// Get 返回详尽的代码库版本信息，用来标明二进制文件由哪个版本的代码构建.
 func Get() Info {
-	// These variables typically come from -ldflags settings and in
-	// their absence fallback to the settings in pkg/version/base.go
+	// 以下变量通常由 -ldflags 进行设置
 	return Info{
 		GitVersion:   gitVersion,
 		GitCommit:    gitCommit,
