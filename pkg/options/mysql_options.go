@@ -22,7 +22,7 @@ var _ IOptions = (*MySQLOptions)(nil)
 
 // MySQLOptions defines options for mysql database.
 type MySQLOptions struct {
-	Addr                  string        `json:"host,omitempty" mapstructure:"host"`
+	Addr                  string        `json:"addr,omitempty" mapstructure:"addr"`
 	Username              string        `json:"username,omitempty" mapstructure:"username"`
 	Password              string        `json:"-" mapstructure:"password"`
 	Database              string        `json:"database" mapstructure:"database"`

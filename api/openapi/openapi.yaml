@@ -7,18 +7,36 @@ info:
     description: MiniBlog 定义了一个 MiniBlog RPC 服务
     version: 0.0.1
 paths:
+    /healthz:
+        get:
+            tags:
+                - MiniBlog
+            description: Healthz 返回服务的健康检查状态
+            operationId: MiniBlog_Healthz
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/v1.HealthzResponse'
     /login:
         post:
             tags:
                 - MiniBlog
-            description: 用户登录
+            description: Login 用户登录
             operationId: MiniBlog_Login
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/v1.LoginRequest'
-                required: true
+            parameters:
+                - name: username
+                  in: query
+                  description: username 表示用户名称
+                  schema:
+                    type: string
+                - name: password
+                  in: query
+                  description: password 表示用户密码
+                  schema:
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -30,19 +48,22 @@ paths:
         get:
             tags:
                 - MiniBlog
-            description: 列出所有文章
+            description: ListPost 列出所有文章
             operationId: MiniBlog_ListPost
             parameters:
                 - name: offset
                   in: query
+                  description: offset 表示偏移量
                   schema:
                     type: string
                 - name: limit
                   in: query
+                  description: limit 表示每页数量
                   schema:
                     type: string
                 - name: title
                   in: query
+                  description: title 表示可选的标题过滤
                   schema:
                     type: string
             responses:
@@ -55,7 +76,7 @@ paths:
         post:
             tags:
                 - MiniBlog
-            description: 创建文章
+            description: CreatePost 创建文章
             operationId: MiniBlog_CreatePost
             requestBody:
                 content:
@@ -73,11 +94,12 @@ paths:
         delete:
             tags:
                 - MiniBlog
-            description: 删除文章
+            description: DeletePost 删除文章
             operationId: MiniBlog_DeletePost
             parameters:
                 - name: postIDs
                   in: query
+                  description: postIDs 表示要删除的文章 ID 列表
                   schema:
                     type: array
                     items:
@@ -93,11 +115,12 @@ paths:
         get:
             tags:
                 - MiniBlog
-            description: 获取文章信息
+            description: GetPost 获取文章信息
             operationId: MiniBlog_GetPost
             parameters:
                 - name: postID
                   in: path
+                  description: postID 表示要获取的文章 ID
                   required: true
                   schema:
                     type: string
@@ -111,11 +134,12 @@ paths:
         put:
             tags:
                 - MiniBlog
-            description: 更新文章
+            description: UpdatePost 更新文章
             operationId: MiniBlog_UpdatePost
             parameters:
                 - name: postID
                   in: path
+                  description: postID 表示要更新的文章 ID
                   required: true
                   schema:
                     type: string
@@ -136,15 +160,17 @@ paths:
         get:
             tags:
                 - MiniBlog
-            description: 列出所有用户
+            description: ListUser 列出所有用户
             operationId: MiniBlog_ListUser
             parameters:
                 - name: offset
                   in: query
+                  description: offset 表示偏移量
                   schema:
                     type: string
                 - name: limit
                   in: query
+                  description: limit 表示每页数量
                   schema:
                     type: string
             responses:
@@ -157,7 +183,7 @@ paths:
         post:
             tags:
                 - MiniBlog
-            description: 创建用户
+            description: CreateUser 创建用户
             operationId: MiniBlog_CreateUser
             requestBody:
                 content:
@@ -176,11 +202,12 @@ paths:
         get:
             tags:
                 - MiniBlog
-            description: 获取用户信息
+            description: GetUser 获取用户信息
             operationId: MiniBlog_GetUser
             parameters:
                 - name: userID
                   in: path
+                  description: userID 表示用户 ID
                   required: true
                   schema:
                     type: string
@@ -194,11 +221,12 @@ paths:
         put:
             tags:
                 - MiniBlog
-            description: 更新用户信息
+            description: UpdateUser 更新用户信息
             operationId: MiniBlog_UpdateUser
             parameters:
                 - name: userID
                   in: path
+                  description: userID 表示用户 ID
                   required: true
                   schema:
                     type: string
@@ -218,11 +246,12 @@ paths:
         delete:
             tags:
                 - MiniBlog
-            description: 删除用户
+            description: DeleteUser 删除用户
             operationId: MiniBlog_DeleteUser
             parameters:
                 - name: userID
                   in: path
+                  description: userID 表示用户 ID
                   required: true
                   schema:
                     type: string
@@ -237,11 +266,12 @@ paths:
         put:
             tags:
                 - MiniBlog
-            description: 修改密码
+            description: ChangePassword 修改密码
             operationId: MiniBlog_ChangePassword
             parameters:
                 - name: userID
                   in: path
+                  description: userID 表示用户 ID
                   required: true
                   schema:
                     type: string
@@ -265,10 +295,13 @@ components:
             properties:
                 userID:
                     type: string
+                    description: userID 表示用户 ID
                 oldPassword:
                     type: string
+                    description: oldPassword 表示当前密码
                 newPassword:
                     type: string
+                    description: newPassword 表示准备修改的新密码
             description: ChangePasswordRequest 表示修改密码请求
         v1.ChangePasswordResponse:
             type: object
@@ -279,34 +312,43 @@ components:
             properties:
                 title:
                     type: string
+                    description: title 表示博客标题
                 content:
                     type: string
+                    description: content 表示博客内容
             description: CreatePostRequest 表示创建文章请求
         v1.CreatePostResponse:
             type: object
             properties:
                 postID:
                     type: string
+                    description: postID 表示创建的文章 ID
             description: CreatePostResponse 表示创建文章响应
         v1.CreateUserRequest:
             type: object
             properties:
                 username:
                     type: string
+                    description: username 表示用户名称
                 password:
                     type: string
+                    description: password 表示用户密码
                 nickname:
                     type: string
+                    description: nickname 表示用户昵称
                 email:
                     type: string
+                    description: email 表示用户电子邮箱
                 phone:
                     type: string
+                    description: phone 表示用户手机号
             description: CreateUserRequest 表示创建用户请求
         v1.CreateUserResponse:
             type: object
             properties:
                 userID:
                     type: string
+                    description: userID 表示新创建的用户 ID
             description: CreateUserResponse 表示创建用户响应
         v1.DeletePostResponse:
             type: object
@@ -320,64 +362,85 @@ components:
             type: object
             properties:
                 post:
-                    $ref: '#/components/schemas/v1.Post'
+                    allOf:
+                        - $ref: '#/components/schemas/v1.Post'
+                    description: post 表示返回的文章信息
             description: GetPostResponse 表示获取文章响应
         v1.GetUserResponse:
             type: object
             properties:
                 user:
-                    $ref: '#/components/schemas/v1.User'
+                    allOf:
+                        - $ref: '#/components/schemas/v1.User'
+                    description: user 表示返回的用户信息
             description: GetUserResponse 表示获取用户响应
+        v1.HealthzResponse:
+            type: object
+            properties:
+                status:
+                    type: integer
+                    description: status 表示服务的健康状态
+                    format: enum
+                timestamp:
+                    type: string
+                    description: timestamp 表示请求的时间戳
+                message:
+                    type: string
+                    description: message 表示可选的状态消息，描述服务健康的更多信息
+            description: HealthzResponse 表示健康检查的响应结构体
         v1.ListPostResponse:
             type: object
             properties:
                 totalCount:
                     type: string
+                    description: total_count 表示总文章数
                 posts:
                     type: array
                     items:
                         $ref: '#/components/schemas/v1.Post'
+                    description: posts 表示文章列表
             description: ListPostResponse 表示获取文章列表响应
         v1.ListUserResponse:
             type: object
             properties:
                 totalCount:
                     type: string
+                    description: totalCount 表示总用户数
                 users:
                     type: array
                     items:
                         $ref: '#/components/schemas/v1.User'
+                    description: users 表示用户列表
             description: ListUserResponse 表示用户列表响应
-        v1.LoginRequest:
-            type: object
-            properties:
-                username:
-                    type: string
-                password:
-                    type: string
-            description: LoginRequest 表示登录请求
         v1.LoginResponse:
             type: object
             properties:
                 token:
                     type: string
+                    description: token 表示返回的身份验证令牌
             description: LoginResponse 表示登录响应
         v1.Post:
             type: object
             properties:
                 postID:
                     type: string
+                    description: postID 表示博文 ID
                 userID:
                     type: string
+                    description: userID 表示用户 ID
                 title:
                     type: string
+                    description: title 表示博客标题
                 content:
                     type: string
+                    description: content 表示博客内容
                 createdAt:
                     type: string
+                    description: createdAt 表示博客创建时间
                     format: date-time
                 updatedAt:
                     type: string
+                    description: updatedAt 表示博客最后更新时间
                     format: date-time
             description: Post 表示博客文章
         v1.UpdatePostRequest:
@@ -385,10 +448,13 @@ components:
             properties:
                 postID:
                     type: string
+                    description: postID 表示要更新的文章 ID
                 title:
                     type: string
+                    description: title 表示更新后的博客标题
                 content:
                     type: string
+                    description: content 表示更新后的博客内容
             description: UpdatePostRequest 表示更新文章请求
         v1.UpdatePostResponse:
             type: object
@@ -399,14 +465,19 @@ components:
             properties:
                 userID:
                     type: string
+                    description: userID 表示用户 ID
                 username:
                     type: string
+                    description: username 表示可选的用户名称
                 nickname:
                     type: string
+                    description: nickname 表示可选的用户昵称
                 email:
                     type: string
+                    description: email 表示可选的用户电子邮箱
                 phone:
                     type: string
+                    description: phone 表示可选的用户手机号
             description: UpdateUserRequest 表示更新用户请求
         v1.UpdateUserResponse:
             type: object
@@ -417,21 +488,29 @@ components:
             properties:
                 userID:
                     type: string
+                    description: userID 表示用户 ID
                 username:
                     type: string
+                    description: username 表示用户名称
                 nickname:
                     type: string
+                    description: nickname 表示用户昵称
                 email:
                     type: string
+                    description: email 表示用户电子邮箱
                 phone:
                     type: string
+                    description: phone 表示用户手机号
                 postCount:
                     type: string
+                    description: postCount 表示用户拥有的博客数量
                 createdAt:
                     type: string
+                    description: createdAt 表示用户注册时间
                     format: date-time
                 updatedAt:
                     type: string
+                    description: updatedAt 表示用户最后更新时间
                     format: date-time
             description: User 表示用户信息
 tags:
