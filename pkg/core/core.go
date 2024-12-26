@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/superproj/onex/pkg/xerrors"
+	"github.com/superproj/onex/pkg/errorsx"
 )
 
 // ErrorResponse 定义了一个错误响应结构体.
@@ -49,12 +49,12 @@ func ReadRequest(c *gin.Context, rq any, bindFn func(any) error) error {
 func WriteResponse(c *gin.Context, result any, err error) {
 	// 判断错误是否存在
 	if err != nil {
-		xerr := xerrors.FromError(err) // 从错误中获取详细信息
+		errx := errorsx.FromError(err) // 从错误中获取详细信息
 		// 返回错误响应
-		c.JSON(xerr.Code, &ErrorResponse{
-			Reason:   xerr.Reason,
-			Message:  xerr.Message,
-			Metadata: xerr.Metadata,
+		c.JSON(errx.Code, &ErrorResponse{
+			Reason:   errx.Reason,
+			Message:  errx.Message,
+			Metadata: errx.Metadata,
 		})
 		return
 	}
