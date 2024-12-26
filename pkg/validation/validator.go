@@ -47,7 +47,9 @@ func ValidateSelectedFields(obj any, rules Rules, fields ...string) error {
 		if fieldValue.Kind() == reflect.Ptr {
 			if fieldValue.IsNil() {
 				// 如果是指针类型但为 nil，返回错误
-				return fmt.Errorf("field '%s' cannot be nil", field)
+				// return fmt.Errorf("field '%s' cannot be nil", field)
+				// 如果是指针类型但为 nil，跳过验证
+				continue
 			}
 			// 如果是指针，取消引用，获取指针的实际值
 			fieldValue = fieldValue.Elem()

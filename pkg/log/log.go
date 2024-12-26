@@ -35,7 +35,7 @@ type Logger interface {
 	Panicw(msg string, keyvals ...any)
 	Fatalf(format string, args ...any)
 	Fatalw(msg string, keyvals ...any)
-	With(fields ...Field) Logger
+	W(fields ...Field) Logger
 	AddCallerSkip(skip int) Logger
 	Sync()
 
@@ -123,12 +123,11 @@ func NewLogger(opts *Options) *zapLogger {
 	if err != nil {
 		panic(err)
 	}
-	logger := &zapLogger{z: z, opts: opts}
 
-	// 把标准库的 log.Logger 的 info 级别的输出重定向到 zap.Logger
+	// 将标准库的 log 输出重定向到 zap.Logger
 	zap.RedirectStdLog(z)
 
-	return logger
+	return &zapLogger{z: z, opts: opts}
 }
 
 func Default() Logger {
@@ -254,13 +253,13 @@ func (l *zapLogger) Fatalw(msg string, keyvals ...any) {
 	l.z.Sugar().Fatalw(msg, keyvals...)
 }
 
-func With(fields ...Field) Logger {
-	return std.With(fields...)
+func W(fields ...Field) Logger {
+	return std.W(fields...)
 }
 
-// With creates a child logger and adds structured context to it. Fields added
+// Wcreates a child logger and adds structured context to it. Fields added
 // to the child don't affect the parent, and vice versa.
-func (l *zapLogger) With(fields ...Field) Logger {
+func (l *zapLogger) W(fields ...Field) Logger {
 	if len(fields) == 0 {
 		return l
 	}

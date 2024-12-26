@@ -51,7 +51,7 @@ func (l *zapLogger) WithContext(ctx context.Context, keyvals ...any) context.Con
 		data = append(data, zap.Any(fmt.Sprint(keyvals[i]), keyvals[i+1]))
 	}
 
-	return with(l.With(data...))
+	return with(l.W(data...))
 }
 
 // FromContext returns a logger with predefined values from a context.Context.
@@ -78,7 +78,7 @@ func FromContext(ctx context.Context, keyvals ...any) Logger {
 		data = append(data, zap.Any(fmt.Sprint(keyvals[i]), keyvals[i+1]))
 	}
 
-	return log.With(data...)
+	return log.W(data...)
 }
 
 // C represents for `FromContext` with empty keyvals.
