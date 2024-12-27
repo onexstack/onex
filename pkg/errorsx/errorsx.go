@@ -10,13 +10,6 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-const (
-	// UnknownCode 定义了未知错误的代码.
-	UnknownCode = http.StatusInternalServerError
-	// UnknownReason 定义了未知错误的原因.
-	UnknownReason = ""
-)
-
 // ErrorX 定义了 OneX 项目体系中使用的错误类型，用于描述错误的详细信息.
 type ErrorX struct {
 	// Code 表示错误的 HTTP 状态码，用于与客户端进行交互时标识错误的类型.
@@ -106,7 +99,7 @@ func Code(err error) int {
 // Reason 返回特定错误的原因.
 func Reason(err error) string {
 	if err == nil {
-		return UnknownReason
+		return ErrInternal.Reason
 	}
 	return FromError(err).Reason
 }
@@ -129,12 +122,12 @@ func FromError(err error) *ErrorX {
 	// 则返回一个带有默认值的 ErrorX，表示是一个未知类型的错误.
 	gs, ok := status.FromError(err)
 	if !ok {
-		return New(UnknownCode, UnknownReason, err.Error())
+		return New(ErrInternal.Code, ErrInternal.Reason, err.Error())
 	}
 
 	// 如果 err 是 gRPC 的错误类型，会成功返回一个 gRPC status 对象（gs）.
 	// 使用 gRPC 状态中的错误代码和消息创建一个 ErrorX.
-	ret := New(httpstatus.FromGRPCCode(gs.Code()), UnknownReason, gs.Message())
+	ret := New(httpstatus.FromGRPCCode(gs.Code()), ErrInternal.Reason, gs.Message())
 
 	// 遍历 gRPC 错误详情中的所有附加信息（Details）.
 	for _, detail := range gs.Details() {
