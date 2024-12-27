@@ -17,7 +17,7 @@ import (
 // DBProvider defines an interface for providing a database connection.
 type DBProvider interface {
 	// DB returns the database instance for the given context.
-	DB(ctx context.Context) *gorm.DB
+	DB(ctx context.Context, wheres ...where.Where) *gorm.DB
 }
 
 // Option defines a function type for configuring the Store.
