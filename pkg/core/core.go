@@ -42,7 +42,7 @@ func ShouldBindUri[T any](c *gin.Context, rq T, validators ...ValidatorFn[T]) er
 func ReadRequest[T any](c *gin.Context, rq T, bindFn BindFn, validators ...ValidatorFn[T]) error {
 	// 调用绑定函数绑定请求数据
 	if err := bindFn(rq); err != nil {
-		return err
+		return errorsx.ErrBind.WithMessage(err.Error())
 	}
 
 	// 如果目标结构体实现了 Default 接口，则调用其 Default 方法设置默认值
