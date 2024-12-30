@@ -1,21 +1,21 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package store
 
-//go:generate mockgen -destination mock_store.go -package store github.com/superproj/onex/internal/cacheserver/store IStore
+//go:generate mockgen -destination mock_store.go -package store github.com/onexstack/onex/internal/cacheserver/store IStore
 
 import (
 	"github.com/dgraph-io/ristretto"
 	"github.com/google/wire"
 	"gorm.io/gorm"
 
-	"github.com/superproj/onex/internal/cacheserver/store/secret"
-	"github.com/superproj/onex/pkg/cache"
-	ristrettostore "github.com/superproj/onex/pkg/cache/store/ristretto"
+	"github.com/onexstack/onex/internal/cacheserver/store/secret"
+	"github.com/onexstack/onex/pkg/cache"
+	ristrettostore "github.com/onexstack/onex/pkg/cache/store/ristretto"
 )
 
 // ProviderSet is a Wire provider set that initializes new datastore instances

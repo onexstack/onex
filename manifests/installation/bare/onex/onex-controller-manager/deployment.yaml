@@ -42,7 +42,7 @@ spec:
         - --kubeconfig=/opt/onex/etc/config
         - --config=/opt/onex/etc/onex-controller-manager.yaml
         - --v=10
-        image: ccr.ccs.tencentyun.com/superproj/onex-controller-manager-amd64:v0.1.0
+        image: ccr.ccs.tencentyun.com/onexstack/onex-controller-manager-amd64:v0.1.0
         name: onex-controller-manager
         ports:
         - containerPort: 10249

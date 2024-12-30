@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 //go:build wireinject
@@ -17,18 +17,18 @@ import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/google/wire"
 
-	"github.com/superproj/onex/internal/gateway/biz"
-	"github.com/superproj/onex/internal/gateway/server"
-	"github.com/superproj/onex/internal/gateway/service"
-	"github.com/superproj/onex/internal/gateway/store"
-	customvalidation "github.com/superproj/onex/internal/gateway/validation"
-	"github.com/superproj/onex/internal/pkg/bootstrap"
-	"github.com/superproj/onex/internal/pkg/client/usercenter"
-	"github.com/superproj/onex/internal/pkg/idempotent"
-	"github.com/superproj/onex/internal/pkg/validation"
-	"github.com/superproj/onex/pkg/db"
-	clientset "github.com/superproj/onex/pkg/generated/clientset/versioned"
-	genericoptions "github.com/superproj/onex/pkg/options"
+	"github.com/onexstack/onex/internal/gateway/biz"
+	"github.com/onexstack/onex/internal/gateway/server"
+	"github.com/onexstack/onex/internal/gateway/service"
+	"github.com/onexstack/onex/internal/gateway/store"
+	customvalidation "github.com/onexstack/onex/internal/gateway/validation"
+	"github.com/onexstack/onex/internal/pkg/bootstrap"
+	"github.com/onexstack/onex/internal/pkg/client/usercenter"
+	"github.com/onexstack/onex/internal/pkg/idempotent"
+	"github.com/onexstack/onex/internal/pkg/validation"
+	"github.com/onexstack/onex/pkg/db"
+	clientset "github.com/onexstack/onex/pkg/generated/clientset/versioned"
+	genericoptions "github.com/onexstack/onex/pkg/options"
 )
 
 // wireApp init kratos application.

@@ -5,7 +5,7 @@ package cronjob;
 import "google/protobuf/timestamp.proto";
 import "nightwatch/v1/job.proto";
 
-option go_package = "github.com/superproj/onex/pkg/api/nightwatch/v1;v1";
+option go_package = "github.com/onexstack/onex/pkg/api/nightwatch/v1;v1";
 
 // ConcurrencyPolicy 描述了作业的处理方式。只能指定以下并发策略中的一个。
 // 如果未指定以下任何策略，则默认策略为 ForbidConcurrent

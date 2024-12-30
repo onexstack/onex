@@ -3,7 +3,7 @@
 # Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 # Use of this source code is governed by a MIT style
 # license that can be found in the LICENSE file. The original repo for
-# this file is https://github.com/superproj/onex.
+# this file is https://github.com/onexstack/onex.
 #
 
 function onex::util::sourced_variable {
@@ -293,7 +293,7 @@ function onex::util::gv-to-swagger-name() {
 # repo, e.g. "upstream" or "origin".
 function onex::util::git_upstream_remote_name() {
   git remote -v | grep fetch |\
-    grep -E 'github.com[/:]superproj/onex|superproj.io/onex' |\
+    grep -E 'github.com[/:]onexstack/onex|onexstack.io/onex' |\
     head -n 1 | awk '{print $1}'
 }
 

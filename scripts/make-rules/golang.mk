@@ -14,7 +14,7 @@ ifeq ($(ONEX_ROOT),)
 endif
 
 
-VERSION_PACKAGE := github.com/superproj/onex/pkg/version
+VERSION_PACKAGE := github.com/onexstack/onex/pkg/version
 # Check if the tree is dirty.  default to dirty
 GIT_TREE_STATE:="dirty"
 ifeq (, $(shell git status --porcelain 2>/dev/null))
@@ -64,7 +64,7 @@ ifeq (${BINS},)
   $(error Could not determine BINS, set ONEX_ROOT or run in source dir)
 endif
 
-EXCLUDE_TESTS=github.com/superproj/onex/pkg/db,manifests
+EXCLUDE_TESTS=github.com/onexstack/onex/pkg/db,manifests
 
 .PHONY: go.build.verify
 go.build.verify: ## Verify supported go versions.

@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package controlplane
@@ -28,11 +28,11 @@ import (
 	"k8s.io/klog/v2"
 	"k8s.io/kubernetes/pkg/routes"
 
-	"github.com/superproj/onex/internal/controlplane/controller/systemnamespaces"
-	coordinationrest "github.com/superproj/onex/internal/registry/coordination/rest"
-	corerest "github.com/superproj/onex/internal/registry/core/rest"
-	flowcontrolrest "github.com/superproj/onex/internal/registry/flowcontrol/rest"
-	"github.com/superproj/onex/pkg/apiserver/storage"
+	"github.com/onexstack/onex/internal/controlplane/controller/systemnamespaces"
+	coordinationrest "github.com/onexstack/onex/internal/registry/coordination/rest"
+	corerest "github.com/onexstack/onex/internal/registry/core/rest"
+	flowcontrolrest "github.com/onexstack/onex/internal/registry/flowcontrol/rest"
+	"github.com/onexstack/onex/pkg/apiserver/storage"
 )
 
 const (

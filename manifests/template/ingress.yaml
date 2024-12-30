@@ -1,7 +1,7 @@
 # Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 # Use of this source code is governed by a MIT style
 # license that can be found in the LICENSE file. The original repo for
-# this file is https://github.com/superproj/onex.
+# this file is https://github.com/onexstack/onex.
 #
 
 apiVersion: networking.k8s.io/v1
@@ -13,7 +13,7 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-  - host: onex.usercenter.superproj.com
+  - host: onex.usercenter.onexstack.com
     http:
       paths:
       - path: /
@@ -23,7 +23,7 @@ spec:
             name: onex-usercenter
             port:
               name: http
-  - host: onex.apiserver.superproj.com
+  - host: onex.apiserver.onexstack.com
     http:               
       paths:                          
       - backend:
@@ -35,7 +35,7 @@ spec:
         pathType: Prefix 
   tls:
     - hosts:
-      - onex.apiserver.superproj.com
-      - onex.usercenter.superproj.com
-      - onex.gateway.superproj.com  
+      - onex.apiserver.onexstack.com
+      - onex.usercenter.onexstack.com
+      - onex.gateway.onexstack.com  
       secretName: onex-tls

@@ -8,4 +8,4 @@
 // Alternatively, you have another option: disable the clean controller, set the deletedAt field
 // during synchronization to maintain historical resource data.
 
-package resourceclean // import "github.com/superproj/onex/internal/controller/resourceclean"
+package resourceclean // import "github.com/onexstack/onex/internal/controller/resourceclean"

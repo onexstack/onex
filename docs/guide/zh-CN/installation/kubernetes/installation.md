@@ -219,7 +219,7 @@ $ make image IMAGES=onex-usercenter
 2. 导入镜像到 Kind 集群
 
 ```bash
-$ kind load docker-image --name onex ccr.ccs.tencentyun.com/superproj/onex-usercenter-amd64:v0.1.0
+$ kind load docker-image --name onex ccr.ccs.tencentyun.com/onexstack/onex-usercenter-amd64:v0.1.0
 ```
 
 `kind load docker-image` 提供的其他有用参数为：

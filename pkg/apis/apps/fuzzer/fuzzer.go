@@ -18,7 +18,7 @@ package fuzzer
 
 import (
 	fuzz "github.com/google/gofuzz"
-	"github.com/superproj/onex/pkg/apis/apps"
+	"github.com/onexstack/onex/pkg/apis/apps"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	runtimeserializer "k8s.io/apimachinery/pkg/runtime/serializer"

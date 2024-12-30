@@ -8,7 +8,7 @@ The fakeserver server is a standard, specification-compliant demo
 example of the onex service.
 
 Find more onex-fakeserver information at:
-    https://github.com/superproj/onex/blob/master/docs/guide/en-US/cmd/onex-fakeserver.md
+    https://github.com/onexstack/onex/blob/master/docs/guide/en-US/cmd/onex-fakeserver.md
 
 ```
 onex-fakeserver [flags]

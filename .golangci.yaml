@@ -167,7 +167,7 @@ linters-settings:
     # put imports beginning with prefix after 3rd-party packages;
     # only support one prefix
     # if not set, use goimports.local-prefixes
-    prefix: github.com/superproj/onex
+    prefix: github.com/onexstack/onex
   gocognit:
     # minimal code complexity to report, 30 by default (but we recommend 10-20)
     min-complexity: 30
@@ -324,7 +324,7 @@ linters-settings:
   goimports:
     # put imports beginning with prefix after 3rd-party packages;
     # it's a comma-separated list of prefixes
-    local-prefixes: github.com/superproj/onex
+    local-prefixes: github.com/onexstack/onex
   golint:
     # minimal confidence for issues, default is 0.8
     min-confidence: 0.9
@@ -460,27 +460,27 @@ linters-settings:
       # see https://github.com/julz/importas#use-regular-expression for details
       - pkg: knative.dev/serving/pkg/apis/(\w+)/(v[\w\d]+)
         alias: $1$2
-      - pkg: github.com/superproj/onex/internal/pkg/util/(\w+)
+      - pkg: github.com/onexstack/onex/internal/pkg/util/(\w+)
         alias: ${1}util
-      - pkg: github.com/superproj/onex/internal/registry/apps/(\w+)/storage
+      - pkg: github.com/onexstack/onex/internal/registry/apps/(\w+)/storage
         alias: ${1}store
-      - pkg: github.com/superproj/onex/pkg/streams/connector/(\w+)
+      - pkg: github.com/onexstack/onex/pkg/streams/connector/(\w+)
         alias: ${1}connector
-      - pkg: github.com/superproj/onex/internal/onexctl/util/options
+      - pkg: github.com/onexstack/onex/internal/onexctl/util/options
         alias: clioptions
-      - pkg: github.com/superproj/onex/internal/onexctl/cmd/util
+      - pkg: github.com/onexstack/onex/internal/onexctl/cmd/util
         alias: cmdutil
-      - pkg: github.com/superproj/onex/pkg/generated/clientset/versioned
+      - pkg: github.com/onexstack/onex/pkg/generated/clientset/versioned
         alias: clientset
       - pkg: k8s.io/kubernetes/pkg/apis/core/validation
         alias: corevalidation
       - pkg: k8s.io/apimachinery/pkg/api/validation
         alias: apimachineryvalidation
-      - pkg: github.com/superproj/onex/pkg/generated/informers/externalversions
+      - pkg: github.com/onexstack/onex/pkg/generated/informers/externalversions
         alias: informers
-      - pkg: github.com/superproj/onex/internal/registry/(\w+)/rest
+      - pkg: github.com/onexstack/onex/internal/registry/(\w+)/rest
         alias: ${1}rest
-      - pkg: github.com/superproj/onex/pkg/options
+      - pkg: github.com/onexstack/onex/pkg/options
         alias: genericoptions
       - pkg: k8s.io/api/core/v1
         alias: corev1
@@ -488,19 +488,19 @@ linters-settings:
         alias: api
       - pkg: k8s.io/apimachinery/pkg/apis/meta/v1
         alias: metav1
-      - pkg: github.com/superproj/onex/pkg/apis/core/v1
+      - pkg: github.com/onexstack/onex/pkg/apis/core/v1
         alias: apiv1
       - pkg: github.com/go-kratos/kratos/v2/log
         alias: krtlog
       - pkg: github.com/casbin/casbin/v2/log
         alias: clog
-      - pkg: github.com/superproj/onex/internal/pkg/middleware/i18n
+      - pkg: github.com/onexstack/onex/internal/pkg/middleware/i18n
         alias: i18nmw
-      - pkg: github.com/superproj/onex/internal/pkg/metrics
+      - pkg: github.com/onexstack/onex/internal/pkg/metrics
         alias: onexmetrics
       - pkg: github.com/go-kratos/kratos/contrib/metrics/prometheus/v2
         alias: prom
-      - pkg: github.com/superproj/onex/pkg/authn/jwt
+      - pkg: github.com/onexstack/onex/pkg/authn/jwt
         alias: jwtauthn
       - pkg: github.com/hashicorp/golang-lru
         alias: lru

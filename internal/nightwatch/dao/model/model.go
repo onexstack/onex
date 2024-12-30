@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	nwv1 "github.com/superproj/onex/pkg/api/nightwatch/v1"
+	nwv1 "github.com/onexstack/onex/pkg/api/nightwatch/v1"
 )
 
 var (

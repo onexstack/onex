@@ -22,7 +22,7 @@ import (
 	"k8s.io/kubectl/pkg/util/i18n"
 	"k8s.io/kubectl/pkg/util/templates"
 
-	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
+	cmdutil "github.com/onexstack/onex/internal/onexctl/cmd/util"
 )
 
 // NewCmdAlpha creates a command that acts as an alternate root command for features in alpha

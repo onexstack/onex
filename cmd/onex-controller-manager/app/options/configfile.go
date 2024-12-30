@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 //nolint:gocritic
@@ -16,9 +16,9 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/klog/v2"
 
-	"github.com/superproj/onex/internal/controller/apis/config"
-	"github.com/superproj/onex/internal/controller/apis/config/scheme"
-	"github.com/superproj/onex/internal/controller/apis/config/v1beta1"
+	"github.com/onexstack/onex/internal/controller/apis/config"
+	"github.com/onexstack/onex/internal/controller/apis/config/scheme"
+	"github.com/onexstack/onex/internal/controller/apis/config/v1beta1"
 )
 
 func LoadConfigFromFile(file string) (*config.OneXControllerManagerConfiguration, error) {

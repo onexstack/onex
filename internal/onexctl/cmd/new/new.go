@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Package used to generate demo command code.
@@ -21,9 +21,9 @@ import (
 	"golang.org/x/text/language"
 	"k8s.io/cli-runtime/pkg/genericiooptions"
 
-	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
-	"github.com/superproj/onex/internal/onexctl/util/templates"
-	fileutil "github.com/superproj/onex/pkg/util/file"
+	cmdutil "github.com/onexstack/onex/internal/onexctl/cmd/util"
+	"github.com/onexstack/onex/internal/onexctl/util/templates"
+	fileutil "github.com/onexstack/onex/pkg/util/file"
 )
 
 const (
@@ -57,7 +57,7 @@ This can improve your R&D efficiency.`)
 	cmdTemplate = `// Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for 
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 
 package {{.CommandName}}
 
@@ -67,8 +67,8 @@ import (
 	"github.com/spf13/cobra"
 	"k8s.io/cli-runtime/pkg/genericiooptions"
 
-	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
-	"github.com/superproj/onex/internal/onexctl/util/templates"
+	cmdutil "github.com/onexstack/onex/internal/onexctl/cmd/util"
+	"github.com/onexstack/onex/internal/onexctl/util/templates"
 )
 
 const (
@@ -101,7 +101,7 @@ to quickly create a Cobra application.{{.Dot}})
 
 	{{.CommandName}}Example = templates.Examples({{.Dot}}
 		# Print all option values for {{.CommandName}} 
-		onexctl {{.CommandName}} superproj superprojpass{{.Dot}})
+		onexctl {{.CommandName}} onexstack onexstackpass{{.Dot}})
 
 	{{.CommandName}}UsageErrStr = fmt.Sprintf("expected '%s'.\nUSERNAME and PASSWORD are required arguments for the {{.CommandName}} command", {{.CommandName}}UsageStr)
 )
@@ -200,7 +200,7 @@ func (o *{{.CommandFunctionName}}Options) Run(args []string) error {
 	maincmdTemplate = `// Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for 
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 
 package {{.CommandName}}
 
@@ -209,8 +209,8 @@ import (
 	"github.com/spf13/viper"
 	"k8s.io/cli-runtime/pkg/genericiooptions"
 
-	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
-	"github.com/superproj/onex/internal/onexctl/util/templates"
+	cmdutil "github.com/onexstack/onex/internal/onexctl/cmd/util"
+	"github.com/onexstack/onex/internal/onexctl/util/templates"
 )
 
 const maxStringLength = 17
@@ -251,7 +251,7 @@ func NewCmd{{.CommandFunctionName}}(f cmdutil.Factory, ioStreams genericiooption
 	subcmd1Template = `// Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for 
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 
 package {{.CommandName}}
 
@@ -262,8 +262,8 @@ import (
 	"github.com/spf13/viper"
 	"k8s.io/cli-runtime/pkg/genericiooptions"
 
-	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
-	"github.com/superproj/onex/internal/onexctl/util/templates"
+	cmdutil "github.com/onexstack/onex/internal/onexctl/cmd/util"
+	"github.com/onexstack/onex/internal/onexctl/util/templates"
 )
 
 const (
@@ -296,10 +296,10 @@ to quickly create a Cobra application.{{.Dot}})
 
 	subcmd1Example = templates.Examples({{.Dot}}
 		# Print all option values for subcmd1
-		onexctl {{.CommandName}} subcmd1 superproj superprojpass
+		onexctl {{.CommandName}} subcmd1 onexstack onexstackpass
 
 		# Print all option values for subcmd1 with --persistent specified
-		onexctl {{.CommandName}} subcmd1 superproj superprojpass --persistent="specified persistent option in command line"{{.Dot}})
+		onexctl {{.CommandName}} subcmd1 onexstack onexstackpass --persistent="specified persistent option in command line"{{.Dot}})
 
 	subcmd1UsageErrStr = fmt.Sprintf("expected '%s'.\nUSERNAME and PASSWORD are required arguments for the subcmd1 command", subcmd1UsageStr)
 )
@@ -399,8 +399,8 @@ import (
 	"github.com/spf13/cobra"
 	"k8s.io/cli-runtime/pkg/genericiooptions"
 
-	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
-	"github.com/superproj/onex/internal/onexctl/util/templates"
+	cmdutil "github.com/onexstack/onex/internal/onexctl/cmd/util"
+	"github.com/onexstack/onex/internal/onexctl/util/templates"
 )
 
 // SubCmd2Options is an options struct to support subcmd2 subcommands.

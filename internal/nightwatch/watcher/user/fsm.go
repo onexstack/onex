@@ -3,7 +3,7 @@ package user
 import (
 	"github.com/looplab/fsm"
 
-	known "github.com/superproj/onex/internal/pkg/known/usercenter"
+	known "github.com/onexstack/onex/internal/pkg/known/usercenter"
 )
 
 // NewFSM creates a new finite state machine (FSM) for managing user states.

@@ -10,17 +10,17 @@ import (
 	"github.com/tmc/langchaingo/llms/ollama"
 	"k8s.io/utils/ptr"
 
-	"github.com/superproj/onex/internal/nightwatch/dao/model"
-	"github.com/superproj/onex/internal/nightwatch/path"
-	"github.com/superproj/onex/internal/pkg/client/train"
-	// onexembedder "github.com/superproj/onex/internal/pkg/embedding/embedder/onex"
-	// "github.com/superproj/onex/internal/pkg/embedding/embedder/onex/text"
-	// "github.com/superproj/onex/internal/pkg/embedding/embedder/onex/image"
-	fakeminio "github.com/superproj/onex/internal/pkg/client/minio/fake"
-	known "github.com/superproj/onex/internal/pkg/known/nightwatch"
-	jobconditionsutil "github.com/superproj/onex/internal/pkg/util/jobconditions"
-	nwv1 "github.com/superproj/onex/pkg/api/nightwatch/v1"
-	"github.com/superproj/onex/pkg/log"
+	"github.com/onexstack/onex/internal/nightwatch/dao/model"
+	"github.com/onexstack/onex/internal/nightwatch/path"
+	"github.com/onexstack/onex/internal/pkg/client/train"
+	// onexembedder "github.com/onexstack/onex/internal/pkg/embedding/embedder/onex"
+	// "github.com/onexstack/onex/internal/pkg/embedding/embedder/onex/text"
+	// "github.com/onexstack/onex/internal/pkg/embedding/embedder/onex/image"
+	fakeminio "github.com/onexstack/onex/internal/pkg/client/minio/fake"
+	known "github.com/onexstack/onex/internal/pkg/known/nightwatch"
+	jobconditionsutil "github.com/onexstack/onex/internal/pkg/util/jobconditions"
+	nwv1 "github.com/onexstack/onex/pkg/api/nightwatch/v1"
+	"github.com/onexstack/onex/pkg/log"
 )
 
 // Download retrieves feedback data from VOC and saves it to TOS.

@@ -3,9 +3,9 @@ package v1
 import (
 	"github.com/gin-gonic/gin"
 
-	"github.com/superproj/onex/pkg/core"
-	nwv1 "github.com/superproj/onex/pkg/api/nightwatch/v1"
-	"github.com/superproj/onex/pkg/api/zerrors"
+	"github.com/onexstack/onex/pkg/core"
+	nwv1 "github.com/onexstack/onex/pkg/api/nightwatch/v1"
+	"github.com/onexstack/onex/pkg/api/zerrors"
 )
 
 // CreateJob handles the creation of a new Job.

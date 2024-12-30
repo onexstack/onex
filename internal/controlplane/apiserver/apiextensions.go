@@ -28,7 +28,7 @@ import (
 	"k8s.io/apiserver/pkg/util/webhook"
 	kubeinformers "k8s.io/client-go/informers"
 
-	controlplaneoptions "github.com/superproj/onex/internal/controlplane/apiserver/options"
+	controlplaneoptions "github.com/onexstack/onex/internal/controlplane/apiserver/options"
 )
 
 func CreateAPIExtensionsConfig(

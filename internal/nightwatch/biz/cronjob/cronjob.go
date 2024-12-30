@@ -1,17 +1,17 @@
 package cronjob
 
-//go:generate mockgen -destination mock_cronjob.go -package cronjob github.com/superproj/onex/internal/nightwatch/biz/cronjob CronJobBiz
+//go:generate mockgen -destination mock_cronjob.go -package cronjob github.com/onexstack/onex/internal/nightwatch/biz/cronjob CronJobBiz
 
 import (
 	"context"
 
 	"github.com/jinzhu/copier"
 
-	"github.com/superproj/onex/internal/nightwatch/conversion"
-	"github.com/superproj/onex/internal/nightwatch/dao/model"
-	"github.com/superproj/onex/internal/nightwatch/store"
-	nwv1 "github.com/superproj/onex/pkg/api/nightwatch/v1"
-	"github.com/superproj/onex/pkg/store/where"
+	"github.com/onexstack/onex/internal/nightwatch/conversion"
+	"github.com/onexstack/onex/internal/nightwatch/dao/model"
+	"github.com/onexstack/onex/internal/nightwatch/store"
+	nwv1 "github.com/onexstack/onex/pkg/api/nightwatch/v1"
+	"github.com/onexstack/onex/pkg/store/where"
 )
 
 // CronJobBiz defines the interface for managing cron jobs.

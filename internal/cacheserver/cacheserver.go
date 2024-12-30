@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package cacheserver
@@ -11,13 +11,13 @@ import (
 	"github.com/jinzhu/copier"
 	"k8s.io/apimachinery/pkg/util/wait"
 
-	// "github.com/superproj/onex/internal/cacheserver/biz"
-	// "github.com/superproj/onex/internal/cacheserver/service"
-	// "github.com/superproj/onex/internal/cacheserver/store".
-	"github.com/superproj/onex/pkg/cache"
-	redisstore "github.com/superproj/onex/pkg/cache/store/redis"
-	"github.com/superproj/onex/pkg/db"
-	genericoptions "github.com/superproj/onex/pkg/options"
+	// "github.com/onexstack/onex/internal/cacheserver/biz"
+	// "github.com/onexstack/onex/internal/cacheserver/service"
+	// "github.com/onexstack/onex/internal/cacheserver/store".
+	"github.com/onexstack/onex/pkg/cache"
+	redisstore "github.com/onexstack/onex/pkg/cache/store/redis"
+	"github.com/onexstack/onex/pkg/db"
+	genericoptions "github.com/onexstack/onex/pkg/options"
 )
 
 // Config represents the configuration of the service.

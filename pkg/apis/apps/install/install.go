@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Package install installs the experimental API group, making it available as
@@ -13,8 +13,8 @@ import (
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/kubernetes/pkg/api/legacyscheme"
 
-	"github.com/superproj/onex/pkg/apis/apps"
-	appsv1beta1 "github.com/superproj/onex/pkg/apis/apps/v1beta1"
+	"github.com/onexstack/onex/pkg/apis/apps"
+	appsv1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
 )
 
 func init() {

@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package validation
@@ -10,10 +10,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"k8s.io/apimachinery/pkg/util/sets"
 
-	genericknown "github.com/superproj/onex/internal/pkg/known"
-	known "github.com/superproj/onex/internal/pkg/known/nightwatch"
-	nwv1 "github.com/superproj/onex/pkg/api/nightwatch/v1"
-	"github.com/superproj/onex/pkg/api/zerrors"
+	genericknown "github.com/onexstack/onex/internal/pkg/known"
+	known "github.com/onexstack/onex/internal/pkg/known/nightwatch"
+	nwv1 "github.com/onexstack/onex/pkg/api/nightwatch/v1"
+	"github.com/onexstack/onex/pkg/api/zerrors"
 )
 
 var availableScope = sets.New(

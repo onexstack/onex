@@ -58,10 +58,10 @@
     },
     "expandable-chapters": {},
     "github": {
-      "url": "https://github.com/superproj/onex"
+      "url": "https://github.com/onexstack/onex"
     },
     "editlink": {
-      "base": "https://github.com/superproj/onex/tree/master/docs",
+      "base": "https://github.com/onexstack/onex/tree/master/docs",
       "label": "编辑本页"
     },
     "baidu": {
