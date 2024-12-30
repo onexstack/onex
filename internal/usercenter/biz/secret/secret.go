@@ -1,12 +1,12 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package secret
 
-//go:generate mockgen -self_package github.com/superproj/onex/internal/usercenter/biz/secret -destination mock_secret.go -package secret github.com/superproj/onex/internal/usercenter/biz/secret SecretBiz
+//go:generate mockgen -self_package github.com/onexstack/onex/internal/usercenter/biz/secret -destination mock_secret.go -package secret github.com/onexstack/onex/internal/usercenter/biz/secret SecretBiz
 
 import (
 	"context"
@@ -15,12 +15,12 @@ import (
 
 	"github.com/jinzhu/copier"
 
-	"github.com/superproj/onex/internal/pkg/contextx"
-	"github.com/superproj/onex/internal/usercenter/conversion"
-	"github.com/superproj/onex/internal/usercenter/model"
-	"github.com/superproj/onex/internal/usercenter/store"
-	v1 "github.com/superproj/onex/pkg/api/usercenter/v1"
-	"github.com/superproj/onex/pkg/store/where"
+	"github.com/onexstack/onex/internal/pkg/contextx"
+	"github.com/onexstack/onex/internal/usercenter/conversion"
+	"github.com/onexstack/onex/internal/usercenter/model"
+	"github.com/onexstack/onex/internal/usercenter/store"
+	v1 "github.com/onexstack/onex/pkg/api/usercenter/v1"
+	"github.com/onexstack/onex/pkg/store/where"
 )
 
 // SecretBiz defines the interface for managing secrets.

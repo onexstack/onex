@@ -22,7 +22,7 @@ export SHELLOPTS := errexit
 # ==============================================================================
 # Build options
 #
-PRJ_SRC_PATH :=github.com/superproj/onex
+PRJ_SRC_PATH :=github.com/onexstack/onex
 
 COMMA := ,
 SPACE :=
@@ -128,7 +128,7 @@ MANIFESTS_DIR=$(ONEX_ROOT)/manifests
 SCRIPTS_DIR=$(ONEX_ROOT)/scripts
 
 # Image build releated variables.
-REGISTRY_PREFIX ?= ccr.ccs.tencentyun.com/superproj
+REGISTRY_PREFIX ?= ccr.ccs.tencentyun.com/onexstack
 GENERATED_DOCKERFILE_DIR=$(ONEX_ROOT)/build/docker
 
 # Kubernetes releated variables.
@@ -141,7 +141,7 @@ KUBE_VERBOSE ?= 1
 
 ## Misc
 CLIENTSET_NAME_VERSIONED := versioned
-OUTPUT_PKG := github.com/superproj/onex/pkg/generated
+OUTPUT_PKG := github.com/onexstack/onex/pkg/generated
 OPENAPI_EXTRA_PACKAGES := k8s.io/apimachinery/pkg/apis/meta/v1,k8s.io/apimachinery/pkg/runtime,k8s.io/apimachinery/pkg/version,k8s.io/kubernetes/pkg/apis/core,k8s.io/api/core/v1,k8s.io/api/autoscaling/v1,k8s.io/api/coordination/v1
 KUSTOMIZE_INSTALL_SCRIPT ?= "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"
 

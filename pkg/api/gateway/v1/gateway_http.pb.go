@@ -10,7 +10,7 @@ import (
 	context "context"
 	http "github.com/go-kratos/kratos/v2/transport/http"
 	binding "github.com/go-kratos/kratos/v2/transport/http/binding"
-	v1beta1 "github.com/superproj/onex/pkg/apis/apps/v1beta1"
+	v1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 

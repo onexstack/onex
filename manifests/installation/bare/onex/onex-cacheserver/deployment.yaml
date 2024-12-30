@@ -40,7 +40,7 @@ spec:
       containers:
       - args:
         - --config=/opt/onex/conf/onex-cacheserver.yaml
-        image: ccr.ccs.tencentyun.com/superproj/onex-cacheserver-amd64:v0.1.0
+        image: ccr.ccs.tencentyun.com/onexstack/onex-cacheserver-amd64:v0.1.0
         name: onex-cacheserver
         ports:
         - containerPort: 38443

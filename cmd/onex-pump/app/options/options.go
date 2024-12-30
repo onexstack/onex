@@ -1,6 +1,6 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.  // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Package options contains flags and options for initializing an apiserver
@@ -12,10 +12,10 @@ import (
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	cliflag "k8s.io/component-base/cli/flag"
 
-	"github.com/superproj/onex/internal/pkg/feature"
-	"github.com/superproj/onex/internal/pump"
-	"github.com/superproj/onex/pkg/app"
-	genericoptions "github.com/superproj/onex/pkg/options"
+	"github.com/onexstack/onex/internal/pkg/feature"
+	"github.com/onexstack/onex/internal/pump"
+	"github.com/onexstack/onex/pkg/app"
+	genericoptions "github.com/onexstack/onex/pkg/options"
 )
 
 const (

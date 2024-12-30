@@ -50,7 +50,7 @@ import (
 	"k8s.io/kube-aggregator/pkg/controllers/autoregister"
 	"k8s.io/kubernetes/pkg/controlplane/controller/crdregistration"
 
-	controlplaneoptions "github.com/superproj/onex/internal/controlplane/apiserver/options"
+	controlplaneoptions "github.com/onexstack/onex/internal/controlplane/apiserver/options"
 )
 
 func createAggregatorConfig(

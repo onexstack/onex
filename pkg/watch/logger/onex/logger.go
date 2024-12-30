@@ -1,7 +1,7 @@
 package onex
 
 import (
-	"github.com/superproj/onex/pkg/log"
+	"github.com/onexstack/onex/pkg/log"
 )
 
 // cronLogger implement the cron.Logger interface.

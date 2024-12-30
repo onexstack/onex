@@ -21,7 +21,7 @@ import (
 
 	"k8s.io/apimachinery/pkg/api/apitesting/roundtrip"
 
-	appsfuzzer "github.com/superproj/onex/pkg/apis/apps/fuzzer"
+	appsfuzzer "github.com/onexstack/onex/pkg/apis/apps/fuzzer"
 )
 
 func TestRoundTripTypes(t *testing.T) {

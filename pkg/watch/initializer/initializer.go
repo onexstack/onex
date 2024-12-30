@@ -1,8 +1,8 @@
 package initializer
 
 import (
-	"github.com/superproj/onex/pkg/watch/manager"
-	"github.com/superproj/onex/pkg/watch/registry"
+	"github.com/onexstack/onex/pkg/watch/manager"
+	"github.com/onexstack/onex/pkg/watch/registry"
 )
 
 // watcherInitializer is responsible for initializing specific watcher plugins.

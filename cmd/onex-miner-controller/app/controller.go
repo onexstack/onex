@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Package app implements a server that runs a set of active components.
@@ -33,15 +33,15 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 
-	"github.com/superproj/onex/cmd/onex-miner-controller/app/config"
-	"github.com/superproj/onex/cmd/onex-miner-controller/app/options"
-	minercontroller "github.com/superproj/onex/internal/controller/miner"
-	"github.com/superproj/onex/internal/pkg/util/ratelimiter"
-	"github.com/superproj/onex/pkg/apis/apps/v1beta1"
-	"github.com/superproj/onex/pkg/apis/apps/v1beta1/index"
-	"github.com/superproj/onex/pkg/db"
-	"github.com/superproj/onex/pkg/record"
-	"github.com/superproj/onex/pkg/version"
+	"github.com/onexstack/onex/cmd/onex-miner-controller/app/config"
+	"github.com/onexstack/onex/cmd/onex-miner-controller/app/options"
+	minercontroller "github.com/onexstack/onex/internal/controller/miner"
+	"github.com/onexstack/onex/internal/pkg/util/ratelimiter"
+	"github.com/onexstack/onex/pkg/apis/apps/v1beta1"
+	"github.com/onexstack/onex/pkg/apis/apps/v1beta1/index"
+	"github.com/onexstack/onex/pkg/db"
+	"github.com/onexstack/onex/pkg/record"
+	"github.com/onexstack/onex/pkg/version"
 )
 
 const appName = "onex-miner-controller"

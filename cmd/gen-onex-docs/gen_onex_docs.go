@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package main
@@ -13,17 +13,17 @@ import (
 	"github.com/spf13/cobra/doc"
 	"k8s.io/kubernetes/cmd/genutils"
 
-	apiservapp "github.com/superproj/onex/cmd/onex-apiserver/app"
-	ctrlmgrapp "github.com/superproj/onex/cmd/onex-controller-manager/app"
-	fakeserverapp "github.com/superproj/onex/cmd/onex-fakeserver/app"
-	gwapp "github.com/superproj/onex/cmd/onex-gateway/app"
-	minerctrlapp "github.com/superproj/onex/cmd/onex-miner-controller/app"
-	minersetctrlapp "github.com/superproj/onex/cmd/onex-minerset-controller/app"
-	watchapp "github.com/superproj/onex/cmd/onex-nightwatch/app"
-	pumpapp "github.com/superproj/onex/cmd/onex-pump/app"
-	toyblcapp "github.com/superproj/onex/cmd/onex-toyblc/app"
-	usercenterapp "github.com/superproj/onex/cmd/onex-usercenter/app"
-	onexctlcmd "github.com/superproj/onex/internal/onexctl/cmd"
+	apiservapp "github.com/onexstack/onex/cmd/onex-apiserver/app"
+	ctrlmgrapp "github.com/onexstack/onex/cmd/onex-controller-manager/app"
+	fakeserverapp "github.com/onexstack/onex/cmd/onex-fakeserver/app"
+	gwapp "github.com/onexstack/onex/cmd/onex-gateway/app"
+	minerctrlapp "github.com/onexstack/onex/cmd/onex-miner-controller/app"
+	minersetctrlapp "github.com/onexstack/onex/cmd/onex-minerset-controller/app"
+	watchapp "github.com/onexstack/onex/cmd/onex-nightwatch/app"
+	pumpapp "github.com/onexstack/onex/cmd/onex-pump/app"
+	toyblcapp "github.com/onexstack/onex/cmd/onex-toyblc/app"
+	usercenterapp "github.com/onexstack/onex/cmd/onex-usercenter/app"
+	onexctlcmd "github.com/onexstack/onex/internal/onexctl/cmd"
 )
 
 func main() {

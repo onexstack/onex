@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package miner
@@ -25,13 +25,13 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/superproj/onex/internal/pkg/util/annotations"
-	"github.com/superproj/onex/internal/pkg/util/conditions"
-	minerutil "github.com/superproj/onex/internal/pkg/util/miner"
-	podutil "github.com/superproj/onex/internal/pkg/util/pod"
-	"github.com/superproj/onex/pkg/apis/apps/v1beta1"
-	cmerrors "github.com/superproj/onex/pkg/errors"
-	"github.com/superproj/onex/pkg/record"
+	"github.com/onexstack/onex/internal/pkg/util/annotations"
+	"github.com/onexstack/onex/internal/pkg/util/conditions"
+	minerutil "github.com/onexstack/onex/internal/pkg/util/miner"
+	podutil "github.com/onexstack/onex/internal/pkg/util/pod"
+	"github.com/onexstack/onex/pkg/apis/apps/v1beta1"
+	cmerrors "github.com/onexstack/onex/pkg/errors"
+	"github.com/onexstack/onex/pkg/record"
 )
 
 // ErrPodNotFound signals that a corev1.Pod could not be found for the given provider id.

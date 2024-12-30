@@ -1,7 +1,7 @@
 // Copyright 2022 Innkeeper Belm(孔令飞) <nosbelm@qq.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 
 package cmd
 
@@ -13,7 +13,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	clientcmdutil "github.com/superproj/onex/internal/pkg/util/clientcmd"
+	clientcmdutil "github.com/onexstack/onex/internal/pkg/util/clientcmd"
 )
 
 const (

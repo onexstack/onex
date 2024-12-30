@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/hashicorp/consul/api"
-	"github.com/superproj/onex/pkg/logger"
+	"github.com/onexstack/onex/pkg/logger"
 )
 
 // ConsulLocker is a structure that implements distributed locking using Consul.

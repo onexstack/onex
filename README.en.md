@@ -11,17 +11,17 @@
 <div align="left">An enterprise-level Go project designed for learning Go + Cloud Native</div>
 <br/>
 
-[![GoDoc](https://godoc.org/github.com/superproj/onex?status.svg)](https://godoc.org/github.com/superproj/onex)
-[![Go Report Card](https://goreportcard.com/badge/github.com/superproj/onex)](https://goreportcard.com/report/github.com/superproj/onex)
-[![GitHub](https://img.shields.io/github/license/superproj/onex)](https://github.com/superproj/onex/blob/master/LICENSE)
-[![](https://goreportcard.com/badge/github.com/superproj/onex)](https://goreportcard.com/report/github.com/superproj/onex)
-[![Go Reference](https://pkg.go.dev/badge/github.com/superproj/onex.svg)](https://pkg.go.dev/github.com/superproj/onex)
+[![GoDoc](https://godoc.org/github.com/onexstack/onex?status.svg)](https://godoc.org/github.com/onexstack/onex)
+[![Go Report Card](https://goreportcard.com/badge/github.com/onexstack/onex)](https://goreportcard.com/report/github.com/onexstack/onex)
+[![GitHub](https://img.shields.io/github/license/onexstack/onex)](https://github.com/onexstack/onex/blob/master/LICENSE)
+[![](https://goreportcard.com/badge/github.com/onexstack/onex)](https://goreportcard.com/report/github.com/onexstack/onex)
+[![Go Reference](https://pkg.go.dev/badge/github.com/onexstack/onex.svg)](https://pkg.go.dev/github.com/onexstack/onex)
 <br/>
-[![CodeFactor](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/superproj/onex/issues)
-[![Build](https://img.shields.io/github/actions/workflow/status/superproj/onex/build-and-test.yml?branch=master&logo=Github)](https://github.com/superproj/onex/actions/workflows/build-and-test.yml)
-[![GitHub tag (latest SemVer pre-release)](https://img.shields.io/github/v/tag/superproj/onex?include_prereleases&label=version)](https://github.com/superproj/onex/tags)
-[![Release](https://img.shields.io/github/release/superproj/onex.svg?style=flat-square)](https://github.com/superproj/onex/releases)
-[![TODOs](https://badgen.net/https/api.tickgit.com/badgen/github.com/superproj/onex)](https://www.tickgit.com/browse?repo=github.com/superproj/onex)
+[![CodeFactor](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/onexstack/onex/issues)
+[![Build](https://img.shields.io/github/actions/workflow/status/onexstack/onex/build-and-test.yml?branch=master&logo=Github)](https://github.com/onexstack/onex/actions/workflows/build-and-test.yml)
+[![GitHub tag (latest SemVer pre-release)](https://img.shields.io/github/v/tag/onexstack/onex?include_prereleases&label=version)](https://github.com/onexstack/onex/tags)
+[![Release](https://img.shields.io/github/release/onexstack/onex.svg?style=flat-square)](https://github.com/onexstack/onex/releases)
+[![TODOs](https://badgen.net/https/api.tickgit.com/badgen/github.com/onexstack/onex)](https://www.tickgit.com/browse?repo=github.com/onexstack/onex)
 
 <div align="center">
 <strong>
@@ -66,7 +66,7 @@ Architecture Introduction: [OneX Architecture Introduction](https://konglingfei.
 Installation steps are as follows:
 
 ```bash
-$ git clone https://github.com/superproj/onex.git
+$ git clone https://github.com/onexstack/onex.git
 $ cd onex
 $ make docker-install # Quickly set up OneX (containerized) locally, preferably with a newly installed Debian 12 Linux publish
 ```

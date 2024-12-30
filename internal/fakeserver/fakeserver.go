@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package fakeserver
@@ -12,16 +12,16 @@ import (
 
 	"github.com/jinzhu/copier"
 
-	"github.com/superproj/onex/internal/fakeserver/biz"
-	"github.com/superproj/onex/internal/fakeserver/handler"
-	"github.com/superproj/onex/internal/fakeserver/model"
-	"github.com/superproj/onex/internal/fakeserver/store"
-	"github.com/superproj/onex/internal/fakeserver/store/fake"
-	"github.com/superproj/onex/internal/fakeserver/store/mysql"
-	"github.com/superproj/onex/internal/pkg/contextx"
-	"github.com/superproj/onex/pkg/db"
-	genericoptions "github.com/superproj/onex/pkg/options"
-	"github.com/superproj/onex/pkg/store/where"
+	"github.com/onexstack/onex/internal/fakeserver/biz"
+	"github.com/onexstack/onex/internal/fakeserver/handler"
+	"github.com/onexstack/onex/internal/fakeserver/model"
+	"github.com/onexstack/onex/internal/fakeserver/store"
+	"github.com/onexstack/onex/internal/fakeserver/store/fake"
+	"github.com/onexstack/onex/internal/fakeserver/store/mysql"
+	"github.com/onexstack/onex/internal/pkg/contextx"
+	"github.com/onexstack/onex/pkg/db"
+	genericoptions "github.com/onexstack/onex/pkg/options"
+	"github.com/onexstack/onex/pkg/store/where"
 )
 
 var (

@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package nightwatch
@@ -15,13 +15,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 
-	"github.com/superproj/onex/internal/nightwatch/middleware"
-	_ "github.com/superproj/onex/internal/nightwatch/watcher/all"
-	"github.com/superproj/onex/pkg/core"
-	"github.com/superproj/onex/pkg/api/zerrors"
-	"github.com/superproj/onex/pkg/log"
-	genericmw "github.com/superproj/onex/pkg/middleware/gin"
-	genericoptions "github.com/superproj/onex/pkg/options"
+	"github.com/onexstack/onex/internal/nightwatch/middleware"
+	_ "github.com/onexstack/onex/internal/nightwatch/watcher/all"
+	"github.com/onexstack/onex/pkg/core"
+	"github.com/onexstack/onex/pkg/api/zerrors"
+	"github.com/onexstack/onex/pkg/log"
+	genericmw "github.com/onexstack/onex/pkg/middleware/gin"
+	genericoptions "github.com/onexstack/onex/pkg/options"
 )
 
 // RESTServer represents the HTTP server with optional TLS and graceful shutdown capabilities.

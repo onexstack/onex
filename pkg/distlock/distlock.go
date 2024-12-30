@@ -6,8 +6,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/superproj/onex/pkg/logger"
-	"github.com/superproj/onex/pkg/logger/empty"
+	"github.com/onexstack/onex/pkg/logger"
+	"github.com/onexstack/onex/pkg/logger/empty"
 )
 
 // DefaultLockName is the default name used for the distributed lock.

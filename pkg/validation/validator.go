@@ -56,12 +56,12 @@ func ValidateSelectedFields(obj any, rules Rules, fields ...string) error {
 		}
 
 		// 获取字段的实际值并校验
-		validatorFunc, ok := rules[field]
+		validator, ok := rules[field]
 		if !ok {
 			continue // 跳过没有校验规则的字段
 		}
 
-		if err := validatorFunc(fieldValue.Interface()); err != nil {
+		if err := validator(fieldValue.Interface()); err != nil {
 			return err
 		}
 	}

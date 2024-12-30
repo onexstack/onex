@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"github.com/superproj/onex/pkg/logger"
+	"github.com/onexstack/onex/pkg/logger"
 )
 
 // MongoLocker provides a distributed locking mechanism using MongoDB.

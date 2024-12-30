@@ -9,5 +9,5 @@ $ sed "s/127.0.0.1/$HOSTIP/g" deployments/onex/onex-apiserver/*|kubectl -n onex 
 2. 测试是否部署成功
 
 ```bash
-$ kubectl -s https://onex.apiserver.superproj.com:18443 --kubeconfig=$HOME/.onex/config get ms
+$ kubectl -s https://onex.apiserver.onexstack.com:18443 --kubeconfig=$HOME/.onex/config get ms
 ```

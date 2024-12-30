@@ -170,7 +170,7 @@ onex-controller-manager [flags]
       --mysql-password string                     Password for access to mysql, should be used pair with password.
       --mysql-username string                     Username for access to mysql service.
       --namespace string                          Namespace that the controller watches to reconcile onex-apiserver objects. This parameter is ignored if a config file is specified by --config.
-      --node-image string                         The blockchain node image used by default.This parameter is ignored if a config file is specified by --config. (default "ccr.ccs.tencentyun.com/superproj/onex-toyblc-amd64:v0.1.0")
+      --node-image string                         The blockchain node image used by default.This parameter is ignored if a config file is specified by --config. (default "ccr.ccs.tencentyun.com/onexstack/onex-toyblc-amd64:v0.1.0")
       --parallelism int32                         The amount of parallelism to process. Must be greater than 0. Defaults to 16.This parameter is ignored if a config file is specified by --config. (default 16)
       --sync-period duration                      The minimum interval at which watched resources are reconciled.This parameter is ignored if a config file is specified by --config. (default 10h0m0s)
   -v, --v Level                                   number for the log level verbosity

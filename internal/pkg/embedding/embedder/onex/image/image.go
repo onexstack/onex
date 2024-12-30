@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/superproj/onex/internal/pkg/embedding/embedder/onex"
-	"github.com/superproj/onex/pkg/log"
+	"github.com/onexstack/onex/internal/pkg/embedding/embedder/onex"
+	"github.com/onexstack/onex/pkg/log"
 )
 
 // EmbeddingData holds the information needed for embedding operations.

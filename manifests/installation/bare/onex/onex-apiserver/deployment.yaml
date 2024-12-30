@@ -41,13 +41,13 @@ spec:
       - args:
         - --secure-port=52443
         - --bind-address=0.0.0.0
-        - --etcd-servers=etcd.infra.svc.superproj.com:2379
+        - --etcd-servers=etcd.infra.svc.onexstack.com:2379
         - --client-ca-file=/opt/onex/etc/cert/ca.pem
         - --tls-cert-file=/opt/onex/etc/cert/onex-apiserver.pem 
         - --tls-private-key-file=/opt/onex/etc/cert/onex-apiserver-key.pem
         -  --enable-admission-plugins=NamespaceAutoProvision,NamespaceExists,NamespaceLifecycle
         - --v=10
-        image: ccr.ccs.tencentyun.com/superproj/onex-apiserver-amd64:v0.1.0
+        image: ccr.ccs.tencentyun.com/onexstack/onex-apiserver-amd64:v0.1.0
         name: onex-apiserver
         ports:
         - containerPort: 52443

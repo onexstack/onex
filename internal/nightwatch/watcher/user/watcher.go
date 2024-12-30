@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Package user is a watcher implement.
@@ -13,14 +13,14 @@ import (
 	"github.com/gammazero/workerpool"
 	"github.com/looplab/fsm"
 
-	"github.com/superproj/onex/internal/nightwatch/watcher"
-	"github.com/superproj/onex/internal/pkg/client/store"
-	known "github.com/superproj/onex/internal/pkg/known/usercenter"
-	"github.com/superproj/onex/internal/pkg/contextx"
-	"github.com/superproj/onex/internal/usercenter/model"
-	"github.com/superproj/onex/pkg/log"
-	stringsutil "github.com/superproj/onex/pkg/util/strings"
-	"github.com/superproj/onex/pkg/watch/registry"
+	"github.com/onexstack/onex/internal/nightwatch/watcher"
+	"github.com/onexstack/onex/internal/pkg/client/store"
+	known "github.com/onexstack/onex/internal/pkg/known/usercenter"
+	"github.com/onexstack/onex/internal/pkg/contextx"
+	"github.com/onexstack/onex/internal/usercenter/model"
+	"github.com/onexstack/onex/pkg/log"
+	stringsutil "github.com/onexstack/onex/pkg/util/strings"
+	"github.com/onexstack/onex/pkg/watch/registry"
 )
 
 var _ registry.Watcher = (*userWatcher)(nil)

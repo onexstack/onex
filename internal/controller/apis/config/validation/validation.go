@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package validation
@@ -10,9 +10,9 @@ import (
 	"k8s.io/apimachinery/pkg/util/validation/field"
 	componentbasevalidation "k8s.io/component-base/config/validation"
 
-	"github.com/superproj/onex/internal/controller/apis/config"
-	"github.com/superproj/onex/internal/pkg/util/validation"
-	genericvalidation "github.com/superproj/onex/pkg/config/validation"
+	"github.com/onexstack/onex/internal/controller/apis/config"
+	"github.com/onexstack/onex/internal/pkg/util/validation"
+	genericvalidation "github.com/onexstack/onex/pkg/config/validation"
 )
 
 // Validate ensures validation of the MinerControllerConfiguration struct.

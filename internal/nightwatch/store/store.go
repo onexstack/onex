@@ -1,6 +1,6 @@
 package store
 
-//go:generate mockgen -destination mock_store.go -package store github.com/superproj/onex/internal/nightwatch/store IStore,CronJobStore,JobStore
+//go:generate mockgen -destination mock_store.go -package store github.com/onexstack/onex/internal/nightwatch/store IStore,CronJobStore,JobStore
 
 import (
 	"context"

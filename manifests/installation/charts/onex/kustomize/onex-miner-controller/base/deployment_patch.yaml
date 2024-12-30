@@ -28,7 +28,7 @@ spec:
         - --in-cluster=true
         - --config=/opt/onex/conf/onex-miner-controller.yaml
         - --v=10
-        image: ccr.ccs.tencentyun.com/superproj/onex-miner-controller-amd64:v1.0.0
+        image: ccr.ccs.tencentyun.com/onexstack/onex-miner-controller-amd64:v1.0.0
         name: onex-miner-controller
         ports:
         - containerPort: 20251

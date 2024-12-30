@@ -7,18 +7,18 @@
 package nightwatch
 
 import (
-	store2 "github.com/superproj/onex/internal/gateway/store"
-	"github.com/superproj/onex/internal/nightwatch/biz"
-	"github.com/superproj/onex/internal/nightwatch/service/v1"
-	store4 "github.com/superproj/onex/internal/nightwatch/store"
-	"github.com/superproj/onex/internal/nightwatch/validation"
-	"github.com/superproj/onex/internal/pkg/client/store"
-	store3 "github.com/superproj/onex/internal/usercenter/store"
+	store2 "github.com/onexstack/onex/internal/gateway/store"
+	"github.com/onexstack/onex/internal/nightwatch/biz"
+	"github.com/onexstack/onex/internal/nightwatch/service/v1"
+	store4 "github.com/onexstack/onex/internal/nightwatch/store"
+	"github.com/onexstack/onex/internal/nightwatch/validation"
+	"github.com/onexstack/onex/internal/pkg/client/store"
+	store3 "github.com/onexstack/onex/internal/usercenter/store"
 	"gorm.io/gorm"
 )
 
 import (
-	_ "github.com/superproj/onex/internal/nightwatch/watcher/all"
+	_ "github.com/onexstack/onex/internal/nightwatch/watcher/all"
 )
 
 // Injectors from wire.go:

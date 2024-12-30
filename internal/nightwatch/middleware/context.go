@@ -7,7 +7,7 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 
-	"github.com/superproj/onex/internal/pkg/known"
+	"github.com/onexstack/onex/internal/pkg/known"
 )
 
 // Context is a middleware that injects common prefix fields to gin.Context.

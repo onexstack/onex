@@ -24,7 +24,7 @@ spec:
       containers:
       - args:
         - --config=/opt/onex/conf/onex-usercenter.yaml
-        image: ccr.ccs.tencentyun.com/superproj/onex-usercenter-amd64:v1.0.0
+        image: ccr.ccs.tencentyun.com/onexstack/onex-usercenter-amd64:v1.0.0
         name: onex-usercenter
         ports:
         - containerPort: 38443

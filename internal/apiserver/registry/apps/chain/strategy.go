@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 //nolint:gocritic
@@ -23,8 +23,8 @@ import (
 	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	"sigs.k8s.io/structured-merge-diff/v4/fieldpath"
 
-	"github.com/superproj/onex/pkg/apis/apps"
-	"github.com/superproj/onex/pkg/apis/apps/validation"
+	"github.com/onexstack/onex/pkg/apis/apps"
+	"github.com/onexstack/onex/pkg/apis/apps/validation"
 )
 
 // chainStrategy implements behavior for Chain objects.

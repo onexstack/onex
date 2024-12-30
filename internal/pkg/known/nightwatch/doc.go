@@ -2,4 +2,4 @@
 // These constants can be referenced by both this project and external projects,
 // ensuring consistency and reusability across different components and applications.
 
-package known // import "github.com/superproj/onex/internal/pkg/known/nightwatch"
+package known // import "github.com/onexstack/onex/internal/pkg/known/nightwatch"

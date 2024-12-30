@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package gateway
@@ -14,17 +14,17 @@ import (
 	"github.com/jinzhu/copier"
 	"k8s.io/client-go/rest"
 
-	"github.com/superproj/onex/internal/gateway/server"
-	"github.com/superproj/onex/internal/pkg/bootstrap"
-	"github.com/superproj/onex/internal/pkg/client/usercenter"
-	"github.com/superproj/onex/internal/pkg/contextx"
-	"github.com/superproj/onex/pkg/db"
-	clientset "github.com/superproj/onex/pkg/generated/clientset/versioned"
-	"github.com/superproj/onex/pkg/generated/informers"
-	"github.com/superproj/onex/pkg/log"
-	genericoptions "github.com/superproj/onex/pkg/options"
-	"github.com/superproj/onex/pkg/store/where"
-	"github.com/superproj/onex/pkg/version"
+	"github.com/onexstack/onex/internal/gateway/server"
+	"github.com/onexstack/onex/internal/pkg/bootstrap"
+	"github.com/onexstack/onex/internal/pkg/client/usercenter"
+	"github.com/onexstack/onex/internal/pkg/contextx"
+	"github.com/onexstack/onex/pkg/db"
+	clientset "github.com/onexstack/onex/pkg/generated/clientset/versioned"
+	"github.com/onexstack/onex/pkg/generated/informers"
+	"github.com/onexstack/onex/pkg/log"
+	genericoptions "github.com/onexstack/onex/pkg/options"
+	"github.com/onexstack/onex/pkg/store/where"
+	"github.com/onexstack/onex/pkg/version"
 )
 
 var (
