@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package fake
@@ -11,10 +11,10 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/superproj/onex/internal/fakeserver/model"
-	"github.com/superproj/onex/internal/fakeserver/store"
-	"github.com/superproj/onex/internal/pkg/zid"
-	"github.com/superproj/onex/pkg/store/where"
+	"github.com/onexstack/onex/internal/fakeserver/model"
+	"github.com/onexstack/onex/internal/fakeserver/store"
+	"github.com/onexstack/onex/internal/pkg/zid"
+	"github.com/onexstack/onex/pkg/store/where"
 )
 
 // OrderStore 接口的实现.

@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package conditions
@@ -12,8 +12,8 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/pkg/errors"
 
-	coreutil "github.com/superproj/onex/internal/pkg/util/core"
-	"github.com/superproj/onex/pkg/apis/apps/v1beta1"
+	coreutil "github.com/onexstack/onex/internal/pkg/util/core"
+	"github.com/onexstack/onex/pkg/apis/apps/v1beta1"
 )
 
 // Patch defines a list of operations to change a list of conditions into another.

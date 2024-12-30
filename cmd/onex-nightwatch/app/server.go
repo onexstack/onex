@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package app
@@ -11,10 +11,10 @@ import (
 	"gorm.io/gorm"
 	genericapiserver "k8s.io/apiserver/pkg/server"
 
-	"github.com/superproj/onex/cmd/onex-nightwatch/app/options"
-	"github.com/superproj/onex/internal/nightwatch"
-	"github.com/superproj/onex/pkg/app"
-	genericoptions "github.com/superproj/onex/pkg/options"
+	"github.com/onexstack/onex/cmd/onex-nightwatch/app/options"
+	"github.com/onexstack/onex/internal/nightwatch"
+	"github.com/onexstack/onex/pkg/app"
+	genericoptions "github.com/onexstack/onex/pkg/options"
 )
 
 const commandDesc = `The nightwatch server is responsible for executing some async tasks 

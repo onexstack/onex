@@ -18,7 +18,7 @@ $ kubectl -n onex apply -f deployments/onex/onex-toyblc
 3. 测试是否部署成功
 
 ```bash
-$ curl -H "Host: onex.toyblc.superproj.com" http://127.0.0.1:18080/healthz
+$ curl -H "Host: onex.toyblc.onexstack.com" http://127.0.0.1:18080/healthz
 ```
 
 ## 使用
@@ -26,19 +26,19 @@ $ curl -H "Host: onex.toyblc.superproj.com" http://127.0.0.1:18080/healthz
 ### 1. 查询 peers
 
 ```bash
-$ curl -H "Host: onex.toyblc.superproj.com" http://127.0.0.1:18080/v1/peers
+$ curl -H "Host: onex.toyblc.onexstack.com" http://127.0.0.1:18080/v1/peers
 ```
 
 ### 2. 查询 blocks
 
 ```bash
-$ curl -H "Host: onex.toyblc.superproj.com" http://127.0.0.1:18080/v1/blocks
+$ curl -H "Host: onex.toyblc.onexstack.com" http://127.0.0.1:18080/v1/blocks
 ```
 
-> curl http://genesis.kube-system.svc.superproj.com:8080/v1/blocks
+> curl http://genesis.kube-system.svc.onexstack.com:8080/v1/blocks
 
 ### 3. 挖矿 
 
 ```bash
-$ curl -XPOST -H "Host: onex.toyblc.superproj.com" -H"Content-type: application/json" -d'{"data": "Some data to the first block"}' http://127.0.0.1:18080/v1/blocks
+$ curl -XPOST -H "Host: onex.toyblc.onexstack.com" -H"Content-type: application/json" -d'{"data": "Some data to the first block"}' http://127.0.0.1:18080/v1/blocks
 ```

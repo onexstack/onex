@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package resourceclean
@@ -13,7 +13,7 @@ import (
 	"k8s.io/klog/v2"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/superproj/onex/internal/gateway/store"
+	"github.com/onexstack/onex/internal/gateway/store"
 )
 
 // Cleaner interface defines the methods required for a cleaner implementation.

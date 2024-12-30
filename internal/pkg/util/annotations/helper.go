@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Package annotations implements annotation helper functions.
@@ -12,7 +12,7 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/superproj/onex/pkg/apis/apps/v1beta1"
+	"github.com/onexstack/onex/pkg/apis/apps/v1beta1"
 )
 
 // Set will set the value of an annotation on the supplied object. If there is no annotation it will be created.

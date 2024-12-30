@@ -1,13 +1,13 @@
 package biz
 
-//go:generate mockgen -destination mock_biz.go -package biz github.com/superproj/onex/internal/nightwatch/biz IBiz
+//go:generate mockgen -destination mock_biz.go -package biz github.com/onexstack/onex/internal/nightwatch/biz IBiz
 
 import (
 	"github.com/google/wire"
 
-	"github.com/superproj/onex/internal/nightwatch/biz/cronjob"
-	"github.com/superproj/onex/internal/nightwatch/biz/job"
-	"github.com/superproj/onex/internal/nightwatch/store"
+	"github.com/onexstack/onex/internal/nightwatch/biz/cronjob"
+	"github.com/onexstack/onex/internal/nightwatch/biz/job"
+	"github.com/onexstack/onex/internal/nightwatch/store"
 )
 
 // ProviderSet contains providers for creating instances of the biz struct using Google Wire.

@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package chain
@@ -20,16 +20,16 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 
-	"github.com/superproj/onex/internal/controller/apis/config"
-	"github.com/superproj/onex/internal/pkg/known"
-	"github.com/superproj/onex/internal/pkg/util/annotations"
-	"github.com/superproj/onex/internal/pkg/util/conditions"
-	coreutil "github.com/superproj/onex/internal/pkg/util/core"
-	logutil "github.com/superproj/onex/internal/pkg/util/log"
-	"github.com/superproj/onex/internal/pkg/util/patch"
-	"github.com/superproj/onex/internal/pkg/util/predicates"
-	"github.com/superproj/onex/pkg/apis/apps/v1beta1"
-	"github.com/superproj/onex/pkg/record"
+	"github.com/onexstack/onex/internal/controller/apis/config"
+	"github.com/onexstack/onex/internal/pkg/known"
+	"github.com/onexstack/onex/internal/pkg/util/annotations"
+	"github.com/onexstack/onex/internal/pkg/util/conditions"
+	coreutil "github.com/onexstack/onex/internal/pkg/util/core"
+	logutil "github.com/onexstack/onex/internal/pkg/util/log"
+	"github.com/onexstack/onex/internal/pkg/util/patch"
+	"github.com/onexstack/onex/internal/pkg/util/predicates"
+	"github.com/onexstack/onex/pkg/apis/apps/v1beta1"
+	"github.com/onexstack/onex/pkg/record"
 )
 
 const controllerName = "controller-manager.chain"

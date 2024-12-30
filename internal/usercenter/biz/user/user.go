@@ -1,12 +1,12 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package user
 
-//go:generate mockgen -self_package github.com/superproj/onex/internal/usercenter/biz/user -destination mock_user.go -package user github.com/superproj/onex/internal/usercenter/biz/user UserBiz
+//go:generate mockgen -self_package github.com/onexstack/onex/internal/usercenter/biz/user -destination mock_user.go -package user github.com/onexstack/onex/internal/usercenter/biz/user UserBiz
 
 import (
 	"context"
@@ -19,15 +19,15 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"gorm.io/gorm"
 
-	"github.com/superproj/onex/internal/pkg/contextx"
-	validationutil "github.com/superproj/onex/internal/pkg/util/validation"
-	"github.com/superproj/onex/internal/usercenter/conversion"
-	"github.com/superproj/onex/internal/usercenter/model"
-	"github.com/superproj/onex/internal/usercenter/store"
-	v1 "github.com/superproj/onex/pkg/api/usercenter/v1"
-	"github.com/superproj/onex/pkg/authn"
-	"github.com/superproj/onex/pkg/log"
-	"github.com/superproj/onex/pkg/store/where"
+	"github.com/onexstack/onex/internal/pkg/contextx"
+	validationutil "github.com/onexstack/onex/internal/pkg/util/validation"
+	"github.com/onexstack/onex/internal/usercenter/conversion"
+	"github.com/onexstack/onex/internal/usercenter/model"
+	"github.com/onexstack/onex/internal/usercenter/store"
+	v1 "github.com/onexstack/onex/pkg/api/usercenter/v1"
+	"github.com/onexstack/onex/pkg/authn"
+	"github.com/onexstack/onex/pkg/log"
+	"github.com/onexstack/onex/pkg/store/where"
 )
 
 const (

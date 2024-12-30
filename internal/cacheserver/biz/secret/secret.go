@@ -1,12 +1,12 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package secret
 
-//go:generate mockgen -destination mock_secret.go -package secret github.com/superproj/onex/internal/cacheserver/biz/secret SecretBiz
+//go:generate mockgen -destination mock_secret.go -package secret github.com/onexstack/onex/internal/cacheserver/biz/secret SecretBiz
 
 import (
 	"context"
@@ -15,9 +15,9 @@ import (
 	"github.com/jinzhu/copier"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	"github.com/superproj/onex/internal/usercenter/model"
-	v1 "github.com/superproj/onex/pkg/api/cacheserver/v1"
-	"github.com/superproj/onex/pkg/cache"
+	"github.com/onexstack/onex/internal/usercenter/model"
+	v1 "github.com/onexstack/onex/pkg/api/cacheserver/v1"
+	"github.com/onexstack/onex/pkg/cache"
 )
 
 // SecretBiz is the interface for managing secrets in the cache.

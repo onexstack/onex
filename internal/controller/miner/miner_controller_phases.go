@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package miner
@@ -17,11 +17,11 @@ import (
 	"k8s.io/klog/v2"
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	"github.com/superproj/onex/internal/pkg/known"
-	"github.com/superproj/onex/internal/pkg/util/conditions"
-	minerutil "github.com/superproj/onex/internal/pkg/util/miner"
-	"github.com/superproj/onex/pkg/apis/apps/v1beta1"
-	"github.com/superproj/onex/pkg/record"
+	"github.com/onexstack/onex/internal/pkg/known"
+	"github.com/onexstack/onex/internal/pkg/util/conditions"
+	minerutil "github.com/onexstack/onex/internal/pkg/util/miner"
+	"github.com/onexstack/onex/pkg/apis/apps/v1beta1"
+	"github.com/onexstack/onex/pkg/record"
 )
 
 var externalReadyWait = 30 * time.Second

@@ -1,21 +1,21 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package biz
 
-//go:generate mockgen -destination mock_biz.go -package biz github.com/superproj/onex/internal/cacheserver/biz IBiz
+//go:generate mockgen -destination mock_biz.go -package biz github.com/onexstack/onex/internal/cacheserver/biz IBiz
 
 import (
 	"github.com/golang/protobuf/ptypes/any"
 	"github.com/google/wire"
 
-	"github.com/superproj/onex/internal/cacheserver/biz/namespaced"
-	"github.com/superproj/onex/internal/cacheserver/biz/secret"
-	"github.com/superproj/onex/internal/cacheserver/store"
-	"github.com/superproj/onex/pkg/cache"
+	"github.com/onexstack/onex/internal/cacheserver/biz/namespaced"
+	"github.com/onexstack/onex/internal/cacheserver/biz/secret"
+	"github.com/onexstack/onex/internal/cacheserver/store"
+	"github.com/onexstack/onex/pkg/cache"
 )
 
 // ProviderSet contains providers for creating instances of the biz struct.

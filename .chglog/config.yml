@@ -6,7 +6,7 @@ style: github # 指定使用的样式文件
 template: CHANGELOG.tpl.md # 指定使用的模板文件
 info: # 指定生成的 CHANGELOG.md 文件的标题和仓库 URL
   title: CHANGELOG
-  repository_url: https://github.com/superproj/zero
+  repository_url: https://github.com/onexstack/zero
 options: # 指定生成 CHANGELOG.md 文件的选项
   commits: # 指定如何过滤和排序提交
     filters: # 指定要过滤的提交类型

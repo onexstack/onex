@@ -4,8 +4,8 @@ import (
 	"github.com/jinzhu/copier"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 
-	"github.com/superproj/onex/internal/nightwatch/dao/model"
-	nwv1 "github.com/superproj/onex/pkg/api/nightwatch/v1"
+	"github.com/onexstack/onex/internal/nightwatch/dao/model"
+	nwv1 "github.com/onexstack/onex/pkg/api/nightwatch/v1"
 )
 
 // ConvertToV1CronJob converts a CronJob model to its v1 representation.

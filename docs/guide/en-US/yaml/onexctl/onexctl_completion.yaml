@@ -1,7 +1,7 @@
 # Copyright 2024 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 # Use of this source code is governed by a MIT style
 # license that can be found in the LICENSE file. The original repo for
-# this file is https://github.com/superproj/onex.
+# this file is https://github.com/onexstack/onex.
 #
 
 name: completion
@@ -10,7 +10,7 @@ synopsis: |
 description: |-
     Output shell completion code for the specified shell (bash or zsh). The shell code must be evaluated to provide interactive completion of onexctl commands.  This can be done by sourcing it from the .bash_profile.
 
-     Detailed instructions on how to do this are available here: http://github.com/superproj/onex/docs/installation/onexctl.md#enabling-shell-autocompletion
+     Detailed instructions on how to do this are available here: http://github.com/onexstack/onex/docs/installation/onexctl.md#enabling-shell-autocompletion
 
      Note for zsh users: [1] zsh completions are only supported in versions of zsh >= 5.2
 inheritedOptions:

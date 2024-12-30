@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package miner
@@ -14,7 +14,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/superproj/onex/pkg/apis/apps/v1beta1"
+	"github.com/onexstack/onex/pkg/apis/apps/v1beta1"
 )
 
 // IsMinerHealthy returns true if the the miner is running and miner node is healthy.
@@ -91,7 +91,7 @@ func IsMinerReady(m *v1beta1.Miner) bool {
 }
 
 func ChainDNSServiceNameFromMiner(namespace, name string) string {
-	return fmt.Sprintf("%s.%s.svc.superproj.com", name, namespace)
+	return fmt.Sprintf("%s.%s.svc.onexstack.com", name, namespace)
 }
 
 func GenesisDNSServiceNameFromMiner(name string) string {

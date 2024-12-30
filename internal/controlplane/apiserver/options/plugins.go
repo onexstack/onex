@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 //nolint:staticcheck
@@ -16,12 +16,12 @@ import (
 	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/apiserver/pkg/admission"
 
-	"github.com/superproj/onex/internal/controlplane/admission/plugin/admit"
-	"github.com/superproj/onex/internal/controlplane/admission/plugin/deny"
-	//"github.com/superproj/onex/internal/controlplane/admission/plugin/minerset"
-	"github.com/superproj/onex/internal/controlplane/admission/plugin/namespace/autoprovision"
-	"github.com/superproj/onex/internal/controlplane/admission/plugin/namespace/exists"
-	"github.com/superproj/onex/internal/controlplane/admission/plugin/namespace/lifecycle"
+	"github.com/onexstack/onex/internal/controlplane/admission/plugin/admit"
+	"github.com/onexstack/onex/internal/controlplane/admission/plugin/deny"
+	//"github.com/onexstack/onex/internal/controlplane/admission/plugin/minerset"
+	"github.com/onexstack/onex/internal/controlplane/admission/plugin/namespace/autoprovision"
+	"github.com/onexstack/onex/internal/controlplane/admission/plugin/namespace/exists"
+	"github.com/onexstack/onex/internal/controlplane/admission/plugin/namespace/lifecycle"
 )
 
 // AllOrderedPlugins is the list of all the plugins in order.

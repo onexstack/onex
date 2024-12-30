@@ -16,7 +16,7 @@ import (
 
 	"gorm.io/plugin/dbresolver"
 
-	"github.com/superproj/onex/internal/nightwatch/dao/model"
+	"github.com/onexstack/onex/internal/nightwatch/dao/model"
 )
 
 func newJobM(db *gorm.DB, opts ...gen.DOOption) jobM {

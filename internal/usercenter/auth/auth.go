@@ -1,19 +1,19 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package auth
 
-//go:generate mockgen -self_package github.com/superproj/onex/internal/usercenter/auth -destination mock_auth.go -package auth github.com/superproj/onex/internal/usercenter/auth AuthProvider,AuthzInterface,AuthnInterface
+//go:generate mockgen -self_package github.com/onexstack/onex/internal/usercenter/auth -destination mock_auth.go -package auth github.com/onexstack/onex/internal/usercenter/auth AuthProvider,AuthzInterface,AuthnInterface
 
 import (
 	"context"
 
 	"github.com/google/wire"
 
-	"github.com/superproj/onex/pkg/authn"
+	"github.com/onexstack/onex/pkg/authn"
 )
 
 // ProviderSet is a Wire provider set that creates a new instance of auth.

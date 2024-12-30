@@ -3,7 +3,7 @@ package model
 import (
 	"gorm.io/gorm"
 
-	"github.com/superproj/onex/internal/pkg/zid"
+	"github.com/onexstack/onex/internal/pkg/zid"
 )
 
 // AfterCreate runs after creating a CronJobM database record and updates the JobID field.

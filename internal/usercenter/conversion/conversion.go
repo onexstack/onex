@@ -4,8 +4,8 @@ import (
 	"github.com/jinzhu/copier"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	"github.com/superproj/onex/internal/usercenter/model"
-	v1 "github.com/superproj/onex/pkg/api/usercenter/v1"
+	"github.com/onexstack/onex/internal/usercenter/model"
+	v1 "github.com/onexstack/onex/pkg/api/usercenter/v1"
 )
 
 // ConvertToV1SecretReply converts a Secret model to its v1 representation.

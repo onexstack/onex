@@ -1,4 +1,4 @@
-module github.com/superproj/onex
+module github.com/onexstack/onex
 
 go 1.23
 
@@ -162,6 +162,7 @@ require (
 	github.com/google/pprof v0.0.0-20240727154555-813a5fbdbec8 // indirect
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 // indirect
 	github.com/gregjones/httpcache v0.0.0-20180305231024-9cad4c3443a7 // indirect
+	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.2.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-hclog v1.5.0 // indirect
@@ -199,7 +200,7 @@ require (
 	github.com/monochromegane/go-gitignore v0.0.0-20200626010858-205db1a8cc00 // indirect
 	github.com/montanaflynn/stats v0.6.6 // indirect
 	github.com/mxk/go-flowrate v0.0.0-20140419014527-cca7078d478f // indirect
-	github.com/pelletier/go-toml/v2 v2.2.2 // indirect
+	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
 	github.com/pierrec/lz4/v4 v4.1.18 // indirect
 	github.com/pkoukk/tiktoken-go v0.1.6 // indirect
@@ -214,8 +215,8 @@ require (
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/shirou/gopsutil/v3 v3.23.12 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
-	github.com/spf13/cast v1.6.0 // indirect
-	github.com/stoewer/go-strcase v1.2.0 // indirect
+	github.com/spf13/cast v1.7.1 // indirect
+	github.com/stoewer/go-strcase v1.3.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.12 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
@@ -358,3 +359,5 @@ replace (
 	k8s.io/pod-security-admission => k8s.io/pod-security-admission v0.31.2
 	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.31.2
 )
+
+replace github.com/onexstack/onexstack => ./staging/src/github.com/onexstack/onexstack/pkg

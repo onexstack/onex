@@ -8,8 +8,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/superproj/onex/internal/pkg/meta"
-	"github.com/superproj/onex/pkg/db"
+	"github.com/onexstack/onex/internal/pkg/meta"
+	"github.com/onexstack/onex/pkg/db"
 	"gorm.io/gorm"
 )
 

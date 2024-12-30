@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package v1beta1
@@ -9,8 +9,8 @@ package v1beta1
 import (
 	"k8s.io/apimachinery/pkg/conversion"
 
-	"github.com/superproj/onex/pkg/config"
-	configv1beta1 "github.com/superproj/onex/pkg/config/v1beta1"
+	"github.com/onexstack/onex/pkg/config"
+	configv1beta1 "github.com/onexstack/onex/pkg/config/v1beta1"
 )
 
 // Important! The public back-and-forth conversion functions for the types in this generic

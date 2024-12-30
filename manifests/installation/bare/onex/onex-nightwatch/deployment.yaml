@@ -40,7 +40,7 @@ spec:
       containers:
       - args:
         - --config=/opt/onex/etc/onex-nightwatch.yaml
-        image: ccr.ccs.tencentyun.com/superproj/onex-nightwatch-amd64:v0.1.0
+        image: ccr.ccs.tencentyun.com/onexstack/onex-nightwatch-amd64:v0.1.0
         name: onex-nightwatch
         ports:
         - containerPort: 54082
