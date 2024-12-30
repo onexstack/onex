@@ -24,7 +24,7 @@ spec:
       containers:
       - args:
         - --config=/opt/onex/conf/onex-gateway.yaml
-        image: ccr.ccs.tencentyun.com/superproj/onex-gateway-amd64:v1.0.0
+        image: ccr.ccs.tencentyun.com/onexstack/onex-gateway-amd64:v1.0.0
         name: onex-gateway
         ports:
         - containerPort: 38443

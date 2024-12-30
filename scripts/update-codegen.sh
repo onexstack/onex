@@ -36,11 +36,11 @@ API_KNOWN_VIOLATIONS_DIR="${API_KNOWN_VIOLATIONS_DIR:-"${ONEX_ROOT}/api/api-rule
 
 OUT_DIR="_output"
 BOILERPLATE_FILENAME="scripts/boilerplate/boilerplate.go.txt"
-ONEX_MODULE_NAME="github.com/superproj/onex"
+ONEX_MODULE_NAME="github.com/onexstack/onex"
 #PLURAL_EXCEPTIONS=""
 PLURAL_EXCEPTIONS="Endpoints:Endpoints,ResourceClaimParameters:ResourceClaimParameters,ResourceClassParameters:ResourceClassParameters"
 EXTRA_GENERATE_PKG=(k8s.io/api/core/v1 k8s.io/api/coordination/v1 k8s.io/api/flowcontrol/v1 k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1)
-OUTPUT_PKG="github.com/superproj/onex/pkg/generated"
+OUTPUT_PKG="github.com/onexstack/onex/pkg/generated"
 APPLYCONFIG_PKG="${OUTPUT_PKG}/applyconfigurations"
 
 # Any time we call sort, we want it in the same locale.
@@ -115,7 +115,7 @@ function codegen::protobuf() {
             -- \
             cmd pkg \
             | while read -r -d $'\0' F; do dirname "${F}"; done \
-            | sed 's|^|github.com/superproj/onex/|;s|k8s.io/kubernetes/staging/src/||' \
+            | sed 's|^|github.com/onexstack/onex/|;s|k8s.io/kubernetes/staging/src/||' \
             | sort -u)
 
     onex::log::status "Generating protobufs for ${#apis[@]} targets"
@@ -602,7 +602,7 @@ function codegen::openapi() {
     local output_file="${GENERATED_FILE_PREFIX}openapi"
 
     local output_dir="pkg/generated/openapi"
-    local output_pkg="github.com/superproj/onex/${output_dir}"
+    local output_pkg="github.com/onexstack/onex/${output_dir}"
     local known_violations_file="${API_KNOWN_VIOLATIONS_DIR}/violation_exceptions.list"
 
     local report_file="${OUT_DIR}/api_violations.report"
@@ -653,7 +653,7 @@ function codegen::openapi() {
         -v "${KUBE_VERBOSE}" \
         --go-header-file "${BOILERPLATE_FILENAME}" \
         -O "${output_file}" \
-        -i 'k8s.io/apimachinery/pkg/apis/meta/v1,k8s.io/apimachinery/pkg/runtime,k8s.io/apimachinery/pkg/version,k8s.io/apimachinery/pkg/util/intstr,k8s.io/kubernetes/pkg/apis/core,k8s.io/api/core/v1,k8s.io/api/autoscaling/v1,k8s.io/api/coordination/v1,k8s.io/kubernetes/pkg/apis/flowcontrol,k8s.io/api/flowcontrol/v1,k8s.io/apiextensions-apiserver/pkg/apis/apiextensions,k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1,k8s.io/kube-aggregator/pkg/apis/apiregistration,k8s.io/kube-aggregator/pkg/apis/apiregistration/v1,github.com/superproj/onex/pkg/apis/apps/v1beta1' \
+        -i 'k8s.io/apimachinery/pkg/apis/meta/v1,k8s.io/apimachinery/pkg/runtime,k8s.io/apimachinery/pkg/version,k8s.io/apimachinery/pkg/util/intstr,k8s.io/kubernetes/pkg/apis/core,k8s.io/api/core/v1,k8s.io/api/autoscaling/v1,k8s.io/api/coordination/v1,k8s.io/kubernetes/pkg/apis/flowcontrol,k8s.io/api/flowcontrol/v1,k8s.io/apiextensions-apiserver/pkg/apis/apiextensions,k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1,k8s.io/kube-aggregator/pkg/apis/apiregistration,k8s.io/kube-aggregator/pkg/apis/apiregistration/v1,github.com/onexstack/onex/pkg/apis/apps/v1beta1' \
         --output-base "${GOPATH}/src" \
         -p "${output_pkg}" \
         --report-filename "${report_file}" \
@@ -779,7 +779,7 @@ function codegen::listers() {
     onex::util::read-array ext_apis < <(
         cd "${ONEX_ROOT}"
         git_find -z ':(glob)pkg/apis/**/*types.go' \
-            | while read -r -d $'\0' F; do dirname "github.com/superproj/onex/${F}"; done \
+            | while read -r -d $'\0' F; do dirname "github.com/onexstack/onex/${F}"; done \
             | sort -u)
     ext_apis+=("${EXTRA_GENERATE_PKG[@]}")
 
@@ -822,7 +822,7 @@ function codegen::informers() {
     onex::util::read-array ext_apis < <(
         cd "${ONEX_ROOT}"
         git_find -z ':(glob)pkg/apis/**/*types.go' \
-            | while read -r -d $'\0' F; do dirname "github.com/superproj/onex/${F}"; done \
+            | while read -r -d $'\0' F; do dirname "github.com/onexstack/onex/${F}"; done \
             | sort -u)
     ext_apis+=("${EXTRA_GENERATE_PKG[@]}")
 

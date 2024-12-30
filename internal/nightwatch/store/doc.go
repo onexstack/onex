@@ -4,4 +4,4 @@
 // this file is https://github.com/marmotedu/miniblog.
 
 // Package store defines the storage interface for nightwatch.
-package store // import "github.com/superproj/onex/internal/nightwatch/store"
+package store // import "github.com/onexstack/onex/internal/nightwatch/store"

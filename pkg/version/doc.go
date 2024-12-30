@@ -1,1 +1,1 @@
-package version // import "github.com/superproj/miniblog/pkg/version"
+package version // import "github.com/onexstack/onex/pkg/version"

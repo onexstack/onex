@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/superproj/onex/pkg/db"
+	"github.com/onexstack/onex/pkg/db"
 )
 
 // User 模型

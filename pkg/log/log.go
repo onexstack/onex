@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Package log is a log package used by onex project.
@@ -101,6 +101,11 @@ func NewLogger(opts *Options) *zapLogger {
 		encoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	}
 
+	outputPaths := opts.OutputPaths
+	if len(outputPaths) == 0 {
+		outputPaths = []string{"stdout"}
+	}
+
 	// 创建构建 zap.Logger 需要的配置
 	cfg := &zap.Config{
 		// 是否在日志中显示调用日志所在的文件和行号，例如：`"caller":"onex/onex.go:75"`
@@ -113,7 +118,7 @@ func NewLogger(opts *Options) *zapLogger {
 		Encoding:      opts.Format,
 		EncoderConfig: encoderConfig,
 		// 指定日志输出位置
-		OutputPaths: opts.OutputPaths,
+		OutputPaths: outputPaths,
 		// 设置 zap 内部错误输出位置
 		ErrorOutputPaths: []string{"stderr"},
 	}

@@ -6,8 +6,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/superproj/onex/pkg/db"
-	"github.com/superproj/onex/pkg/distlock"
+	"github.com/onexstack/onex/pkg/db"
+	"github.com/onexstack/onex/pkg/distlock"
 )
 
 func main() {

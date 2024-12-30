@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package app
@@ -9,16 +9,16 @@ package app
 import (
 	genericapiserver "k8s.io/apiserver/pkg/server"
 
-	"github.com/superproj/onex/cmd/onex-cacheserver/app/options"
-	"github.com/superproj/onex/internal/cacheserver"
-	"github.com/superproj/onex/pkg/app"
+	"github.com/onexstack/onex/cmd/onex-cacheserver/app/options"
+	"github.com/onexstack/onex/internal/cacheserver"
+	"github.com/onexstack/onex/pkg/app"
 )
 
 const commandDesc = `onex-cacheserver is an example cache server, demonstrating 
 how to develop a caching service.
 
 Find more onex-cacheserver information at:
-    https://github.com/superproj/onex/blob/master/docs/guide/en-US/cmd/onex-cacheserver.md`
+    https://github.com/onexstack/onex/blob/master/docs/guide/en-US/cmd/onex-cacheserver.md`
 
 // NewApp creates an App object with default parameters.
 func NewApp() *app.App {

@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Package app does all of the work necessary to create a OneX
@@ -48,11 +48,11 @@ import (
 	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	"k8s.io/kubernetes/pkg/features"
 
-	"github.com/superproj/onex/cmd/onex-apiserver/app/options"
-	"github.com/superproj/onex/internal/controlplane"
-	controlplaneapiserver "github.com/superproj/onex/internal/controlplane/apiserver"
-	"github.com/superproj/onex/pkg/apiserver/storage"
-	"github.com/superproj/onex/pkg/version"
+	"github.com/onexstack/onex/cmd/onex-apiserver/app/options"
+	"github.com/onexstack/onex/internal/controlplane"
+	controlplaneapiserver "github.com/onexstack/onex/internal/controlplane/apiserver"
+	"github.com/onexstack/onex/pkg/apiserver/storage"
+	"github.com/onexstack/onex/pkg/version"
 )
 
 const appName = "onex-apiserver"

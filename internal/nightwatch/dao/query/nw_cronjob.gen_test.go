@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/superproj/onex/internal/nightwatch/dao/model"
+	"github.com/onexstack/onex/internal/nightwatch/dao/model"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 	"gorm.io/gorm/clause"

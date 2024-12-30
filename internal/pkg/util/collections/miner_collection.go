@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Modified copy of k8s.io/apimachinery/pkg/util/sets/int64.go
@@ -20,8 +20,8 @@ package collections
 import (
 	"sort"
 
-	"github.com/superproj/onex/internal/pkg/util/conditions"
-	"github.com/superproj/onex/pkg/apis/apps/v1beta1"
+	"github.com/onexstack/onex/internal/pkg/util/conditions"
+	"github.com/onexstack/onex/pkg/apis/apps/v1beta1"
 )
 
 // Miners is a set of Miners.

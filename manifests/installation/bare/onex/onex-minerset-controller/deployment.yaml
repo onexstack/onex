@@ -42,7 +42,7 @@ spec:
         - --kubeconfig=/opt/onex/etc/config
         - --config=/opt/onex/etc/onex-minerset-controller.yaml
         - --v=10
-        image: ccr.ccs.tencentyun.com/superproj/onex-minerset-controller-amd64:v0.1.0
+        image: ccr.ccs.tencentyun.com/onexstack/onex-minerset-controller-amd64:v0.1.0
         name: onex-minerset-controller
         ports:
         - containerPort: 20249

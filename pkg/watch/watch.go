@@ -11,12 +11,12 @@ import (
 	"gorm.io/gorm"
 	"k8s.io/apimachinery/pkg/util/wait"
 
-	"github.com/superproj/onex/pkg/distlock"
-	stringsutil "github.com/superproj/onex/pkg/util/strings"
-	"github.com/superproj/onex/pkg/watch/initializer"
-	"github.com/superproj/onex/pkg/watch/logger/empty"
-	"github.com/superproj/onex/pkg/watch/manager"
-	"github.com/superproj/onex/pkg/watch/registry"
+	"github.com/onexstack/onex/pkg/distlock"
+	stringsutil "github.com/onexstack/onex/pkg/util/strings"
+	"github.com/onexstack/onex/pkg/watch/initializer"
+	"github.com/onexstack/onex/pkg/watch/logger/empty"
+	"github.com/onexstack/onex/pkg/watch/manager"
+	"github.com/onexstack/onex/pkg/watch/registry"
 )
 
 var (

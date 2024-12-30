@@ -8,7 +8,7 @@ import (
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/status"
 
-	"github.com/superproj/onex/pkg/errorsx"
+	"github.com/onexstack/onex/pkg/errorsx"
 )
 
 func TestErrorX_NewAndToString(t *testing.T) {

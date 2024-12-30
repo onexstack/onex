@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package main
@@ -9,8 +9,8 @@ package main
 import (
 	"k8s.io/component-base/cli"
 
-	"github.com/superproj/onex/internal/onexctl/cmd"
-	//"github.com/superproj/onex/internal/onexctl/cmd/util"
+	"github.com/onexstack/onex/internal/onexctl/cmd"
+	//"github.com/onexstack/onex/internal/onexctl/cmd/util"
 	"k8s.io/kubectl/pkg/cmd/util"
 )
 

@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Package options print a list of global command-line options (applies to all commands).
@@ -12,7 +12,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/superproj/onex/internal/onexctl/util/templates"
+	"github.com/onexstack/onex/internal/onexctl/util/templates"
 )
 
 var optionsExample = templates.Examples(`

@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package main
@@ -17,7 +17,7 @@ import (
 	transhttp "github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/spf13/pflag"
 
-	v1 "github.com/superproj/onex/pkg/api/gateway/v1"
+	v1 "github.com/onexstack/onex/pkg/api/gateway/v1"
 )
 
 var token = pflag.StringP("token", "t", "", "Access token used to access onex-gateway.")
@@ -39,7 +39,7 @@ func main() {
 
 	conn, err := transhttp.NewClient(
 		context.Background(),
-		transhttp.WithEndpoint("onex.usercenter.superproj.com:51843"),
+		transhttp.WithEndpoint("onex.usercenter.onexstack.com:51843"),
 		transhttp.WithTimeout(30*time.Second),
 		transhttp.WithUserAgent("examples/onex/onex-usercenter/client"),
 		transhttp.WithMiddleware(withToken(*token)),

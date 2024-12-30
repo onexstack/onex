@@ -1,12 +1,12 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package minerset
 
-//go:generate mockgen -self_package github.com/superproj/onex/internal/gateway/biz/minerset -destination mock_minerset.go -package minerset github.com/superproj/onex/internal/gateway/biz/minerset MinerSetBiz
+//go:generate mockgen -self_package github.com/onexstack/onex/internal/gateway/biz/minerset -destination mock_minerset.go -package minerset github.com/onexstack/onex/internal/gateway/biz/minerset MinerSetBiz
 
 import (
 	"context"
@@ -16,14 +16,14 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog/v2"
 
-	"github.com/superproj/onex/internal/gateway/store"
-	v1 "github.com/superproj/onex/pkg/api/gateway/v1"
-	"github.com/superproj/onex/pkg/apis/apps/v1beta1"
-	clientset "github.com/superproj/onex/pkg/generated/clientset/versioned"
-	"github.com/superproj/onex/pkg/generated/informers"
-	listers "github.com/superproj/onex/pkg/generated/listers/apps/v1beta1"
-	"github.com/superproj/onex/pkg/log"
-	"github.com/superproj/onex/pkg/store/where"
+	"github.com/onexstack/onex/internal/gateway/store"
+	v1 "github.com/onexstack/onex/pkg/api/gateway/v1"
+	"github.com/onexstack/onex/pkg/apis/apps/v1beta1"
+	clientset "github.com/onexstack/onex/pkg/generated/clientset/versioned"
+	"github.com/onexstack/onex/pkg/generated/informers"
+	listers "github.com/onexstack/onex/pkg/generated/listers/apps/v1beta1"
+	"github.com/onexstack/onex/pkg/log"
+	"github.com/onexstack/onex/pkg/store/where"
 )
 
 // MinerSetBiz defines the interface for handling miner set requests.

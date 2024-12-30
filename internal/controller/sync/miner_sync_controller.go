@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 //nolint:dupl
@@ -20,11 +20,11 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 
-	gwmodel "github.com/superproj/onex/internal/gateway/model"
-	"github.com/superproj/onex/internal/gateway/store"
-	"github.com/superproj/onex/internal/pkg/known"
-	"github.com/superproj/onex/pkg/apis/apps/v1beta1"
-	"github.com/superproj/onex/pkg/store/where"
+	gwmodel "github.com/onexstack/onex/internal/gateway/model"
+	"github.com/onexstack/onex/internal/gateway/store"
+	"github.com/onexstack/onex/internal/pkg/known"
+	"github.com/onexstack/onex/pkg/apis/apps/v1beta1"
+	"github.com/onexstack/onex/pkg/store/where"
 )
 
 const minerControllerName = "controller-manager.minerSync"

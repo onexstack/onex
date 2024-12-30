@@ -6,20 +6,20 @@
   零云实战平台，做最专业的实战项目。
   <br/>
   <br/>
-  <a href="https://github.com/superproj/onex/blob/master/LICENSE">
-    <img alt="GitHub" src="https://img.shields.io/github/license/superproj/onex"/>
+  <a href="https://github.com/onexstack/onex/blob/master/LICENSE">
+    <img alt="GitHub" src="https://img.shields.io/github/license/onexstack/onex"/>
   </a>
-  <a href="https://goreportcard.com/report/github.com/superproj/onex">
-    <img src="https://goreportcard.com/badge/github.com/superproj/onex" />
+  <a href="https://goreportcard.com/report/github.com/onexstack/onex">
+    <img src="https://goreportcard.com/badge/github.com/onexstack/onex" />
   </a>
-  <a href="https://pkg.go.dev/github.com/superproj/onex">
-    <img src="https://pkg.go.dev/badge/github.com/superproj/onex.svg" alt="Go Reference"/>
+  <a href="https://pkg.go.dev/github.com/onexstack/onex">
+    <img src="https://pkg.go.dev/badge/github.com/onexstack/onex.svg" alt="Go Reference"/>
   </a>
-  <a href="https://github.com/superproj/onex/issues">
+  <a href="https://github.com/onexstack/onex/issues">
     <img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat" alt="CodeFactor" />
   </a>
-  <a href="https://app.fossa.com/projects/git%2Bgithub.com%2Fsuperproj%2Fonex?ref=badge_shield" alt="FOSSA Status">
-    <img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2Fsuperproj%2Fonex.svg?type=shield" />
+  <a href="https://app.fossa.com/projects/git%2Bgithub.com%2Fonexstack%2Fonex?ref=badge_shield" alt="FOSSA Status">
+    <img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2Fonexstack%2Fonex.svg?type=shield" />
   </a>
   <a href="https://github.com/avelino/awesome-go" rel="nofollow">
     <img src="https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg" alt="Awesome" />
@@ -28,11 +28,11 @@
     <img alt="Discord" src="https://dcbadge.vercel.app/api/server/BrRSWTaxVK?style=flat"/>
   </a>
   <br/>
-  <a href="https://github.com/superproj/onex/actions/workflows/build-and-test.yml" rel="nofollow">
-    <img src="https://img.shields.io/github/actions/workflow/status/superproj/onex/build-and-test.yml?branch=master&logo=Github" alt="Build" />
+  <a href="https://github.com/onexstack/onex/actions/workflows/build-and-test.yml" rel="nofollow">
+    <img src="https://img.shields.io/github/actions/workflow/status/onexstack/onex/build-and-test.yml?branch=master&logo=Github" alt="Build" />
   </a>
-  <a href="https://github.com/superproj/onex/tags" rel="nofollow">
-    <img alt="GitHub tag (latest SemVer pre-release)" src="https://img.shields.io/github/v/tag/superproj/onex?include_prereleases&label=version"/>
+  <a href="https://github.com/onexstack/onex/tags" rel="nofollow">
+    <img alt="GitHub tag (latest SemVer pre-release)" src="https://img.shields.io/github/v/tag/onexstack/onex?include_prereleases&label=version"/>
   </a>
 </p>
 
@@ -229,7 +229,7 @@ onex设计目的是能够在一个项目中，有机整合 Go 项目开发中用
 安装步骤如下：
 
 ```bash
-$ git clone https://github.com/superproj/onex.git
+$ git clone https://github.com/onexstack/onex.git
 
 $ cd onex
 
@@ -289,5 +289,5 @@ Please adhere to this project's `code of conduct`.
 
 Here are some related projects
 
-- [iam: 企业级的 Go 语言实战项目：认证和授权系统（带配套课程）](https://github.com/superproj/iam)
+- [iam: 企业级的 Go 语言实战项目：认证和授权系统（带配套课程）](https://github.com/onexstack/iam)
 - [B 站 Go 语言开发免费课程]()

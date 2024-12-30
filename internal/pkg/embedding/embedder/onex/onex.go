@@ -6,7 +6,7 @@ import (
 	"sync"
 
 	"github.com/gammazero/workerpool"
-	"github.com/superproj/onex/pkg/log"
+	"github.com/onexstack/onex/pkg/log"
 	"go.uber.org/ratelimit"
 )
 

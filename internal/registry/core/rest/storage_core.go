@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package rest
@@ -22,10 +22,10 @@ import (
 	secretstore "k8s.io/kubernetes/pkg/registry/core/secret/storage"
 	servicestore "k8s.io/kubernetes/pkg/registry/core/service/storage"
 
-	// configmapstore "github.com/superproj/onex/internal/registry/core/configmap/storage"
-	// eventstore "github.com/superproj/onex/internal/registry/core/event/storage"
-	// namespacestore "github.com/superproj/onex/internal/registry/core/namespace/storage".
-	serializerutil "github.com/superproj/onex/internal/pkg/util/serializer"
+	// configmapstore "github.com/onexstack/onex/internal/registry/core/configmap/storage"
+	// eventstore "github.com/onexstack/onex/internal/registry/core/event/storage"
+	// namespacestore "github.com/onexstack/onex/internal/registry/core/namespace/storage".
+	serializerutil "github.com/onexstack/onex/internal/pkg/util/serializer"
 )
 
 // LegacyRESTStorageProvider provides information needed to build RESTStorage for kubernetes core, but

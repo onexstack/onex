@@ -12,7 +12,7 @@ description: |
 
 ## 1. Fork in the cloud
 
-1. Visit https://github.com/superproj/onex
+1. Visit https://github.com/onexstack/onex
 2. Click `Fork` button (top right) to establish a cloud-based fork.
 
 ## 2. Clone fork to local storage
@@ -46,7 +46,7 @@ git clone https://github.com/$user/onex.git
 # or: git clone git@github.com:$user/onex.git
 
 cd $working_dir/onex
-git remote add upstream https://github.com/superproj/onex.git
+git remote add upstream https://github.com/onexstack/onex.git
 # or: git remote add upstream git@github.com:onex/onex.git
 
 # Never push to upstream master

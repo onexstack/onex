@@ -7,14 +7,14 @@ import (
 	"github.com/google/uuid"
 	"go.uber.org/ratelimit"
 
-	"github.com/superproj/onex/internal/nightwatch/store"
-	"github.com/superproj/onex/internal/nightwatch/watcher"
-	"github.com/superproj/onex/internal/pkg/client/minio"
-	"github.com/superproj/onex/internal/pkg/client/train"
-	known "github.com/superproj/onex/internal/pkg/known/nightwatch"
-	"github.com/superproj/onex/pkg/log"
-	"github.com/superproj/onex/pkg/store/where"
-	"github.com/superproj/onex/pkg/watch/registry"
+	"github.com/onexstack/onex/internal/nightwatch/store"
+	"github.com/onexstack/onex/internal/nightwatch/watcher"
+	"github.com/onexstack/onex/internal/pkg/client/minio"
+	"github.com/onexstack/onex/internal/pkg/client/train"
+	known "github.com/onexstack/onex/internal/pkg/known/nightwatch"
+	"github.com/onexstack/onex/pkg/log"
+	"github.com/onexstack/onex/pkg/store/where"
+	"github.com/onexstack/onex/pkg/watch/registry"
 )
 
 // Ensure Watcher implements the registry.Watcher interface.

@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/superproj/onex/internal/fakeserver/model"
-	"github.com/superproj/onex/internal/fakeserver/store"
-	"github.com/superproj/onex/internal/fakeserver/store/mysql"
-	"github.com/superproj/onex/pkg/db"
-	"github.com/superproj/onex/pkg/store/where"
+	"github.com/onexstack/onex/internal/fakeserver/model"
+	"github.com/onexstack/onex/internal/fakeserver/store"
+	"github.com/onexstack/onex/internal/fakeserver/store/mysql"
+	"github.com/onexstack/onex/pkg/db"
+	"github.com/onexstack/onex/pkg/store/where"
 )
 
 func main() {

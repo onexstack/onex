@@ -18,5 +18,5 @@ $ kubectl -n onex apply -f deployments/onex/onex-minerset-controller
 3. 测试是否部署成功
 
 ```bash
-$ curl -H "Host: onex.minerset.superproj.com" http://127.0.0.1:18080/healthz
+$ curl -H "Host: onex.minerset.onexstack.com" http://127.0.0.1:18080/healthz
 ```

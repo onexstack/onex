@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package server
@@ -23,18 +23,18 @@ import (
 	"github.com/google/wire"
 	"golang.org/x/text/language"
 
-	"github.com/superproj/onex/internal/gateway/locales"
-	authmw "github.com/superproj/onex/internal/gateway/server/middleware/auth"
-	"github.com/superproj/onex/internal/pkg/idempotent"
-	onexmetrics "github.com/superproj/onex/internal/pkg/metrics"
-	"github.com/superproj/onex/internal/pkg/middleware/auth"
-	i18nmw "github.com/superproj/onex/internal/pkg/middleware/i18n"
-	idempotentmw "github.com/superproj/onex/internal/pkg/middleware/idempotent"
-	"github.com/superproj/onex/internal/pkg/middleware/logging"
-	"github.com/superproj/onex/internal/pkg/middleware/tracing"
-	"github.com/superproj/onex/internal/pkg/middleware/validate"
-	"github.com/superproj/onex/pkg/i18n"
-	"github.com/superproj/onex/pkg/log"
+	"github.com/onexstack/onex/internal/gateway/locales"
+	authmw "github.com/onexstack/onex/internal/gateway/server/middleware/auth"
+	"github.com/onexstack/onex/internal/pkg/idempotent"
+	onexmetrics "github.com/onexstack/onex/internal/pkg/metrics"
+	"github.com/onexstack/onex/internal/pkg/middleware/auth"
+	i18nmw "github.com/onexstack/onex/internal/pkg/middleware/i18n"
+	idempotentmw "github.com/onexstack/onex/internal/pkg/middleware/idempotent"
+	"github.com/onexstack/onex/internal/pkg/middleware/logging"
+	"github.com/onexstack/onex/internal/pkg/middleware/tracing"
+	"github.com/onexstack/onex/internal/pkg/middleware/validate"
+	"github.com/onexstack/onex/pkg/i18n"
+	"github.com/onexstack/onex/pkg/log"
 )
 
 // ProviderSet defines a wire provider set.

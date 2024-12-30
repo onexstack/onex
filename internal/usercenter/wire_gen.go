@@ -8,16 +8,16 @@ package usercenter
 
 import (
 	"github.com/go-kratos/kratos/v2"
-	"github.com/superproj/onex/internal/pkg/bootstrap"
-	validation2 "github.com/superproj/onex/internal/pkg/validation"
-	"github.com/superproj/onex/internal/usercenter/auth"
-	"github.com/superproj/onex/internal/usercenter/biz"
-	"github.com/superproj/onex/internal/usercenter/server"
-	"github.com/superproj/onex/internal/usercenter/service"
-	"github.com/superproj/onex/internal/usercenter/store"
-	"github.com/superproj/onex/internal/usercenter/validation"
-	"github.com/superproj/onex/pkg/db"
-	"github.com/superproj/onex/pkg/options"
+	"github.com/onexstack/onex/internal/pkg/bootstrap"
+	validation2 "github.com/onexstack/onex/internal/pkg/validation"
+	"github.com/onexstack/onex/internal/usercenter/auth"
+	"github.com/onexstack/onex/internal/usercenter/biz"
+	"github.com/onexstack/onex/internal/usercenter/server"
+	"github.com/onexstack/onex/internal/usercenter/service"
+	"github.com/onexstack/onex/internal/usercenter/store"
+	"github.com/onexstack/onex/internal/usercenter/validation"
+	"github.com/onexstack/onex/pkg/db"
+	"github.com/onexstack/onex/pkg/options"
 )
 
 // Injectors from wire.go:

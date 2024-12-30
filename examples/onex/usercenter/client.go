@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package main
@@ -15,7 +15,7 @@ import (
 	transgrpc "github.com/go-kratos/kratos/v2/transport/grpc"
 	transhttp "github.com/go-kratos/kratos/v2/transport/http"
 
-	v1 "github.com/superproj/onex/pkg/api/usercenter/v1"
+	v1 "github.com/onexstack/onex/pkg/api/usercenter/v1"
 )
 
 func main() {
@@ -29,7 +29,7 @@ func callHTTP() {
 		transhttp.WithMiddleware(
 			recovery.Recovery(),
 		),
-		transhttp.WithEndpoint("onex.usercenter.superproj.com:18080"),
+		transhttp.WithEndpoint("onex.usercenter.onexstack.com:18080"),
 	)
 	if err != nil {
 		panic(err)
@@ -55,7 +55,7 @@ func callHTTP() {
 func callGRPC() {
 	conn, err := transgrpc.DialInsecure(
 		context.Background(),
-		transgrpc.WithEndpoint("onex.usercenter.superproj.com:18080"),
+		transgrpc.WithEndpoint("onex.usercenter.onexstack.com:18080"),
 		transgrpc.WithMiddleware(
 			recovery.Recovery(),
 		),

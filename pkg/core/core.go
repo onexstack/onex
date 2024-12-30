@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/superproj/onex/pkg/errorsx"
+	"github.com/onexstack/onex/pkg/errorsx"
 )
 
 // ValidatorFn 定义验证函数类型。用于对绑定的数据结构进行验证。  

@@ -1,6 +1,6 @@
 package empty
 
-import "github.com/superproj/onex/pkg/logger"
+import "github.com/onexstack/onex/pkg/logger"
 
 // emptyLogger is an implementation of the logger.Logger interface that performs no operations.
 // This can be useful in contexts where a logger is required but logging output is not desired.

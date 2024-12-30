@@ -1,4 +1,4 @@
-module github.com/superproj/onex
+module github.com/onexstack/onex
 
 go 1.23
 

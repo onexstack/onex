@@ -31,7 +31,7 @@ spec:
         - --tls-private-key-file=/opt/onex/cert/onex-apiserver-key.pem
         -  --enable-admission-plugins=NamespaceAutoProvision,NamespaceExists,NamespaceLifecycle
         - --v=10
-        image: ccr.ccs.tencentyun.com/superproj/onex-apiserver-amd64:v1.0.0
+        image: ccr.ccs.tencentyun.com/onexstack/onex-apiserver-amd64:v1.0.0
         name: onex-apiserver
         ports:
         - containerPort: 52010

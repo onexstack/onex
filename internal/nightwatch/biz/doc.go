@@ -4,4 +4,4 @@
 // this file is https://github.com/marmotedu/miniblog.
 
 // Package biz is the place where you can implements more complex business logic.
-package biz // import "github.com/superproj/onex/internal/nightwatch/biz"
+package biz // import "github.com/onexstack/onex/internal/nightwatch/biz"

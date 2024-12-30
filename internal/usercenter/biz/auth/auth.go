@@ -1,25 +1,25 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package auth
 
-//go:generate mockgen -self_package github.com/superproj/onex/internal/usercenter/biz/auth -destination mock_auth.go -package auth github.com/superproj/onex/internal/usercenter/biz/auth AuthBiz
+//go:generate mockgen -self_package github.com/onexstack/onex/internal/usercenter/biz/auth -destination mock_auth.go -package auth github.com/onexstack/onex/internal/usercenter/biz/auth AuthBiz
 
 import (
 	"context"
 
-	"github.com/superproj/onex/internal/pkg/contextx"
-	"github.com/superproj/onex/internal/usercenter/auth"
-	"github.com/superproj/onex/internal/usercenter/locales"
-	"github.com/superproj/onex/internal/usercenter/store"
-	v1 "github.com/superproj/onex/pkg/api/usercenter/v1"
-	"github.com/superproj/onex/pkg/authn"
-	"github.com/superproj/onex/pkg/i18n"
-	"github.com/superproj/onex/pkg/log"
-	"github.com/superproj/onex/pkg/store/where"
+	"github.com/onexstack/onex/internal/pkg/contextx"
+	"github.com/onexstack/onex/internal/usercenter/auth"
+	"github.com/onexstack/onex/internal/usercenter/locales"
+	"github.com/onexstack/onex/internal/usercenter/store"
+	v1 "github.com/onexstack/onex/pkg/api/usercenter/v1"
+	"github.com/onexstack/onex/pkg/authn"
+	"github.com/onexstack/onex/pkg/i18n"
+	"github.com/onexstack/onex/pkg/log"
+	"github.com/onexstack/onex/pkg/store/where"
 )
 
 // AuthBiz defines functions used for authentication and authorization.
