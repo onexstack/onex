@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/superproj/onex/cmd/onex-nightwatch/app"
+	"github.com/onexstack/onex/cmd/onex-nightwatch/app"
 )
 
 import "fmt"

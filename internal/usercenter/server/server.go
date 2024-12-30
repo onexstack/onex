@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package server
@@ -24,16 +24,16 @@ import (
 	"github.com/google/wire"
 	"golang.org/x/text/language"
 
-	onexmetrics "github.com/superproj/onex/internal/pkg/metrics"
-	"github.com/superproj/onex/internal/pkg/middleware/authn/jwt"
-	i18nmw "github.com/superproj/onex/internal/pkg/middleware/i18n"
-	"github.com/superproj/onex/internal/pkg/middleware/logging"
-	"github.com/superproj/onex/internal/pkg/middleware/tracing"
-	"github.com/superproj/onex/internal/pkg/middleware/validate"
-	"github.com/superproj/onex/internal/usercenter/locales"
-	"github.com/superproj/onex/pkg/authn"
-	"github.com/superproj/onex/pkg/i18n"
-	"github.com/superproj/onex/pkg/log"
+	onexmetrics "github.com/onexstack/onex/internal/pkg/metrics"
+	"github.com/onexstack/onex/internal/pkg/middleware/authn/jwt"
+	i18nmw "github.com/onexstack/onex/internal/pkg/middleware/i18n"
+	"github.com/onexstack/onex/internal/pkg/middleware/logging"
+	"github.com/onexstack/onex/internal/pkg/middleware/tracing"
+	"github.com/onexstack/onex/internal/pkg/middleware/validate"
+	"github.com/onexstack/onex/internal/usercenter/locales"
+	"github.com/onexstack/onex/pkg/authn"
+	"github.com/onexstack/onex/pkg/i18n"
+	"github.com/onexstack/onex/pkg/log"
 )
 
 // ProviderSet defines a wire provider set.

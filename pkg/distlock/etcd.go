@@ -8,7 +8,7 @@ import (
 
 	"go.etcd.io/etcd/client/v3"
 
-	"github.com/superproj/onex/pkg/logger"
+	"github.com/onexstack/onex/pkg/logger"
 )
 
 // EtcdLocker provides a distributed locking mechanism using etcd.

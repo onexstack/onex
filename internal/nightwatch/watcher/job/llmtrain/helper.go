@@ -3,11 +3,11 @@ package llmtrain
 import (
 	"time"
 
-	"github.com/superproj/onex/internal/nightwatch/dao/model"
-	onexembedder "github.com/superproj/onex/internal/pkg/embedding/embedder/onex"
-	known "github.com/superproj/onex/internal/pkg/known/nightwatch"
-	jobconditionsutil "github.com/superproj/onex/internal/pkg/util/jobconditions"
-	nwv1 "github.com/superproj/onex/pkg/api/nightwatch/v1"
+	"github.com/onexstack/onex/internal/nightwatch/dao/model"
+	onexembedder "github.com/onexstack/onex/internal/pkg/embedding/embedder/onex"
+	known "github.com/onexstack/onex/internal/pkg/known/nightwatch"
+	jobconditionsutil "github.com/onexstack/onex/internal/pkg/util/jobconditions"
+	nwv1 "github.com/onexstack/onex/pkg/api/nightwatch/v1"
 )
 
 // isJobTimeout checks if the job has exceeded its allowed execution time.

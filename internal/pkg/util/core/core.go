@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Package core implements core utilities.
@@ -33,8 +33,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client/apiutil"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 
-	"github.com/superproj/onex/internal/pkg/util/contract"
-	"github.com/superproj/onex/pkg/apis/apps/v1beta1"
+	"github.com/onexstack/onex/internal/pkg/util/contract"
+	"github.com/onexstack/onex/pkg/apis/apps/v1beta1"
 )
 
 const (

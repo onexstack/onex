@@ -43,7 +43,7 @@ $ kubectl -n onex apply -f deployments/onex/onex-usercenter
 3. 测试是否部署成功
 
 ```bash
-$ curl -H "Host: onex.usercenter.superproj.com" http://127.0.0.1:18080/metrics
+$ curl -H "Host: onex.usercenter.onexstack.com" http://127.0.0.1:18080/metrics
 ```
 
 ## Helm Chart 安装

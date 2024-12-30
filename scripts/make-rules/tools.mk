@@ -13,7 +13,7 @@ CI_WORKFLOW_TOOLS := code-generator golangci-lint goimports wire
 OTHER_TOOLS := mockgen uplift git-chglog addlicense kratos kind go-apidiff gotests \
 			   cfssl go-gitlint kustomize kafkactl kube-linter kubeconform kubectl \
 			   helm-docs db2struct gentool air swagger license gothanks kubebuilder \
-			   go-junit-report controller-gen
+			   go-junit-report controller-gen protoc-go-inject-tag
 MANUAL_INSTALL_TOOLS := kafka
 
 .PHONY: tools.install
@@ -108,7 +108,7 @@ _install.cfssl: ## Install cfssl toolkit.
 
 .PHONY: _install.addlicense
 _install.addlicense: ## Install addlicense.
-	@$(GO) install github.com/superproj/addlicense@$(ADDLICENSE_VERSION)
+	@$(GO) install github.com/onexstack/addlicense@$(ADDLICENSE_VERSION)
 
 .PHONY: _install.kustomize
 _install.kustomize: ## Install kustomize.
@@ -239,3 +239,7 @@ _install.grpcurl:
 .PHONY: _install.logcheck
 _install.logcheck:
 	@$(GO) install sigs.k8s.io/logtools/logcheck@$(LOGCHECK_VERSION)
+
+.PHONY: _install.protoc-go-inject-tag
+_install.protoc-go-inject-tag:
+	@$(GO) install github.com/favadi/protoc-go-inject-tag@latest

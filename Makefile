@@ -24,8 +24,8 @@ define USAGE_OPTIONS
                    This option is available when using: make image/image.multiarch/push/push.multiarch
                    Example: make image.multiarch IMAGES="onex-apiserver onex-miner-controller"
   DEPLOYS          Deploy all configured services.
-  REGISTRY_PREFIX  Docker registry prefix. Default is superproj. 
-                   Example: make push REGISTRY_PREFIX=ccr.ccs.tencentyun.com/superproj VERSION=v0.1.0
+  REGISTRY_PREFIX  Docker registry prefix. Default is onexstack. 
+                   Example: make push REGISTRY_PREFIX=ccr.ccs.tencentyun.com/onexstack VERSION=v0.1.0
   PLATFORMS        The multiple platforms to build. Default is linux_amd64 and linux_arm64.
                    This option is available when using: make build.multiarch/image.multiarch/push.multiarch
                    Example: make image.multiarch IMAGES="onex-apiserver onex-miner-controller" PLATFORMS="linux_amd64 linux_arm64"

@@ -8,18 +8,18 @@ package gateway
 
 import (
 	"github.com/go-kratos/kratos/v2"
-	"github.com/superproj/onex/internal/gateway/biz"
-	"github.com/superproj/onex/internal/gateway/server"
-	"github.com/superproj/onex/internal/gateway/service"
-	"github.com/superproj/onex/internal/gateway/store"
-	"github.com/superproj/onex/internal/gateway/validation"
-	"github.com/superproj/onex/internal/pkg/bootstrap"
-	"github.com/superproj/onex/internal/pkg/client/usercenter"
-	"github.com/superproj/onex/internal/pkg/idempotent"
-	validation2 "github.com/superproj/onex/internal/pkg/validation"
-	"github.com/superproj/onex/pkg/db"
-	"github.com/superproj/onex/pkg/generated/clientset/versioned"
-	"github.com/superproj/onex/pkg/options"
+	"github.com/onexstack/onex/internal/gateway/biz"
+	"github.com/onexstack/onex/internal/gateway/server"
+	"github.com/onexstack/onex/internal/gateway/service"
+	"github.com/onexstack/onex/internal/gateway/store"
+	"github.com/onexstack/onex/internal/gateway/validation"
+	"github.com/onexstack/onex/internal/pkg/bootstrap"
+	"github.com/onexstack/onex/internal/pkg/client/usercenter"
+	"github.com/onexstack/onex/internal/pkg/idempotent"
+	validation2 "github.com/onexstack/onex/internal/pkg/validation"
+	"github.com/onexstack/onex/pkg/db"
+	"github.com/onexstack/onex/pkg/generated/clientset/versioned"
+	"github.com/onexstack/onex/pkg/options"
 )
 
 // Injectors from wire.go:

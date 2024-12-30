@@ -14,7 +14,7 @@
 ###############################################################################
 
 # Tencent cos configuration
-readonly BUCKET="superproj-1254073058"
+readonly BUCKET="onexstack-1254073058"
 readonly REGION="ap-beijing"
 readonly COS_RELEASE_DIR="onex-release"
 readonly COSTOOL="coscmd"
@@ -25,7 +25,7 @@ readonly RELEASE_TARS="${LOCAL_OUTPUT_ROOT}/release-tars"
 readonly RELEASE_IMAGES="${LOCAL_OUTPUT_ROOT}/release-images"
 
 # onex github account info
-readonly ONEX_GITHUB_ORG=superproj
+readonly ONEX_GITHUB_ORG=onexstack
 readonly ONEX_GITHUB_REPO=onex
 
 readonly ARTIFACT=onex.tar.gz

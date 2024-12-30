@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 syntax = "proto3";
@@ -13,7 +13,7 @@ import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "apps/v1beta1/generated.proto";
 
-option go_package = "github.com/superproj/onex/pkg/api/gateway/v1;v1";
+option go_package = "github.com/onexstack/onex/pkg/api/gateway/v1;v1";
 
 // Peer lists  hubble peers and notifies of changes.
 service Gateway {
@@ -28,7 +28,7 @@ service Gateway {
   }
 
   // CreateMinerSet
-  rpc CreateMinerSet(github.com.superproj.onex.pkg.apis.apps.v1beta1.MinerSet) returns (google.protobuf.Empty) {
+  rpc CreateMinerSet(github.com.onexstack.onex.pkg.apis.apps.v1beta1.MinerSet) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       post: "/v1/minersets",
       body: "*",
@@ -41,12 +41,12 @@ service Gateway {
   }
 
   // GetMinerSet
-  rpc GetMinerSet(GetMinerSetRequest) returns (github.com.superproj.onex.pkg.apis.apps.v1beta1.MinerSet) {
+  rpc GetMinerSet(GetMinerSetRequest) returns (github.com.onexstack.onex.pkg.apis.apps.v1beta1.MinerSet) {
     option (google.api.http) = {get: "/v1/minersets/{name}"};
   }
 
   // UpdateMinerSet
-  rpc UpdateMinerSet(github.com.superproj.onex.pkg.apis.apps.v1beta1.MinerSet) returns (google.protobuf.Empty) {
+  rpc UpdateMinerSet(github.com.onexstack.onex.pkg.apis.apps.v1beta1.MinerSet) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       put: "/v1/minersets",
       body: "*",
@@ -67,7 +67,7 @@ service Gateway {
   }
 
   // CreateMiner
-  rpc CreateMiner(github.com.superproj.onex.pkg.apis.apps.v1beta1.Miner) returns (google.protobuf.Empty) {
+  rpc CreateMiner(github.com.onexstack.onex.pkg.apis.apps.v1beta1.Miner) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       post: "/v1/miners",
       body: "*",
@@ -80,12 +80,12 @@ service Gateway {
   }
 
   // GetMiner
-  rpc GetMiner(GetMinerRequest) returns (github.com.superproj.onex.pkg.apis.apps.v1beta1.Miner) {
+  rpc GetMiner(GetMinerRequest) returns (github.com.onexstack.onex.pkg.apis.apps.v1beta1.Miner) {
     option (google.api.http) = {get: "/v1/miners/{name}"};
   }
 
   // UpdateMiner
-  rpc UpdateMiner(github.com.superproj.onex.pkg.apis.apps.v1beta1.Miner) returns (google.protobuf.Empty) {
+  rpc UpdateMiner(github.com.onexstack.onex.pkg.apis.apps.v1beta1.Miner) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       put: "/v1/miners",
       body: "*",

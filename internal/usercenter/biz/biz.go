@@ -1,22 +1,22 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package biz
 
-//go:generate mockgen -self_package github.com/superproj/onex/internal/usercenter/biz -destination mock_biz.go -package biz github.com/superproj/onex/internal/usercenter/biz IBiz
+//go:generate mockgen -self_package github.com/onexstack/onex/internal/usercenter/biz -destination mock_biz.go -package biz github.com/onexstack/onex/internal/usercenter/biz IBiz
 
 import (
 	"github.com/google/wire"
 
-	"github.com/superproj/onex/internal/usercenter/auth"
-	authbiz "github.com/superproj/onex/internal/usercenter/biz/auth"
-	"github.com/superproj/onex/internal/usercenter/biz/secret"
-	"github.com/superproj/onex/internal/usercenter/biz/user"
-	"github.com/superproj/onex/internal/usercenter/store"
-	"github.com/superproj/onex/pkg/authn"
+	"github.com/onexstack/onex/internal/usercenter/auth"
+	authbiz "github.com/onexstack/onex/internal/usercenter/biz/auth"
+	"github.com/onexstack/onex/internal/usercenter/biz/secret"
+	"github.com/onexstack/onex/internal/usercenter/biz/user"
+	"github.com/onexstack/onex/internal/usercenter/store"
+	"github.com/onexstack/onex/pkg/authn"
 )
 
 // ProviderSet contains providers for creating instances of the biz struct.

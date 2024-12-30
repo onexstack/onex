@@ -18,5 +18,5 @@ $ kubectl -n onex apply -f deployments/onex/onex-controller-manager
 3. 测试是否部署成功
 
 ```bash
-$ curl -H "Host: onex.controllermanager.superproj.com" http://127.0.0.1:18080/healthz
+$ curl -H "Host: onex.controllermanager.onexstack.com" http://127.0.0.1:18080/healthz
 ```

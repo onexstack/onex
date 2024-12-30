@@ -1,6 +1,6 @@
 package job
 
-//go:generate mockgen -destination mock_job.go -package job github.com/superproj/onex/internal/nightwatch/biz/job JobBiz
+//go:generate mockgen -destination mock_job.go -package job github.com/onexstack/onex/internal/nightwatch/biz/job JobBiz
 
 import (
 	"context"
@@ -8,11 +8,11 @@ import (
 	"github.com/jinzhu/copier"
 	"k8s.io/utils/ptr"
 
-	"github.com/superproj/onex/internal/nightwatch/conversion"
-	"github.com/superproj/onex/internal/nightwatch/dao/model"
-	"github.com/superproj/onex/internal/nightwatch/store"
-	nwv1 "github.com/superproj/onex/pkg/api/nightwatch/v1"
-	"github.com/superproj/onex/pkg/store/where"
+	"github.com/onexstack/onex/internal/nightwatch/conversion"
+	"github.com/onexstack/onex/internal/nightwatch/dao/model"
+	"github.com/onexstack/onex/internal/nightwatch/store"
+	nwv1 "github.com/onexstack/onex/pkg/api/nightwatch/v1"
+	"github.com/onexstack/onex/pkg/store/where"
 )
 
 // JobBiz defines the interface for managing jobs.

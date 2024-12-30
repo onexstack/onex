@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package storage
@@ -27,9 +27,9 @@ import (
 	printerstorage "k8s.io/kubernetes/pkg/printers/storage"
 	"sigs.k8s.io/structured-merge-diff/v4/fieldpath"
 
-	printersinternal "github.com/superproj/onex/internal/pkg/printers/internalversion"
-	"github.com/superproj/onex/internal/apiserver/registry/apps/minerset"
-	"github.com/superproj/onex/pkg/apis/apps"
+	printersinternal "github.com/onexstack/onex/internal/pkg/printers/internalversion"
+	"github.com/onexstack/onex/internal/apiserver/registry/apps/minerset"
+	"github.com/onexstack/onex/pkg/apis/apps"
 )
 
 // MinerSetStorage includes storage for chains and all sub resources.

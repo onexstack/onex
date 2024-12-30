@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package app
@@ -12,7 +12,7 @@ import (
 	"github.com/blang/semver/v4"
 	kversion "k8s.io/apimachinery/pkg/version"
 
-	"github.com/superproj/onex/pkg/version"
+	"github.com/onexstack/onex/pkg/version"
 )
 
 func convertVersion(info version.Info) *kversion.Info {

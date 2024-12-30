@@ -3,7 +3,7 @@
 # Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 # Use of this source code is governed by a MIT style
 # license that can be found in the LICENSE file. The original repo for
-# this file is https://github.com/superproj/onex.
+# this file is https://github.com/onexstack/onex.
 #
 
 
@@ -43,7 +43,7 @@ load_docker_image() {
   # For example, the version number "v0.18.0+20240121235656" should be transformed into "v0.18.0-20240121235656" for
   # use as a container tag name.
   kind load docker-image --name ${ONEX_KIND_CLUSTER_NAME} --nodes ${NODES} \
-    ccr.ccs.tencentyun.com/superproj/${comp}-amd64:$(echo ${OVERSION} | sed 's/+/-/')
+    ccr.ccs.tencentyun.com/onexstack/${comp}-amd64:$(echo ${OVERSION} | sed 's/+/-/')
 }
 
 # Build docker images

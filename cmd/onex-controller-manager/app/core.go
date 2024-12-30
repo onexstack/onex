@@ -9,11 +9,11 @@ import (
 	"k8s.io/kubernetes/pkg/controller/garbagecollector"
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	"github.com/superproj/onex/cmd/onex-controller-manager/names"
-	chaincontroller "github.com/superproj/onex/internal/controller/chain"
-	namespacecontroller "github.com/superproj/onex/internal/controller/namespace"
-	resourcecleancontroller "github.com/superproj/onex/internal/controller/resourceclean"
-	synccontroller "github.com/superproj/onex/internal/controller/sync"
+	"github.com/onexstack/onex/cmd/onex-controller-manager/names"
+	chaincontroller "github.com/onexstack/onex/internal/controller/chain"
+	namespacecontroller "github.com/onexstack/onex/internal/controller/namespace"
+	resourcecleancontroller "github.com/onexstack/onex/internal/controller/resourceclean"
+	synccontroller "github.com/onexstack/onex/internal/controller/sync"
 )
 
 func newGarbageCollectorControllerDescriptor() *ControllerDescriptor {

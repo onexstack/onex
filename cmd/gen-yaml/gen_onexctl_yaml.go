@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 //nolint:musttag,gocritic
@@ -17,7 +17,7 @@ import (
 	"gopkg.in/yaml.v3"
 	"k8s.io/kubernetes/cmd/genutils"
 
-	"github.com/superproj/onex/internal/onexctl/cmd"
+	"github.com/onexstack/onex/internal/onexctl/cmd"
 )
 
 type cmdOption struct {

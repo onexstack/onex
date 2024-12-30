@@ -1,7 +1,7 @@
 # Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 # Use of this source code is governed by a MIT style
 # license that can be found in the LICENSE file. The original repo for
-# this file is https://github.com/superproj/onex.
+# this file is https://github.com/onexstack/onex.
 #
 
 # 提示：本 Kind 集群配置，可在 kind v0.19.0 版本下正常工作
@@ -42,7 +42,7 @@ kubeadmConfigPatches:
 - |
   kind: ClusterConfiguration
   networking:
-    dnsDomain: "superproj.com"
+    dnsDomain: "onexstack.com"
 - |
   apiVersion: kubelet.config.k8s.io/v1beta1
   kind: KubeletConfiguration

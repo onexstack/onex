@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package store
@@ -9,10 +9,10 @@ package store
 import (
 	"context"
 
-	"github.com/superproj/onex/internal/gateway/model"
-	genericstore "github.com/superproj/onex/pkg/store"
-	"github.com/superproj/onex/pkg/store/logger/onex"
-	"github.com/superproj/onex/pkg/store/where"
+	"github.com/onexstack/onex/internal/gateway/model"
+	genericstore "github.com/onexstack/onex/pkg/store"
+	"github.com/onexstack/onex/pkg/store/logger/onex"
+	"github.com/onexstack/onex/pkg/store/where"
 )
 
 // MinerSetStore defines the interface for managing minerSets in the database.

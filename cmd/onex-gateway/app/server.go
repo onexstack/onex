@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package app
@@ -9,9 +9,9 @@ package app
 import (
 	genericapiserver "k8s.io/apiserver/pkg/server"
 
-	"github.com/superproj/onex/cmd/onex-gateway/app/options"
-	"github.com/superproj/onex/internal/gateway"
-	"github.com/superproj/onex/pkg/app"
+	"github.com/onexstack/onex/cmd/onex-gateway/app/options"
+	"github.com/onexstack/onex/internal/gateway"
+	"github.com/onexstack/onex/pkg/app"
 )
 
 const commandDesc = `The gateway server is the back-end portal server of onex. All 

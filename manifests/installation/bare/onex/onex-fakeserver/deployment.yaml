@@ -40,7 +40,7 @@ spec:
       containers:
       - args:
         - --config=/opt/onex/conf/onex-fakeserver.yaml
-        image: ccr.ccs.tencentyun.com/superproj/onex-fakeserver-amd64:v0.1.0
+        image: ccr.ccs.tencentyun.com/onexstack/onex-fakeserver-amd64:v0.1.0
         name: onex-fakeserver
         ports:
         - containerPort: 38443

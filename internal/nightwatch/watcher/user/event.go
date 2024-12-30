@@ -6,12 +6,12 @@ import (
 
 	"github.com/looplab/fsm"
 
-	"github.com/superproj/onex/internal/pkg/client/store"
-	known "github.com/superproj/onex/internal/pkg/known/usercenter"
-	"github.com/superproj/onex/internal/pkg/contextx"
-	"github.com/superproj/onex/internal/usercenter/model"
-	"github.com/superproj/onex/pkg/log"
-	"github.com/superproj/onex/pkg/store/where"
+	"github.com/onexstack/onex/internal/pkg/client/store"
+	known "github.com/onexstack/onex/internal/pkg/known/usercenter"
+	"github.com/onexstack/onex/internal/pkg/contextx"
+	"github.com/onexstack/onex/internal/usercenter/model"
+	"github.com/onexstack/onex/pkg/log"
+	"github.com/onexstack/onex/pkg/store/where"
 )
 
 const (

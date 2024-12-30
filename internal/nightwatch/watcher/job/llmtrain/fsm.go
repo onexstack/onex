@@ -3,9 +3,9 @@ package llmtrain
 import (
 	"github.com/looplab/fsm"
 
-	"github.com/superproj/onex/internal/nightwatch/dao/model"
-	known "github.com/superproj/onex/internal/pkg/known/nightwatch"
-	fsmutil "github.com/superproj/onex/internal/pkg/util/fsm"
+	"github.com/onexstack/onex/internal/nightwatch/dao/model"
+	known "github.com/onexstack/onex/internal/pkg/known/nightwatch"
+	fsmutil "github.com/onexstack/onex/internal/pkg/util/fsm"
 )
 
 // StateMachine represents a finite state machine for managing daily estimation jobs.

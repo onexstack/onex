@@ -40,7 +40,7 @@ spec:
       containers:
       - args:
         - --config=/opt/onex/etc/onex-toyblc.yaml
-        image: ccr.ccs.tencentyun.com/superproj/onex-toyblc-amd64:v0.1.0
+        image: ccr.ccs.tencentyun.com/onexstack/onex-toyblc-amd64:v0.1.0
         name: onex-toyblc
         ports:
         - containerPort: 6001

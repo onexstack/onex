@@ -8,7 +8,7 @@ api idempotent tool based on redis lua script.
 
 
 ```bash
-go get -u github.com/superproj/onex/pkg/idempotent
+go get -u github.com/onexstack/onex/pkg/idempotent
 ```
 
 ```go
@@ -16,7 +16,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/redis/go-redis/v9"
-  "github.com/superproj/onex/pkg/idempotent"
+  "github.com/onexstack/onex/pkg/idempotent"
 )
 
 func main() {

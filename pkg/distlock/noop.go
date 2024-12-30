@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/superproj/onex/pkg/logger"
+	"github.com/onexstack/onex/pkg/logger"
 )
 
 // NoopLocker provides a no-operation implementation of a distributed lock.

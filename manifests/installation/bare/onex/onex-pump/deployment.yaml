@@ -40,7 +40,7 @@ spec:
       containers:
       - args:
         - --config=/opt/onex/etc/onex-pump.yaml
-        image: ccr.ccs.tencentyun.com/superproj/onex-pump-amd64:v0.1.0
+        image: ccr.ccs.tencentyun.com/onexstack/onex-pump-amd64:v0.1.0
         name: onex-pump
         ports:
         - containerPort: 55082

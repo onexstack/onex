@@ -21,8 +21,8 @@ import (
 	"k8s.io/apimachinery/pkg/api/equality"
 	flowcontrolapisv1 "k8s.io/kubernetes/pkg/apis/flowcontrol/v1"
 
-	flowcontrolclient "github.com/superproj/onex/pkg/generated/clientset/versioned/typed/flowcontrol/v1"
-	flowcontrollisters "github.com/superproj/onex/pkg/generated/listers/flowcontrol/v1"
+	flowcontrolclient "github.com/onexstack/onex/pkg/generated/clientset/versioned/typed/flowcontrol/v1"
+	flowcontrollisters "github.com/onexstack/onex/pkg/generated/listers/flowcontrol/v1"
 )
 
 func NewFlowSchemaOps(client flowcontrolclient.FlowSchemaInterface, cache flowcontrollisters.FlowSchemaLister) ObjectOps[*flowcontrolv1.FlowSchema] {

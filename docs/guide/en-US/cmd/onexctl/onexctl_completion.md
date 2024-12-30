@@ -6,7 +6,7 @@ Output shell completion code for the specified shell (bash, zsh, fish, or powers
 
 Output shell completion code for the specified shell (bash or zsh). The shell code must be evaluated to provide interactive completion of onexctl commands.  This can be done by sourcing it from the .bash_profile.
 
- Detailed instructions on how to do this are available here: http://github.com/superproj/onex/docs/installation/onexctl.md#enabling-shell-autocompletion
+ Detailed instructions on how to do this are available here: http://github.com/onexstack/onex/docs/installation/onexctl.md#enabling-shell-autocompletion
 
  Note for zsh users: [1] zsh completions are only supported in versions of zsh >= 5.2
 

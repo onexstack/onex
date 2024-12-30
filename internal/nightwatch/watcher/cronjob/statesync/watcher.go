@@ -6,12 +6,12 @@ import (
 
 	"github.com/gammazero/workerpool"
 
-	"github.com/superproj/onex/internal/nightwatch/dao/model"
-	"github.com/superproj/onex/internal/nightwatch/store"
-	known "github.com/superproj/onex/internal/pkg/known/nightwatch"
-	"github.com/superproj/onex/pkg/log"
-	"github.com/superproj/onex/pkg/store/where"
-	"github.com/superproj/onex/pkg/watch/registry"
+	"github.com/onexstack/onex/internal/nightwatch/dao/model"
+	"github.com/onexstack/onex/internal/nightwatch/store"
+	known "github.com/onexstack/onex/internal/pkg/known/nightwatch"
+	"github.com/onexstack/onex/pkg/log"
+	"github.com/onexstack/onex/pkg/store/where"
+	"github.com/onexstack/onex/pkg/watch/registry"
 )
 
 var _ registry.Watcher = (*Watcher)(nil)

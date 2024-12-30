@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package nightwatch
@@ -12,17 +12,17 @@ import (
 	"github.com/jinzhu/copier"
 	"gorm.io/gorm"
 
-	"github.com/superproj/onex/internal/nightwatch/watcher"
-	_ "github.com/superproj/onex/internal/nightwatch/watcher/all"
-	fakeminio "github.com/superproj/onex/internal/pkg/client/minio/fake"
-	"github.com/superproj/onex/internal/pkg/known"
-	"github.com/superproj/onex/pkg/db"
-	clientset "github.com/superproj/onex/pkg/generated/clientset/versioned"
-	"github.com/superproj/onex/pkg/log"
-	genericoptions "github.com/superproj/onex/pkg/options"
-	"github.com/superproj/onex/pkg/store/where"
-	"github.com/superproj/onex/pkg/watch"
-	"github.com/superproj/onex/pkg/watch/logger/onex"
+	"github.com/onexstack/onex/internal/nightwatch/watcher"
+	_ "github.com/onexstack/onex/internal/nightwatch/watcher/all"
+	fakeminio "github.com/onexstack/onex/internal/pkg/client/minio/fake"
+	"github.com/onexstack/onex/internal/pkg/known"
+	"github.com/onexstack/onex/pkg/db"
+	clientset "github.com/onexstack/onex/pkg/generated/clientset/versioned"
+	"github.com/onexstack/onex/pkg/log"
+	genericoptions "github.com/onexstack/onex/pkg/options"
+	"github.com/onexstack/onex/pkg/store/where"
+	"github.com/onexstack/onex/pkg/watch"
+	"github.com/onexstack/onex/pkg/watch/logger/onex"
 )
 
 // nightWatch represents the night watch server.

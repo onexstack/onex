@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Package cmd create a root cobra command and add subcommands to it.
@@ -23,22 +23,22 @@ import (
 	"k8s.io/kubectl/pkg/cmd/plugin"
 	"k8s.io/kubectl/pkg/util/term"
 
-	"github.com/superproj/onex/internal/onexctl/cmd/color"
-	"github.com/superproj/onex/internal/onexctl/cmd/completion"
-	"github.com/superproj/onex/internal/onexctl/cmd/info"
-	"github.com/superproj/onex/internal/onexctl/cmd/jwt"
-	"github.com/superproj/onex/internal/onexctl/cmd/new"
-	"github.com/superproj/onex/internal/onexctl/cmd/options"
-	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
-	"github.com/superproj/onex/internal/onexctl/cmd/validate"
-	"github.com/superproj/onex/internal/onexctl/cmd/version"
-	// "github.com/superproj/onex/internal/onexctl/plugin".
-	"github.com/superproj/onex/internal/onexctl/cmd/minerset"
-	clioptions "github.com/superproj/onex/internal/onexctl/util/options"
-	//"github.com/superproj/onex/internal/onexctl/util/templates"
+	"github.com/onexstack/onex/internal/onexctl/cmd/color"
+	"github.com/onexstack/onex/internal/onexctl/cmd/completion"
+	"github.com/onexstack/onex/internal/onexctl/cmd/info"
+	"github.com/onexstack/onex/internal/onexctl/cmd/jwt"
+	"github.com/onexstack/onex/internal/onexctl/cmd/new"
+	"github.com/onexstack/onex/internal/onexctl/cmd/options"
+	cmdutil "github.com/onexstack/onex/internal/onexctl/cmd/util"
+	"github.com/onexstack/onex/internal/onexctl/cmd/validate"
+	"github.com/onexstack/onex/internal/onexctl/cmd/version"
+	// "github.com/onexstack/onex/internal/onexctl/plugin".
+	"github.com/onexstack/onex/internal/onexctl/cmd/minerset"
+	clioptions "github.com/onexstack/onex/internal/onexctl/util/options"
+	//"github.com/onexstack/onex/internal/onexctl/util/templates"
 	"k8s.io/kubectl/pkg/util/templates"
-	//"github.com/superproj/onex/internal/onexctl/util/term"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	//"github.com/onexstack/onex/internal/onexctl/util/term"
+	"github.com/onexstack/onex/pkg/cli/genericclioptions"
 )
 
 const onexCmdHeaders = "ONEX_COMMAND_HEADERS"
@@ -139,7 +139,7 @@ func NewOneXCtlCommand(o OneXctlOptions) *cobra.Command {
 		onexctl controls the onex cloud platform, is the client side tool for onex cloud platform.
 
 		Find more information at:
-			https://github.com/superproj/onex/blob/master/docs/guide/en-US/cmd/onexctl/onexctl.md`),
+			https://github.com/onexstack/onex/blob/master/docs/guide/en-US/cmd/onexctl/onexctl.md`),
 		Run: runHelp,
 		// Hook before and after Run initialize and write profiles to disk,
 		// respectively.

@@ -23,7 +23,7 @@ A Helm chart for onex-apiserver
 | etcdCerts.ca | string | `"xxx"` |  |
 | etcdCerts.cert | string | `"xxx"` |  |
 | etcdCerts.key | string | `"xxx"` |  |
-| image | string | `"ccr.ccs.tencentyun.com/superproj/onex-apiserver-amd64:v1.0.0"` |  |
+| image | string | `"ccr.ccs.tencentyun.com/onexstack/onex-apiserver-amd64:v1.0.0"` |  |
 | imagePullPolicy | string | `"Always"` |  |
 | replicas | int | `1` |  |
 | securityContext.capabilities.drop[0] | string | `"ALL"` |  |

@@ -12,4 +12,4 @@
 
 ## 包名规范
 
-- `github.com/superproj/onex/pkg/apis/apps/v1beta1` -> `github.com/superproj/onex/pkg/apis/apps/v1beta1`
+- `github.com/onexstack/onex/pkg/apis/apps/v1beta1` -> `github.com/onexstack/onex/pkg/apis/apps/v1beta1`

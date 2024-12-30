@@ -1,8 +1,8 @@
 package onex
 
 import (
-	"github.com/superproj/onex/pkg/log"
-	"github.com/superproj/onex/pkg/logger"
+	"github.com/onexstack/onex/pkg/log"
+	"github.com/onexstack/onex/pkg/logger"
 )
 
 // onexLogger provides an implementation of the logger.Logger interface.

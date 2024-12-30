@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package validation
@@ -12,14 +12,14 @@ import (
 
 	"github.com/google/wire"
 
-	"github.com/superproj/onex/internal/pkg/known"
-	ucknown "github.com/superproj/onex/internal/pkg/known/usercenter"
-	"github.com/superproj/onex/internal/pkg/contextx"
-	"github.com/superproj/onex/internal/usercenter/locales"
-	"github.com/superproj/onex/internal/usercenter/store"
-	v1 "github.com/superproj/onex/pkg/api/usercenter/v1"
-	"github.com/superproj/onex/pkg/i18n"
-	"github.com/superproj/onex/pkg/store/where"
+	"github.com/onexstack/onex/internal/pkg/known"
+	ucknown "github.com/onexstack/onex/internal/pkg/known/usercenter"
+	"github.com/onexstack/onex/internal/pkg/contextx"
+	"github.com/onexstack/onex/internal/usercenter/locales"
+	"github.com/onexstack/onex/internal/usercenter/store"
+	v1 "github.com/onexstack/onex/pkg/api/usercenter/v1"
+	"github.com/onexstack/onex/pkg/i18n"
+	"github.com/onexstack/onex/pkg/store/where"
 )
 
 // ProviderSet is validator providers.

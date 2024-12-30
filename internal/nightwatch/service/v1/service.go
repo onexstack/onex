@@ -1,8 +1,8 @@
 package v1
 
 import (
-	"github.com/superproj/onex/internal/nightwatch/biz"
-	"github.com/superproj/onex/internal/nightwatch/validation"
+	"github.com/onexstack/onex/internal/nightwatch/biz"
+	"github.com/onexstack/onex/internal/nightwatch/validation"
 )
 
 type NightWatchService struct {

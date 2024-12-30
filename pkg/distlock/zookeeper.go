@@ -8,7 +8,7 @@ import (
 
 	"github.com/go-zookeeper/zk"
 
-	"github.com/superproj/onex/pkg/logger"
+	"github.com/onexstack/onex/pkg/logger"
 )
 
 // ZookeeperLocker provides a distributed locking mechanism using Zookeeper.

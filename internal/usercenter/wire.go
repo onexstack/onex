@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 //go:build wireinject
@@ -17,16 +17,16 @@ import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/google/wire"
 
-	"github.com/superproj/onex/internal/pkg/bootstrap"
-	"github.com/superproj/onex/internal/pkg/validation"
-	"github.com/superproj/onex/internal/usercenter/auth"
-	"github.com/superproj/onex/internal/usercenter/biz"
-	"github.com/superproj/onex/internal/usercenter/server"
-	"github.com/superproj/onex/internal/usercenter/service"
-	"github.com/superproj/onex/internal/usercenter/store"
-	customvalidation "github.com/superproj/onex/internal/usercenter/validation"
-	"github.com/superproj/onex/pkg/db"
-	genericoptions "github.com/superproj/onex/pkg/options"
+	"github.com/onexstack/onex/internal/pkg/bootstrap"
+	"github.com/onexstack/onex/internal/pkg/validation"
+	"github.com/onexstack/onex/internal/usercenter/auth"
+	"github.com/onexstack/onex/internal/usercenter/biz"
+	"github.com/onexstack/onex/internal/usercenter/server"
+	"github.com/onexstack/onex/internal/usercenter/service"
+	"github.com/onexstack/onex/internal/usercenter/store"
+	customvalidation "github.com/onexstack/onex/internal/usercenter/validation"
+	"github.com/onexstack/onex/pkg/db"
+	genericoptions "github.com/onexstack/onex/pkg/options"
 )
 
 // wireApp builds and returns a Kratos app with the given options.

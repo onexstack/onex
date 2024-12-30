@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package controller
@@ -16,15 +16,15 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/cluster"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 
-	"github.com/superproj/onex/internal/controller/apis/config"
-	chaincontroller "github.com/superproj/onex/internal/controller/chain"
-	minercontroller "github.com/superproj/onex/internal/controller/miner"
-	minerconfig "github.com/superproj/onex/internal/controller/miner/apis/config"
-	minersetcontroller "github.com/superproj/onex/internal/controller/minerset"
-	namespacecontroller "github.com/superproj/onex/internal/controller/namespace"
-	synccontroller "github.com/superproj/onex/internal/controller/sync"
-	"github.com/superproj/onex/internal/gateway/store"
-	clientset "github.com/superproj/onex/pkg/generated/clientset/versioned"
+	"github.com/onexstack/onex/internal/controller/apis/config"
+	chaincontroller "github.com/onexstack/onex/internal/controller/chain"
+	minercontroller "github.com/onexstack/onex/internal/controller/miner"
+	minerconfig "github.com/onexstack/onex/internal/controller/miner/apis/config"
+	minersetcontroller "github.com/onexstack/onex/internal/controller/minerset"
+	namespacecontroller "github.com/onexstack/onex/internal/controller/namespace"
+	synccontroller "github.com/onexstack/onex/internal/controller/sync"
+	"github.com/onexstack/onex/internal/gateway/store"
+	clientset "github.com/onexstack/onex/pkg/generated/clientset/versioned"
 )
 
 // Following types provides access to reconcilers implemented in internal/controller, thus

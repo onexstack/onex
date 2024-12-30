@@ -15,4 +15,4 @@ limitations under the License.
 */
 
 // Package controlplane contains code for setting up and running a OneX control plane API server.
-package controlplane // import "github.com/superproj/onex/internal/controlplane"
+package controlplane // import "github.com/onexstack/onex/internal/controlplane"

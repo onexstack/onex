@@ -1,6 +1,6 @@
 <!--  Thanks for sending a pull request!  Here are some tips for you:
 
-1. If this is your first time, please read our contributor guidelines: https://github.com/superproj/community/blob/master/contributors/guide/first-contribution.md#your-first-contribution and developer guide https://github.com/superproj/community/blob/master/contributors/devel/development.md#development-guide
+1. If this is your first time, please read our contributor guidelines: https://github.com/onexstack/community/blob/master/contributors/guide/first-contribution.md#your-first-contribution and developer guide https://github.com/onexstack/community/blob/master/contributors/devel/development.md#development-guide
 -->
 
 #### What type of PR is this?

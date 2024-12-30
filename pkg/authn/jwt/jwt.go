@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package jwt
@@ -14,8 +14,8 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 	goi18n "github.com/nicksnyder/go-i18n/v2/i18n"
 
-	"github.com/superproj/onex/pkg/authn"
-	"github.com/superproj/onex/pkg/i18n"
+	"github.com/onexstack/onex/pkg/authn"
+	"github.com/onexstack/onex/pkg/i18n"
 )
 
 const (

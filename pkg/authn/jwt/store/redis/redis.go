@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package redis
@@ -32,7 +32,7 @@ type Store struct {
 
 // NewStore create an *Store instance to handle token storage, deletion, and checking.
 func NewStore(cfg *Config) *Store {
-	// The reason `github.com/superproj/onex/pkg/db` is not used here is
+	// The reason `github.com/onexstack/onex/pkg/db` is not used here is
 	// to minimize dependencies, and use `github.com/redis/go-redis/v9` to
 	// create redis client is not complex.
 	cli := redis.NewClient(&redis.Options{

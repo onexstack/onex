@@ -1,9 +1,9 @@
 package watcher
 
 import (
-	"github.com/superproj/onex/internal/nightwatch/store"
-	aggregatestore "github.com/superproj/onex/internal/pkg/client/store"
-	"github.com/superproj/onex/pkg/watch/registry"
+	"github.com/onexstack/onex/internal/nightwatch/store"
+	aggregatestore "github.com/onexstack/onex/internal/pkg/client/store"
+	"github.com/onexstack/onex/pkg/watch/registry"
 )
 
 // WantsAggregateConfig defines a function which sets AggregateConfig for watcher plugins that need it.

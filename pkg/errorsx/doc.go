@@ -1,1 +1,1 @@
-package errorsx // import "github.com/superproj/onex/pkg/errorsx"
+package errorsx // import "github.com/onexstack/onex/pkg/errorsx"

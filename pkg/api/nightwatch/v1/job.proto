@@ -4,7 +4,7 @@ package job;
 
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/superproj/onex/pkg/api/nightwatch/v1;v1";
+option go_package = "github.com/onexstack/onex/pkg/api/nightwatch/v1;v1";
 
 message Job {
     // Job 名称

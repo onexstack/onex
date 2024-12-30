@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/superproj/onex/internal/nightwatch/dao/model"
-	nwv1 "github.com/superproj/onex/pkg/api/nightwatch/v1"
+	"github.com/onexstack/onex/internal/nightwatch/dao/model"
+	nwv1 "github.com/onexstack/onex/pkg/api/nightwatch/v1"
 )
 
 // Set updates or adds a JobCondition to the provided JobConditions.

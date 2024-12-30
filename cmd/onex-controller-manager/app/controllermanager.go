@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Package app implements a server that runs a set of active
@@ -57,18 +57,18 @@ import (
 	ctrlmetrics "sigs.k8s.io/controller-runtime/pkg/metrics"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
-	"github.com/superproj/onex/cmd/onex-controller-manager/app/config"
-	"github.com/superproj/onex/cmd/onex-controller-manager/app/options"
-	"github.com/superproj/onex/cmd/onex-controller-manager/names"
-	configv1beta1 "github.com/superproj/onex/internal/controller/apis/config/v1beta1"
-	"github.com/superproj/onex/internal/gateway/store"
-	"github.com/superproj/onex/internal/pkg/metrics"
-	"github.com/superproj/onex/internal/pkg/util/ratelimiter"
-	"github.com/superproj/onex/internal/webhooks"
-	v1beta1 "github.com/superproj/onex/pkg/apis/apps/v1beta1"
-	"github.com/superproj/onex/pkg/db"
-	"github.com/superproj/onex/pkg/record"
-	"github.com/superproj/onex/pkg/version"
+	"github.com/onexstack/onex/cmd/onex-controller-manager/app/config"
+	"github.com/onexstack/onex/cmd/onex-controller-manager/app/options"
+	"github.com/onexstack/onex/cmd/onex-controller-manager/names"
+	configv1beta1 "github.com/onexstack/onex/internal/controller/apis/config/v1beta1"
+	"github.com/onexstack/onex/internal/gateway/store"
+	"github.com/onexstack/onex/internal/pkg/metrics"
+	"github.com/onexstack/onex/internal/pkg/util/ratelimiter"
+	"github.com/onexstack/onex/internal/webhooks"
+	v1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
+	"github.com/onexstack/onex/pkg/db"
+	"github.com/onexstack/onex/pkg/record"
+	"github.com/onexstack/onex/pkg/version"
 )
 
 const appName = "onex-controller-manager"

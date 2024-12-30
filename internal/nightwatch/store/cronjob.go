@@ -3,10 +3,10 @@ package store
 import (
 	"context"
 
-	"github.com/superproj/onex/internal/nightwatch/dao/model"
-	genericstore "github.com/superproj/onex/pkg/store"
-	"github.com/superproj/onex/pkg/store/logger/onex"
-	"github.com/superproj/onex/pkg/store/where"
+	"github.com/onexstack/onex/internal/nightwatch/dao/model"
+	genericstore "github.com/onexstack/onex/pkg/store"
+	"github.com/onexstack/onex/pkg/store/logger/onex"
+	"github.com/onexstack/onex/pkg/store/where"
 )
 
 // CronJobStore defines the interface for managing cron jobs in the database.

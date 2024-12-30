@@ -3,9 +3,9 @@ package v1
 import (
 	"github.com/gin-gonic/gin"
 
-	nwv1 "github.com/superproj/onex/pkg/api/nightwatch/v1"
-	"github.com/superproj/onex/pkg/api/zerrors"
-	"github.com/superproj/onex/pkg/core"
+	nwv1 "github.com/onexstack/onex/pkg/api/nightwatch/v1"
+	"github.com/onexstack/onex/pkg/api/zerrors"
+	"github.com/onexstack/onex/pkg/core"
 )
 
 // CreateCronJob handles the creation of a new CronJob.
