@@ -5,7 +5,8 @@
 # like `make _install.gotests`, you should run `make tools.install.gotests` instead.
 #
 # Specify tools category.
-CODE_GENERATOR_TOOLS= client-gen lister-gen informer-gen defaulter-gen deepcopy-gen prerelease-lifecycle-gen conversion-gen openapi-gen
+CODE_GENERATOR_TOOLS= client-gen conversion-gen deepcopy-gen defaulter-gen informer-gen lister-gen prerelease-lifecycle-gen \
+					  register-gen applyconfiguration-gen go-to-protobuf
 # code-generator is a makefile target not a real tool.
 CI_WORKFLOW_TOOLS := code-generator golangci-lint goimports wire 
 # unused tools in this project: gentool
@@ -46,12 +47,12 @@ _install.ci: $(addprefix tools.install., $(CI_WORKFLOW_TOOLS)) ## Install necess
 _install.other: $(addprefix tools.install., $(OTHER_TOOLS))
 
 .PHONY: _install.code-generator
-_install.code-generator: $(addprefix tools.install.code-generator., $(CODE_GENERATOR_TOOLS)) ## Install all necessary code-generator tools.
+_install.code-generator: $(addprefix _install.code-generator., $(CODE_GENERATOR_TOOLS)) ## Install all necessary code-generator tools.
 
 .PHONY: _install.code-generator.%
 _install.code-generator.%: ## Install specified code-generator tool.
-	@$(GO) install k8s.io/code-generator/cmd/$*@$(CODE_GENERATOR_VERSION)
-	#@$(GO) install github.com/colin404/code-generator/cmd/$*@$(CODE_GENERATOR_VERSION)
+	@echo "===========> Installing code-generator: $*"
+	$(GO) install k8s.io/code-generator/cmd/$*@$(CODE_GENERATOR_VERSION)
 
 .PHONY: _install.swagger
 _install.swagger:
@@ -212,6 +213,7 @@ _install.kubebuilder : ## Install kubebuilder tool which is used to building Kub
 	@curl -sL -o kubebuilder https://go.kubebuilder.io/dl/latest/$(shell $(GO) env GOOS)/$(shell $(GO) env GOARCH)
 	@mkdir -p ${HOME}/bin
 	@chmod +x kubebuilder && mv kubebuilder ${HOME}/bin
+	@$(SCRIPTS_DIR)/add-completion.sh kubebuilder bash
 
 # gomodifytags -all -add-tags json -w -transform camelcase --skip-unexported -file *.go
 .PHONY: _install.gomodifytags

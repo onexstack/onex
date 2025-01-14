@@ -11,23 +11,29 @@
 package app
 
 import (
+	"crypto/tls"
 	"fmt"
+	"net/http"
+	"net/url"
 	"os"
-	"time"
 
 	"github.com/spf13/cobra"
-	oteltrace "go.opentelemetry.io/otel/trace"
+	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
+	extensionsapiserver "k8s.io/apiextensions-apiserver/pkg/apiserver"
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
+	utilnet "k8s.io/apimachinery/pkg/util/net"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
-	"k8s.io/apimachinery/pkg/util/sets"
-	"k8s.io/apiserver/pkg/endpoints/discovery/aggregated"
-	openapinamer "k8s.io/apiserver/pkg/endpoints/openapi"
-	genericfeatures "k8s.io/apiserver/pkg/features"
+	"k8s.io/apiserver/pkg/admission"
+	genericapifilters "k8s.io/apiserver/pkg/endpoints/filters"
 	genericapiserver "k8s.io/apiserver/pkg/server"
-	"k8s.io/apiserver/pkg/server/filters"
-	serverstorage "k8s.io/apiserver/pkg/server/storage"
+	genericoptions "k8s.io/apiserver/pkg/server/options"
+	"k8s.io/apiserver/pkg/storage/storagebackend"
 	utilfeature "k8s.io/apiserver/pkg/util/feature"
-	"k8s.io/apiserver/pkg/util/openapi"
+	"k8s.io/apiserver/pkg/util/notfoundhandler"
+	"k8s.io/apiserver/pkg/util/webhook"
+	kubeinformers "k8s.io/client-go/informers"
 	"k8s.io/client-go/rest"
 	cliflag "k8s.io/component-base/cli/flag"
 	"k8s.io/component-base/cli/globalflag"
@@ -35,13 +41,15 @@ import (
 	logsapi "k8s.io/component-base/logs/api/v1"
 	"k8s.io/component-base/term"
 	"k8s.io/klog/v2"
+	aggregatorapiserver "k8s.io/kube-aggregator/pkg/apiserver"
+	aggregatorscheme "k8s.io/kube-aggregator/pkg/apiserver/scheme"
 	"k8s.io/kubernetes/pkg/api/legacyscheme"
+	"k8s.io/kubernetes/pkg/features"
 
 	"github.com/superproj/onex/cmd/onex-apiserver/app/options"
-	"github.com/superproj/onex/internal/apiserver"
-	"github.com/superproj/onex/internal/apiserver/storage"
-	"github.com/superproj/onex/pkg/generated/clientset/versioned"
-	informers "github.com/superproj/onex/pkg/generated/informers/externalversions"
+	"github.com/superproj/onex/internal/controlplane"
+	controlplaneapiserver "github.com/superproj/onex/internal/controlplane/apiserver"
+	"github.com/superproj/onex/internal/controlplane/storage"
 	generatedopenapi "github.com/superproj/onex/pkg/generated/openapi"
 	"github.com/superproj/onex/pkg/version"
 )
@@ -52,9 +60,80 @@ func init() {
 	utilruntime.Must(logsapi.AddFeatureGates(utilfeature.DefaultMutableFeatureGate))
 }
 
+type Option func(*options.ServerRunOptions)
+type RegisterFunc func(plugins *admission.Plugins)
+
+// WithLegacyCode returns an Option that sets the external group versions in the ServerRunOptions.
+func WithEtcdOptions(prefix string, versions ...schema.GroupVersion) Option {
+	return func(s *options.ServerRunOptions) {
+		codec := legacyscheme.Codecs.LegacyCodec(versions...)
+		s.RecommendedOptions.Etcd = genericoptions.NewEtcdOptions(storagebackend.NewDefaultConfig(prefix, codec))
+		// Note: DefaultStorageMediaType needs to be reset here.
+		s.RecommendedOptions.Etcd.DefaultStorageMediaType = "application/vnd.kubernetes.protobuf"
+		/*
+			s.RecommendedOptions.Etcd.StorageConfig.EncodeVersioner = runtime.NewMultiGroupVersioner(
+				v1beta1.SchemeGroupVersion,
+				schema.GroupKind{Group: v1beta1.GroupName},
+			)
+		*/
+		for _, version := range versions {
+			controlplane.AddStableAPIGroupVersionsEnabledByDefault(version)
+		}
+	}
+}
+
+// WithAdmissionPlugin returns an Option function that adds an admission plugin to the recommended plugin order list
+// and registers the plugin using the provided RegisterFunc in the ServerRunOptions.
+func WithAdmissionPlugin(name string, registerFunc RegisterFunc) Option {
+	return func(s *options.ServerRunOptions) {
+		// Note: Need to add this to the RecommendedPluginOrder list.
+		s.RecommendedOptions.Admission.RecommendedPluginOrder = append(s.RecommendedOptions.Admission.RecommendedPluginOrder, name)
+		registerFunc(s.RecommendedOptions.Admission.Plugins)
+	}
+}
+
+// WithAdmissionInitializers returns an Option function that sets the external admission initializers in the ServerRunOptions.
+func WithAdmissionInitializers(initializer func(c *genericapiserver.RecommendedConfig) ([]admission.PluginInitializer, error)) Option {
+	return func(s *options.ServerRunOptions) {
+		s.RecommendedOptions.ExternalAdmissionInitializers = initializer
+	}
+}
+
+// WithPostStartHook returns an Option function that sets the external post-start hook with the given name in the ServerRunOptions.
+func WithPostStartHook(name string, hook genericapiserver.PostStartHookFunc) Option {
+	return func(s *options.ServerRunOptions) {
+		s.ExternalPostStartHooks[name] = hook
+	}
+}
+
+// WithSharedInformerFactory returns an Option function that sets the external SharedInformerFactory in the ServerRunOptions.
+func WithSharedInformerFactory(informers controlplane.ExternalSharedInformerFactory) Option {
+	return func(s *options.ServerRunOptions) {
+		s.ExternalVersionedInformers = informers
+	}
+}
+
+// WithRESTStorageProviders returns an Option function that sets the external REST storage providers in the ServerRunOptions.
+func WithRESTStorageProviders(providers ...storage.RESTStorageProvider) Option {
+	return func(s *options.ServerRunOptions) {
+		s.ExternalRESTStorageProviders = providers
+	}
+}
+
+// WithAlternateDNS returns an Option function that sets the alternate DNS configurations in the ServerRunOptions.
+func WithAlternateDNS(dns ...string) Option {
+	return func(s *options.ServerRunOptions) {
+		s.AlternateDNS = dns
+	}
+}
+
 // NewAPIServerCommand creates a *cobra.Command object with default parameters.
-func NewAPIServerCommand() *cobra.Command {
+func NewAPIServerCommand(serverRunOptions ...Option) *cobra.Command {
 	s := options.NewServerRunOptions()
+	for _, opt := range serverRunOptions {
+		opt(s)
+	}
+
 	cmd := &cobra.Command{
 		Use:   appName,
 		Short: "Launch a onex API server",
@@ -152,149 +231,151 @@ func Run(opts options.CompletedOptions, stopCh <-chan struct{}) error {
 }
 
 // CreateServerChain creates the apiservers connected via delegation.
-func CreateServerChain(config apiserver.CompletedConfig) (*apiserver.APIServer, error) {
-	onexAPIServer, err := config.New()
+func CreateServerChain(config CompletedConfig) (*aggregatorapiserver.APIAggregator, error) {
+	notFoundHandler := notfoundhandler.New(config.ControlPlane.GenericConfig.Serializer, genericapifilters.NoMuxAndDiscoveryIncompleteKey)
+	apiExtensionsServer, err := config.ApiExtensions.New(genericapiserver.NewEmptyDelegateWithCustomHandler(notFoundHandler))
+	if err != nil {
+		return nil, err
+	}
+	crdAPIEnabled := config.ApiExtensions.GenericConfig.MergedResourceConfig.ResourceEnabled(apiextensionsv1.SchemeGroupVersion.WithResource("customresourcedefinitions"))
+
+	onexAPIServer, err := config.ControlPlane.New(apiExtensionsServer.GenericAPIServer)
 	if err != nil {
 		return nil, err
 	}
 
-	return onexAPIServer, nil
+	// aggregator comes last in the chain
+	aggregatorServer, err := createAggregatorServer(config.Aggregator, onexAPIServer.GenericAPIServer, apiExtensionsServer.Informers, crdAPIEnabled)
+	if err != nil {
+		// we don't need special handling for innerStopCh because the aggregator server doesn't create any go routines
+		return nil, err
+	}
+
+	return aggregatorServer, nil
+}
+
+// CreateProxyTransport creates the dialer infrastructure to connect to the nodes.
+func CreateProxyTransport() *http.Transport {
+	var proxyDialerFn utilnet.DialFunc
+	// Proxying to pods and services is IP-based... don't expect to be able to verify the hostname
+	proxyTLSClientConfig := &tls.Config{InsecureSkipVerify: true}
+	proxyTransport := utilnet.SetTransportDefaults(&http.Transport{
+		DialContext:     proxyDialerFn,
+		TLSClientConfig: proxyTLSClientConfig,
+	})
+	return proxyTransport
 }
 
 // CreateOneXAPIServerConfig creates all the resources for running kube-apiserver, but runs none of them.
-func CreateOneXAPIServerConfig(opts options.CompletedOptions) (*apiserver.Config, error) {
-	genericConfig, versionedInformers, storageFactory, err := BuildGenericConfig(opts)
+func CreateOneXAPIServerConfig(opts options.CompletedOptions) (
+	*controlplane.Config,
+	aggregatorapiserver.ServiceResolver,
+	error,
+) {
+	proxyTransport := CreateProxyTransport()
+
+	genericConfig, _, kubeSharedInformers, storageFactory, err := controlplaneapiserver.BuildGenericConfig(
+		opts.CompletedOptions,
+		[]*runtime.Scheme{legacyscheme.Scheme, extensionsapiserver.Scheme, aggregatorscheme.Scheme},
+		generatedopenapi.GetOpenAPIDefinitions,
+	)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	opts.Metrics.Apply()
 
-	config := &apiserver.Config{
+	config := &controlplane.Config{
 		GenericConfig: genericConfig,
-		ExtraConfig: apiserver.ExtraConfig{
+		ExtraConfig: controlplane.ExtraConfig{
 			APIResourceConfigSource: storageFactory.APIResourceConfigSource,
 			StorageFactory:          storageFactory,
 			EventTTL:                opts.EventTTL,
 			EnableLogsSupport:       opts.EnableLogsHandler,
-			SharedInformerFactory:   opts.SharedInformerFactory,
-			VersionedInformers:      versionedInformers,
+			ProxyTransport:          proxyTransport,
+			//ExternalGroupResources: opts.ExternalGroupResources,
+			ExternalRESTStorageProviders: opts.ExternalRESTStorageProviders,
+			MasterCount:                  opts.MasterCount,
+			//VersionedInformers:           opts.SharedInformerFactory,
+			// Here we will use the config file of "onex" to create a client-go informers.
+			KubeVersionedInformers:     kubeSharedInformers,
+			InternalVersionedInformers: opts.InternalVersionedInformers,
+			ExternalVersionedInformers: opts.ExternalVersionedInformers,
+			ExternalPostStartHooks:     opts.ExternalPostStartHooks,
 		},
 	}
 
-	return config, nil
+	if utilfeature.DefaultFeatureGate.Enabled(features.UnknownVersionInteroperabilityProxy) {
+		config.ExtraConfig.PeerEndpointLeaseReconciler, err = controlplaneapiserver.CreatePeerEndpointLeaseReconciler(genericConfig.Config, storageFactory)
+		if err != nil {
+			return nil, nil, err
+		}
+		// build peer proxy config only if peer ca file exists
+		if opts.PeerCAFile != "" {
+			config.ExtraConfig.PeerProxy, err = controlplaneapiserver.BuildPeerProxy(
+				kubeSharedInformers,
+				genericConfig.StorageVersionManager,
+				opts.ProxyClientCertFile,
+				opts.ProxyClientKeyFile,
+				opts.PeerCAFile,
+				opts.PeerAdvertiseAddress,
+				genericConfig.APIServerID,
+				config.ExtraConfig.PeerEndpointLeaseReconciler,
+				config.GenericConfig.Serializer,
+			)
+			if err != nil {
+				return nil, nil, err
+			}
+		}
+	}
+
+	/* UPDATEME: when add authentication features.
+	clientCAProvider, err := opts.Authentication.ClientCert.GetClientCAContentProvider()
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	config.ExtraConfig.ClusterAuthenticationInfo.ClientCA = clientCAProvider
+
+	requestHeaderConfig, err := opts.Authentication.RequestHeader.ToAuthenticationRequestHeaderConfig()
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	if requestHeaderConfig != nil {
+		config.ExtraConfig.ClusterAuthenticationInfo.RequestHeaderCA = requestHeaderConfig.CAContentProvider
+		config.ExtraConfig.ClusterAuthenticationInfo.RequestHeaderAllowedNames = requestHeaderConfig.AllowedClientNames
+		config.ExtraConfig.ClusterAuthenticationInfo.RequestHeaderExtraHeaderPrefixes = requestHeaderConfig.ExtraHeaderPrefixes
+		config.ExtraConfig.ClusterAuthenticationInfo.RequestHeaderGroupHeaders = requestHeaderConfig.GroupHeaders
+		config.ExtraConfig.ClusterAuthenticationInfo.RequestHeaderUsernameHeaders = requestHeaderConfig.UsernameHeaders
+	}
+	*/
+
+	serviceResolver := buildServiceResolver(opts.EnableAggregatorRouting, genericConfig.LoopbackClientConfig.Host, kubeSharedInformers)
+
+	return config, serviceResolver, nil
 }
 
-// BuildGenericConfig takes the master server options and produces the genericapiserver.Config associated with it.
-func BuildGenericConfig(s options.CompletedOptions) (
-	genericConfig *genericapiserver.RecommendedConfig,
-	versionedInformers informers.SharedInformerFactory,
-	storageFactory *serverstorage.DefaultStorageFactory,
-	lastErr error,
-) {
-	genericConfig = genericapiserver.NewRecommendedConfig(legacyscheme.Codecs)
-	genericConfig.MergedResourceConfig = apiserver.DefaultAPIResourceConfigSource()
+var testServiceResolver webhook.ServiceResolver
 
-	if lastErr = s.GenericServerRunOptions.ApplyTo(&genericConfig.Config); lastErr != nil {
-		return
+func buildServiceResolver(enabledAggregatorRouting bool, hostname string, informer kubeinformers.SharedInformerFactory) webhook.ServiceResolver {
+	if testServiceResolver != nil {
+		return testServiceResolver
 	}
 
-	if lastErr = s.RecommendedOptions.ApplyTo(genericConfig); lastErr != nil {
-		return
-	}
-
-	// Use protobufs for self-communication.
-	// Since not every generic apiserver has to support protobufs, we
-	// cannot default to it in generic apiserver and need to explicitly
-	// set it in onex-apiserver.
-	genericConfig.LoopbackClientConfig.ContentConfig.ContentType = "application/vnd.kubernetes.protobuf"
-	// Disable compression for self-communication, since we are going to be
-	// on a fast local network
-	genericConfig.LoopbackClientConfig.DisableCompression = true
-
-	onexClientConfig := genericConfig.LoopbackClientConfig
-	clientgoExternalClient, err := versioned.NewForConfig(onexClientConfig)
-	if err != nil {
-		lastErr = fmt.Errorf("failed to create real external clientset: %w", err)
-		return
-	}
-	versionedInformers = informers.NewSharedInformerFactory(clientgoExternalClient, 10*time.Minute)
-
-	if utilfeature.DefaultFeatureGate.Enabled(genericfeatures.APIServerTracing) {
-		if lastErr = s.Traces.ApplyTo(genericConfig.EgressSelector, &genericConfig.Config); lastErr != nil {
-			return
-		}
-	}
-
-	// wrap the definitions to revert any changes from disabled features
-	getOpenAPIDefinitions := openapi.GetOpenAPIDefinitionsWithoutDisabledFeatures(generatedopenapi.GetOpenAPIDefinitions)
-	namer := openapinamer.NewDefinitionNamer(legacyscheme.Scheme)
-	genericConfig.OpenAPIConfig = genericapiserver.DefaultOpenAPIConfig(getOpenAPIDefinitions, namer)
-	genericConfig.OpenAPIConfig.Info.Title = "OneX"
-	genericConfig.OpenAPIV3Config = genericapiserver.DefaultOpenAPIV3Config(getOpenAPIDefinitions, namer)
-	genericConfig.OpenAPIV3Config.Info.Title = "OneX"
-	// Placeholder
-	genericConfig.LongRunningFunc = filters.BasicLongRunningRequestCheck(
-		sets.NewString("watch", "proxy"),
-		sets.NewString("attach", "exec", "proxy", "log", "portforward"),
-	)
-	genericConfig.Version = convertVersion(version.Get())
-
-	if genericConfig.EgressSelector != nil {
-		s.RecommendedOptions.Etcd.StorageConfig.Transport.EgressLookup = genericConfig.EgressSelector.Lookup
-	}
-	if utilfeature.DefaultFeatureGate.Enabled(genericfeatures.APIServerTracing) {
-		s.RecommendedOptions.Etcd.StorageConfig.Transport.TracerProvider = genericConfig.TracerProvider
+	var serviceResolver webhook.ServiceResolver
+	if enabledAggregatorRouting {
+		serviceResolver = aggregatorapiserver.NewEndpointServiceResolver(
+			informer.Core().V1().Services().Lister(),
+			informer.Core().V1().Endpoints().Lister(),
+		)
 	} else {
-		s.RecommendedOptions.Etcd.StorageConfig.Transport.TracerProvider = oteltrace.NewNoopTracerProvider()
+		serviceResolver = aggregatorapiserver.NewClusterIPServiceResolver(
+			informer.Core().V1().Services().Lister(),
+		)
 	}
 
-	// TODO: Delete the following comments
-	/*
-		if lastErr = s.RecommendedOptions.Etcd.Complete(genericConfig.StorageObjectCountTracker, genericConfig.DrainedNotify(), genericConfig.AddPostStartHook); lastErr != nil {
-			return
-		}
-	*/
-
-	storageFactoryConfig := storage.NewStorageFactoryConfig()
-	storageFactoryConfig.APIResourceConfig = genericConfig.MergedResourceConfig
-	storageFactory, lastErr = storageFactoryConfig.Complete(s.RecommendedOptions.Etcd).New()
-	if lastErr != nil {
-		return
+	// resolve kubernetes.default.svc locally
+	if localHost, err := url.Parse(hostname); err == nil {
+		serviceResolver = aggregatorapiserver.NewLoopbackServiceResolver(serviceResolver, localHost)
 	}
-	if lastErr = s.RecommendedOptions.Etcd.ApplyWithStorageFactoryTo(storageFactory, &genericConfig.Config); lastErr != nil {
-		return
-	}
-
-	// TODO: Currently authentication and authorization rely on kubernetes cluster. Support in the future.
-	/*
-		// Authentication.ApplyTo requires already applied OpenAPIConfig and EgressSelector if present
-		if lastErr = s.RecommendedOptions.Authentication.ApplyTo(
-			&genericConfig.Authentication,
-			genericConfig.SecureServing,
-			genericConfig.OpenAPIConfig,
-		); lastErr != nil {
-			return
-		}
-
-		   genericConfig.Authorization.Authorizer, genericConfig.RuleResolver, err = BuildAuthorizer(s, genericConfig.EgressSelector, versionedInformers)
-		   if err != nil {
-		       lastErr = fmt.Errorf("invalid authorization config: %v", err)
-		       return
-		   }
-		   if !sets.NewString(s.Authorization.Modes...).Has(modes.ModeRBAC) {
-		       genericConfig.DisabledPostStartHooks.Insert(rbacrest.PostStartHookName)
-		   }
-	*/
-
-	lastErr = s.RecommendedOptions.Audit.ApplyTo(&genericConfig.Config)
-	if lastErr != nil {
-		return
-	}
-
-	if utilfeature.DefaultFeatureGate.Enabled(genericfeatures.AggregatedDiscoveryEndpoint) {
-		genericConfig.AggregatedDiscoveryGroupManager = aggregated.NewResourceManager("apis")
-	}
-
-	return
+	return serviceResolver
 }

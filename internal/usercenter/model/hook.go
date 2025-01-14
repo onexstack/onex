@@ -10,20 +10,9 @@ import (
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 
+	known "github.com/superproj/onex/internal/pkg/known/usercenter"
 	"github.com/superproj/onex/internal/pkg/zid"
 	"github.com/superproj/onex/pkg/authn"
-)
-
-// User status constants.
-const (
-	StatusUserDisabled = iota // Status used for disabling a user.
-	StatusUserNormal          // Status used for enabling a user.
-)
-
-// Secret status constants.
-const (
-	StatusSecretDisabled = iota // Status used for disabling a secret.
-	StatusSecretNormal          // Status used for enabling a secret.
 )
 
 // BeforeCreate runs before creating a SecretM database record and initializes various fields.
@@ -39,7 +28,7 @@ func (s *SecretM) BeforeCreate(tx *gorm.DB) (err error) {
 	s.SecretKey = uuid.New().String()
 
 	// Set the default status for the secret as normal.
-	s.Status = StatusSecretNormal
+	s.Status = known.SecretStatusNormal
 
 	return nil
 }
@@ -58,7 +47,7 @@ func (u *UserM) BeforeCreate(tx *gorm.DB) (err error) {
 		return err // Return error if there's a problem with encryption.
 	}
 
-	u.Status = StatusUserNormal // Set the default status for the user as normal.
+	u.Status = known.UserStatusActived // Set the default status for the user as active.
 
 	return nil
 }

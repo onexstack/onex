@@ -8,6 +8,8 @@
 package options
 
 import (
+	"math"
+
 	"github.com/spf13/viper"
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	"k8s.io/client-go/tools/clientcmd"
@@ -20,6 +22,7 @@ import (
 	clientset "github.com/superproj/onex/pkg/generated/clientset/versioned"
 	"github.com/superproj/onex/pkg/log"
 	genericoptions "github.com/superproj/onex/pkg/options"
+	"github.com/superproj/onex/pkg/watch"
 )
 
 const (
@@ -31,10 +34,12 @@ var _ app.CliOptions = (*Options)(nil)
 
 // Options contains everything necessary to create and run a nightwatch server.
 type Options struct {
-	HealthOptions *genericoptions.HealthOptions  `json:"health" mapstructure:"health"`
-	MySQLOptions  *genericoptions.MySQLOptions   `json:"mysql" mapstructure:"mysql"`
-	RedisOptions  *genericoptions.RedisOptions   `json:"redis" mapstructure:"redis"`
-	Metrics       *genericoptions.MetricsOptions `json:"metrics" mapstructure:"metrics"`
+	HealthOptions         *genericoptions.HealthOptions  `json:"health" mapstructure:"health"`
+	MySQLOptions          *genericoptions.MySQLOptions   `json:"mysql" mapstructure:"mysql"`
+	RedisOptions          *genericoptions.RedisOptions   `json:"redis" mapstructure:"redis"`
+	WatchOptions          *watch.Options                 `json:"nightwatch" mapstructure:"nightwatch"`
+	UserWatcherMaxWorkers int64                          `json:"user-watcher-max-workers" mapstructure:"user-watcher-max-workers"`
+	Metrics               *genericoptions.MetricsOptions `json:"metrics" mapstructure:"metrics"`
 	// Path to kubeconfig file with authorization and master location information.
 	Kubeconfig   string          `json:"kubeconfig" mapstructure:"kubeconfig"`
 	FeatureGates map[string]bool `json:"feature-gates"`
@@ -44,11 +49,13 @@ type Options struct {
 // NewOptions returns initialized Options.
 func NewOptions() *Options {
 	o := &Options{
-		HealthOptions: genericoptions.NewHealthOptions(),
-		MySQLOptions:  genericoptions.NewMySQLOptions(),
-		RedisOptions:  genericoptions.NewRedisOptions(),
-		Metrics:       genericoptions.NewMetricsOptions(),
-		Log:           log.NewOptions(),
+		HealthOptions:         genericoptions.NewHealthOptions(),
+		MySQLOptions:          genericoptions.NewMySQLOptions(),
+		RedisOptions:          genericoptions.NewRedisOptions(),
+		UserWatcherMaxWorkers: math.MaxInt64,
+		WatchOptions:          watch.NewOptions(),
+		Metrics:               genericoptions.NewMetricsOptions(),
+		Log:                   log.NewOptions(),
 	}
 
 	return o
@@ -59,6 +66,7 @@ func (o *Options) Flags() (fss cliflag.NamedFlagSets) {
 	o.HealthOptions.AddFlags(fss.FlagSet("health"))
 	o.MySQLOptions.AddFlags(fss.FlagSet("mysql"))
 	o.RedisOptions.AddFlags(fss.FlagSet("redis"))
+	o.WatchOptions.AddFlags(fss.FlagSet("watch"))
 	o.Metrics.AddFlags(fss.FlagSet("metrics"))
 	o.Log.AddFlags(fss.FlagSet("log"))
 
@@ -66,6 +74,7 @@ func (o *Options) Flags() (fss cliflag.NamedFlagSets) {
 	// arrange these text blocks sensibly. Grrr.
 	fs := fss.FlagSet("misc")
 	fs.StringVar(&o.Kubeconfig, "kubeconfig", o.Kubeconfig, "Path to kubeconfig file with authorization and master location information.")
+	fs.Int64Var(&o.UserWatcherMaxWorkers, "user-watcher-max-workers", o.UserWatcherMaxWorkers, "Specify the maximum concurrency event of user watcher.")
 	feature.DefaultMutableFeatureGate.AddFlag(fs)
 
 	return fss
@@ -75,6 +84,10 @@ func (o *Options) Flags() (fss cliflag.NamedFlagSets) {
 func (o *Options) Complete() error {
 	if err := viper.Unmarshal(&o); err != nil {
 		return err
+	}
+
+	if o.UserWatcherMaxWorkers < 1 {
+		o.UserWatcherMaxWorkers = math.MaxInt64
 	}
 
 	_ = feature.DefaultMutableFeatureGate.SetFromMap(o.FeatureGates)
@@ -88,6 +101,7 @@ func (o *Options) Validate() error {
 	errs = append(errs, o.HealthOptions.Validate()...)
 	errs = append(errs, o.MySQLOptions.Validate()...)
 	errs = append(errs, o.RedisOptions.Validate()...)
+	errs = append(errs, o.WatchOptions.Validate()...)
 	errs = append(errs, o.Metrics.Validate()...)
 	errs = append(errs, o.Log.Validate()...)
 
@@ -98,6 +112,8 @@ func (o *Options) Validate() error {
 func (o *Options) ApplyTo(c *nightwatch.Config) error {
 	c.MySQLOptions = o.MySQLOptions
 	c.RedisOptions = o.RedisOptions
+	c.WatchOptions = o.WatchOptions
+	c.UserWatcherMaxWorkers = o.UserWatcherMaxWorkers
 	return nil
 }
 
