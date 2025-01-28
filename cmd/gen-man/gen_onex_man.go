@@ -21,7 +21,7 @@ import (
 
 	apiservapp "github.com/onexstack/onex/cmd/onex-apiserver/app"
 	ctrlmgrapp "github.com/onexstack/onex/cmd/onex-controller-manager/app"
-	fakeserverapp "github.com/onexstack/onex/cmd/onex-fakeserver/app"
+	//fakeserverapp "github.com/onexstack/onex/cmd/onex-fakeserver/app"
 	gwapp "github.com/onexstack/onex/cmd/onex-gateway/app"
 	minerctrlapp "github.com/onexstack/onex/cmd/onex-miner-controller/app"
 	minersetctrlapp "github.com/onexstack/onex/cmd/onex-minerset-controller/app"
@@ -55,13 +55,15 @@ func main() {
 	_ = os.Setenv("HOME", "/home/username")
 
 	switch module {
-	case "onex-fakeserver":
-		// generate manpage for onexfakeserver-
-		fakeserver := fakeserverapp.NewApp().Command()
-		genMarkdown(fakeserver, "", outDir)
-		for _, c := range fakeserver.Commands() {
-			genMarkdown(c, "onex-fakeserver", outDir)
-		}
+	/*
+		case "onex-fakeserver":
+			// generate manpage for onexfakeserver-
+			fakeserver := fakeserverapp.NewApp().Command()
+			genMarkdown(fakeserver, "", outDir)
+			for _, c := range fakeserver.Commands() {
+				genMarkdown(c, "onex-fakeserver", outDir)
+			}
+	*/
 	case "onex-usercenter":
 		// generate manpage for onex-usercenter
 		usercenter := usercenterapp.NewApp().Command()

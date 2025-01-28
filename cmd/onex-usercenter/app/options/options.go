@@ -8,6 +8,9 @@
 package options
 
 import (
+	"github.com/onexstack/onexstack/pkg/app"
+	"github.com/onexstack/onexstack/pkg/log"
+	genericoptions "github.com/onexstack/onexstack/pkg/options"
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	cliflag "k8s.io/component-base/cli/flag"
 
@@ -15,20 +18,15 @@ import (
 	"github.com/onexstack/onex/internal/pkg/feature"
 	known "github.com/onexstack/onex/internal/pkg/known/usercenter"
 	"github.com/onexstack/onex/internal/usercenter"
-	"github.com/onexstack/onex/pkg/app"
-	"github.com/onexstack/onex/pkg/log"
-	genericoptions "github.com/onexstack/onex/pkg/options"
 )
 
 const (
-	// UserAgent is the userAgent name when starting onex-gateway server.
+	// UserAgent is the userAgent name when starting onex-usercenter server.
 	UserAgent = "onex-usercenter"
 )
 
-var _ app.CliOptions = (*Options)(nil)
-
-// Options contains state for master/api server.
-type Options struct {
+// ServerOptions contains the configuration options for the server.
+type ServerOptions struct {
 	// GenericOptions *genericoptions.Options       `json:"server"   mapstructure:"server"`
 	// gRPC options for configuring gRPC related options.
 	GRPCOptions *genericoptions.GRPCOptions `json:"grpc" mapstructure:"grpc"`
@@ -59,9 +57,12 @@ type Options struct {
 	Log *log.Options `json:"log" mapstructure:"log"`
 }
 
-// NewOptions returns initialized Options.
-func NewOptions() *Options {
-	o := &Options{
+// Ensure ServerOptions implements the app.CliOptions interface.
+var _ app.CliOptions = (*ServerOptions)(nil)
+
+// NewServerOptions creates a ServerOptions instance with default values.
+func NewServerOptions() *ServerOptions {
+	o := &ServerOptions{
 		// GenericOptions: genericoptions.NewOptions(),
 		GRPCOptions:   genericoptions.NewGRPCOptions(),
 		HTTPOptions:   genericoptions.NewHTTPOptions(),
@@ -81,7 +82,7 @@ func NewOptions() *Options {
 }
 
 // Flags returns flags for a specific server by section name.
-func (o *Options) Flags() (fss cliflag.NamedFlagSets) {
+func (o *ServerOptions) Flags() (fss cliflag.NamedFlagSets) {
 	o.GRPCOptions.AddFlags(fss.FlagSet("grpc"))
 	o.HTTPOptions.AddFlags(fss.FlagSet("http"))
 	o.TLSOptions.AddFlags(fss.FlagSet("tls"))
@@ -105,7 +106,7 @@ func (o *Options) Flags() (fss cliflag.NamedFlagSets) {
 }
 
 // Complete completes all the required options.
-func (o *Options) Complete() error {
+func (o *ServerOptions) Complete() error {
 	if o.JaegerOptions.ServiceName == "" {
 		o.JaegerOptions.ServiceName = UserAgent
 	}
@@ -114,8 +115,8 @@ func (o *Options) Complete() error {
 	return nil
 }
 
-// Validate validates all the required options.
-func (o *Options) Validate() error {
+// Validate checks whether the options in ServerOptions are valid.
+func (o *ServerOptions) Validate() error {
 	errs := []error{}
 
 	errs = append(errs, o.GRPCOptions.Validate()...)
@@ -134,28 +135,18 @@ func (o *Options) Validate() error {
 	return utilerrors.NewAggregate(errs)
 }
 
-// ApplyTo fills up onex-usercenter config with options.
-func (o *Options) ApplyTo(c *usercenter.Config) error {
-	c.GRPCOptions = o.GRPCOptions
-	c.HTTPOptions = o.HTTPOptions
-	c.TLSOptions = o.TLSOptions
-	c.JWTOptions = o.JWTOptions
-	c.MySQLOptions = o.MySQLOptions
-	c.RedisOptions = o.RedisOptions
-	c.EtcdOptions = o.EtcdOptions
-	c.KafkaOptions = o.KafkaOptions
-	c.JaegerOptions = o.JaegerOptions
-	c.ConsulOptions = o.ConsulOptions
-	return nil
-}
-
-// Config return an onex-usercenter config object.
-func (o *Options) Config() (*usercenter.Config, error) {
-	c := &usercenter.Config{}
-
-	if err := o.ApplyTo(c); err != nil {
-		return nil, err
-	}
-
-	return c, nil
+// Config builds an usercenter.Config based on ServerOptions.
+func (o *ServerOptions) Config() (*usercenter.Config, error) {
+	return &usercenter.Config{
+		GRPCOptions:   o.GRPCOptions,
+		HTTPOptions:   o.HTTPOptions,
+		TLSOptions:    o.TLSOptions,
+		JWTOptions:    o.JWTOptions,
+		MySQLOptions:  o.MySQLOptions,
+		RedisOptions:  o.RedisOptions,
+		EtcdOptions:   o.EtcdOptions,
+		KafkaOptions:  o.KafkaOptions,
+		JaegerOptions: o.JaegerOptions,
+		ConsulOptions: o.ConsulOptions,
+	}, nil
 }

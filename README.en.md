@@ -106,7 +106,7 @@ For more `make` operations, please refer to `make help`.
 ## Usage/Examples
 
 ```bash
-$ kubectl create -f ${ONEX_ROOT}/manifests/sample/onex/minerset.yaml
+$ kubectl create -f ${PROJ_ROOT_DIR}/manifests/sample/onex/minerset.yaml
 $ onexctl --config ${ONEX_CONFIG_DIR}/onexctl.yaml minerset list
 ```
 

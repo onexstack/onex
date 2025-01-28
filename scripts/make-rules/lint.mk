@@ -15,15 +15,15 @@ lint.ci: lint.golangci-lint lint.onex ## Run CI-related linters.
 .PHONY: lint.golangci-lint
 lint.golangci-lint: tools.verify.golangci-lint ## Run golangci to lint source codes.
 	@echo "===========> Run golangci to lint source codes"
-	@$(GOLANGCI_LINT) run -c $(ONEX_ROOT)/.golangci.yaml $(ONEX_ROOT)/...
+	@$(GOLANGCI_LINT) run -c $(PROJ_ROOT_DIR)/.golangci.yaml $(PROJ_ROOT_DIR)/...
 
 .PHONY: lint.onex
 lint.onex: ## Run linters developed by onex developers.
-	@$(GO) run cmd/lint-kubelistcheck/main.go $(ONEX_ROOT)/...
+	@$(GO) run cmd/lint-kubelistcheck/main.go $(PROJ_ROOT_DIR)/...
 
 .PHONY: lint.kubefiles
 lint.kubefiles: tools.verify.kube-linter ## Lint protobuf files.
-	@$(KUBE_LINT) lint $(ONEX_ROOT)/deployments
+	@$(KUBE_LINT) lint $(PROJ_ROOT_DIR)/deployments
 
 .PHONY: lint.dockerfiles 
 lint.dockerfiles: image.verify go.build.verify ## Lint dockerfiles.
@@ -37,6 +37,6 @@ lint.charts: tools.verify.helm ## Lint helm charts.
 # need to. Here we only have a basic understanding, and it is not recommended to use lint.logcheck rule.
 .PHONY: lint.logcheck
 lint.logcheck: tools.verify.logcheck ## Tool to check logging calls.
-	@logcheck -check-contextual $(ONEX_ROOT)/...
-	@logcheck -check-structured $(ONEX_ROOT)/...
+	@logcheck -check-contextual $(PROJ_ROOT_DIR)/...
+	@logcheck -check-structured $(PROJ_ROOT_DIR)/...
 

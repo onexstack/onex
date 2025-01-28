@@ -15,7 +15,7 @@ import (
 	"github.com/google/wire"
 
 	"github.com/onexstack/onex/internal/gateway/store"
-	"github.com/onexstack/onex/pkg/db"
+	"github.com/onexstack/onexstack/pkg/db"
 )
 
 func wireStoreClient(*db.MySQLOptions) (store.IStore, error) {

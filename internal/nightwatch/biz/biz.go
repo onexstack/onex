@@ -1,43 +1,48 @@
 package biz
 
-//go:generate mockgen -destination mock_biz.go -package biz github.com/onexstack/onex/internal/nightwatch/biz IBiz
+//go:generate mockgen -destination mock_biz.go -package biz onex/internal/nightwatch/biz IBiz
 
 import (
 	"github.com/google/wire"
 
-	"github.com/onexstack/onex/internal/nightwatch/biz/cronjob"
-	"github.com/onexstack/onex/internal/nightwatch/biz/job"
+	cronjobv1 "github.com/onexstack/onex/internal/nightwatch/biz/v1/cronjob"
+	jobv1 "github.com/onexstack/onex/internal/nightwatch/biz/v1/job"
 	"github.com/onexstack/onex/internal/nightwatch/store"
 )
 
-// ProviderSet contains providers for creating instances of the biz struct using Google Wire.
+// ProviderSet is a Wire provider set used to declare dependency injection rules.
+// Includes the NewBiz constructor to create a biz instance.
+// wire.Bind binds the IBiz interface to the concrete implementation *biz,
+// so places that depend on IBiz will automatically inject a *biz instance.
 var ProviderSet = wire.NewSet(NewBiz, wire.Bind(new(IBiz), new(*biz)))
 
-// IBiz defines the interface for accessing business logic related to cron jobs and jobs.
+// IBiz defines the methods that must be implemented by the business layer.
 type IBiz interface {
-	CronJobs() cronjob.CronJobBiz
-	Jobs() job.JobBiz
+	// CronJobV1 returns the CronJobBiz business interface.
+	CronJobV1() cronjobv1.CronJobBiz
+	// JobV1 returns the JobBiz business interface.
+	JobV1() jobv1.JobBiz
 }
 
-// biz is the concrete implementation of the IBiz interface.
+// biz is a concrete implementation of IBiz.
 type biz struct {
-	ds store.IStore // Data store interface for accessing data.
+	store store.IStore
 }
 
-// Ensure biz implements the IBiz interface.
+// Ensure that biz implements the IBiz.
 var _ IBiz = (*biz)(nil)
 
-// NewBiz creates a new instance of the biz struct, implementing the IBiz interface.
-func NewBiz(ds store.IStore) *biz {
-	return &biz{ds: ds}
+// NewBiz creates an instance of IBiz.
+func NewBiz(store store.IStore) *biz {
+	return &biz{store: store}
 }
 
-// CronJobs returns the business logic interface for managing cron jobs.
-func (b *biz) CronJobs() cronjob.CronJobBiz {
-	return cronjob.New(b.ds)
+// CronJobV1 returns an instance that implements the CronJobBiz.
+func (b *biz) CronJobV1() cronjobv1.CronJobBiz {
+	return cronjobv1.New(b.store)
 }
 
-// Jobs returns the business logic interface for managing jobs.
-func (b *biz) Jobs() job.JobBiz {
-	return job.New(b.ds)
+// JobV1 returns an instance that implements the JobBiz.
+func (b *biz) JobV1() jobv1.JobBiz {
+	return jobv1.New(b.store)
 }

@@ -6,21 +6,18 @@ import (
 	"time"
 
 	"github.com/looplab/fsm"
+	"github.com/onexstack/onexstack/pkg/log"
 	"github.com/tmc/langchaingo/embeddings"
 	"github.com/tmc/langchaingo/llms/ollama"
 	"k8s.io/utils/ptr"
 
-	"github.com/onexstack/onex/internal/nightwatch/dao/model"
-	"github.com/onexstack/onex/internal/nightwatch/path"
-	"github.com/onexstack/onex/internal/pkg/client/train"
-	// onexembedder "github.com/onexstack/onex/internal/pkg/embedding/embedder/onex"
-	// "github.com/onexstack/onex/internal/pkg/embedding/embedder/onex/text"
-	// "github.com/onexstack/onex/internal/pkg/embedding/embedder/onex/image"
+	"github.com/onexstack/onex/internal/nightwatch/model"
+	"github.com/onexstack/onex/internal/nightwatch/pkg/path"
 	fakeminio "github.com/onexstack/onex/internal/pkg/client/minio/fake"
+	"github.com/onexstack/onex/internal/pkg/client/train"
 	known "github.com/onexstack/onex/internal/pkg/known/nightwatch"
 	jobconditionsutil "github.com/onexstack/onex/internal/pkg/util/jobconditions"
-	nwv1 "github.com/onexstack/onex/pkg/api/nightwatch/v1"
-	"github.com/onexstack/onex/pkg/log"
+	v1 "github.com/onexstack/onex/pkg/api/nightwatch/v1"
 )
 
 // Download retrieves feedback data from VOC and saves it to TOS.
@@ -37,7 +34,7 @@ func (sm *StateMachine) Download(ctx context.Context, event *fsm.Event) error {
 
 	// Initialize job results if they are not already set
 	if sm.Job.Results == nil || sm.Job.Results.Train == nil {
-		sm.Job.Results = &model.JobResults{Train: &nwv1.TrainResults{}}
+		sm.Job.Results = &model.JobResults{Train: &v1.TrainResults{}}
 	}
 
 	data, err := sm.Watcher.Minio.Read(ctx, fakeminio.FakeObjectName)
@@ -180,7 +177,7 @@ func (sm *StateMachine) EnterState(ctx context.Context, event *fsm.Event) error 
 		sm.Job.Status = known.LLMTrainFailed
 		sm.Job.EndedAt = time.Now()
 
-		var cond *nwv1.JobCondition
+		var cond *v1.JobCondition
 		if isJobTimeout(sm.Job) {
 			log.Infow("LLM train task timeout")
 			cond = jobconditionsutil.FalseCondition(event.FSM.Current(), fmt.Sprintf("LLM train task exceeded timeout seconds"))
@@ -191,7 +188,7 @@ func (sm *StateMachine) EnterState(ctx context.Context, event *fsm.Event) error 
 		sm.Job.Conditions = jobconditionsutil.Set(sm.Job.Conditions, cond)
 	}
 
-	if err := sm.Watcher.Store.Jobs().Update(ctx, sm.Job); err != nil {
+	if err := sm.Watcher.Store.Job().Update(ctx, sm.Job); err != nil {
 		return err
 	}
 

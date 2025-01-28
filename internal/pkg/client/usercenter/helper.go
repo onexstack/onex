@@ -12,7 +12,7 @@ import (
 	consulapi "github.com/hashicorp/consul/api"
 	clientv3 "go.etcd.io/etcd/client/v3"
 
-	genericoptions "github.com/onexstack/onex/pkg/options"
+	genericoptions "github.com/onexstack/onexstack/pkg/options"
 )
 
 func newEtcdClient(opts *genericoptions.EtcdOptions) (*etcd.Registry, error) {

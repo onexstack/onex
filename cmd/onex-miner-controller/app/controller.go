@@ -39,9 +39,9 @@ import (
 	"github.com/onexstack/onex/internal/pkg/util/ratelimiter"
 	"github.com/onexstack/onex/pkg/apis/apps/v1beta1"
 	"github.com/onexstack/onex/pkg/apis/apps/v1beta1/index"
-	"github.com/onexstack/onex/pkg/db"
+	"github.com/onexstack/onexstack/pkg/db"
 	"github.com/onexstack/onex/pkg/record"
-	"github.com/onexstack/onex/pkg/version"
+	"github.com/onexstack/onexstack/pkg/version"
 )
 
 const appName = "onex-miner-controller"

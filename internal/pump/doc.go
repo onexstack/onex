@@ -4,4 +4,4 @@
 // this file is https://github.com/onexstack/onex.
 //
 
-package pump // import "github.com/onexstack/onex/pkg/pump"
+package pump // import "github.com/onexstack/onex/internal/pump"

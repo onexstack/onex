@@ -21,8 +21,8 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-ONEX_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
-source "${ONEX_ROOT}/scripts/lib/init.sh"
-source "${ONEX_ROOT}/scripts/lib/protoc.sh"
+PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/..
+source "${PROJ_ROOT_DIR}/scripts/lib/init.sh"
+source "${PROJ_ROOT_DIR}/scripts/lib/protoc.sh"
 
 onex::protoc::install

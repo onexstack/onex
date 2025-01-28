@@ -15,14 +15,14 @@ import (
 	grpcx "google.golang.org/grpc"
 
 	"github.com/onexstack/onex/internal/pkg/client"
-	"github.com/onexstack/onex/internal/pkg/middleware/auth"
+	"github.com/onexstack/onex/internal/pkg/middleware/authz"
 	"github.com/onexstack/onex/internal/pkg/middleware/tracing"
 	v1 "github.com/onexstack/onex/pkg/api/usercenter/v1"
-	genericoptions "github.com/onexstack/onex/pkg/options"
+	genericoptions "github.com/onexstack/onexstack/pkg/options"
 )
 
 // ProviderSet is the usercenter providers.
-var ProviderSet = wire.NewSet(NewUserCenter, wire.Bind(new(Interface), new(*impl)), wire.Bind(new(auth.AuthProvider), new(*impl)))
+var ProviderSet = wire.NewSet(NewUserCenter, wire.Bind(new(Interface), new(*impl)), wire.Bind(new(authz.Authorizer), new(*impl)))
 
 var (
 	once sync.Once
@@ -31,7 +31,7 @@ var (
 
 // Interface is an interface that presents a subset of the usercenter API.
 type Interface interface {
-	Auth(ctx context.Context, token string, obj, act string) (string, bool, error)
+	Authorize(ctx context.Context, token string, obj, act string) (string, bool, error)
 }
 
 // impl is an implementation of Interface.
@@ -87,7 +87,7 @@ func GetClient() *impl {
 }
 
 // Auth implements the Interface interface.
-func (i *impl) Auth(ctx context.Context, token string, obj, act string) (userID string, allowed bool, err error) {
+func (i *impl) Authorize(ctx context.Context, token string, obj, act string) (userID string, allowed bool, err error) {
 	rq := &v1.AuthRequest{Token: token, Obj: obj, Act: act}
 	resp, err := i.client.Auth(ctx, rq)
 	if err != nil {

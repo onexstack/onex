@@ -4,4 +4,4 @@
 // this file is https://github.com/onexstack/onex.
 //
 
-package cacheserver // import "github.com/onexstack/onex/pkg/cacheserver"
+package cacheserver // import "github.com/onexstack/onex/internal/cacheserver"

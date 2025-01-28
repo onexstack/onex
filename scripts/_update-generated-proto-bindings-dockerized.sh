@@ -20,11 +20,11 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-ONEX_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../" && pwd -P)"
+PROJ_ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../" && pwd -P)"
 
-source "${ONEX_ROOT}/scripts/lib/init.sh"
-source "${ONEX_ROOT}/scripts/lib/protoc.sh"
-source "${ONEX_ROOT}/scripts/lib/util.sh"
+source "${PROJ_ROOT_DIR}/scripts/lib/init.sh"
+source "${PROJ_ROOT_DIR}/scripts/lib/protoc.sh"
+source "${PROJ_ROOT_DIR}/scripts/lib/util.sh"
 
 if [ "$#" == 0 ]; then
     echo "usage: $0 <api_dir>..."

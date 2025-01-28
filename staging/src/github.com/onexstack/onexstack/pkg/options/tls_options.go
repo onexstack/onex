@@ -111,3 +111,11 @@ func (o *TLSOptions) TLSConfig() (*tls.Config, error) {
 
 	return tlsConfig, nil
 }
+
+// Scheme returns the URL scheme based on the TLS configuration.
+func (o *TLSOptions) Scheme() string {
+	if o.UseTLS {
+		return "https"
+	}
+	return "http"
+}

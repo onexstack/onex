@@ -21,7 +21,7 @@ import (
 	cmdutil "github.com/onexstack/onex/internal/onexctl/cmd/util"
 	"github.com/onexstack/onex/internal/onexctl/util/templates"
 	v1 "github.com/onexstack/onex/pkg/api/gateway/v1"
-	"github.com/onexstack/onex/pkg/version"
+	"github.com/onexstack/onexstack/pkg/version"
 )
 
 // Version is a struct for version information.

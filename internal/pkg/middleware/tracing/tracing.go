@@ -10,13 +10,12 @@ import (
 	"context"
 
 	krtlog "github.com/go-kratos/kratos/v2/log"
+	"github.com/go-kratos/kratos/v2/middleware"
+	"github.com/go-kratos/kratos/v2/transport"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/trace"
 
-	"github.com/go-kratos/kratos/v2/middleware"
-	"github.com/go-kratos/kratos/v2/transport"
-
-	"github.com/onexstack/onex/pkg/log"
+	"github.com/onexstack/onex/internal/pkg/contextx"
 )
 
 // Option is tracing option.
@@ -61,7 +60,7 @@ func Server(opts ...Option) middleware.Middleware {
 
 				traceID := span.SpanContext().TraceID().String()
 				tr.ReplyHeader().Set("X-Trace-ID", traceID)
-				ctx = log.WithContext(ctx, "trace.id", traceID)
+				ctx = contextx.WithTraceID(ctx, traceID)
 
 				setServerSpan(ctx, span, rq)
 

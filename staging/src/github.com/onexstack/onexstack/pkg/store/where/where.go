@@ -147,7 +147,9 @@ func (whr *Options) C(conds ...clause.Expression) *Options {
 
 // T retrieves the value associated with the registered tenant using the provided context.
 func (whr *Options) T(ctx context.Context) *Options {
-	whr.F(registeredTenant.Key, registeredTenant.ValueFunc(ctx))
+	if registeredTenant.Key != "" && registeredTenant.ValueFunc != nil {
+		whr.F(registeredTenant.Key, registeredTenant.ValueFunc(ctx))
+	}
 	return whr
 }
 

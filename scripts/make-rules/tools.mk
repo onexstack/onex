@@ -239,7 +239,3 @@ _install.grpcurl:
 .PHONY: _install.logcheck
 _install.logcheck:
 	@$(GO) install sigs.k8s.io/logtools/logcheck@$(LOGCHECK_VERSION)
-
-.PHONY: _install.protoc-go-inject-tag
-_install.protoc-go-inject-tag:
-	@$(GO) install github.com/favadi/protoc-go-inject-tag@latest

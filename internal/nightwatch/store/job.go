@@ -1,48 +1,57 @@
+// nolint: dupl
 package store
 
 import (
 	"context"
 
-	"github.com/onexstack/onex/internal/nightwatch/dao/model"
-	genericstore "github.com/onexstack/onex/pkg/store"
-	"github.com/onexstack/onex/pkg/store/logger/onex"
-	"github.com/onexstack/onex/pkg/store/where"
+	storelogger "github.com/onexstack/onexstack/pkg/log/logger/store"
+	genericstore "github.com/onexstack/onexstack/pkg/store"
+	"github.com/onexstack/onexstack/pkg/store/where"
+
+	"github.com/onexstack/onex/internal/nightwatch/model"
 )
 
-// JobStore defines the interface for managing jobs in the database.
+// JobStore defines the interface for managing job-related data operations.
 type JobStore interface {
-	// Create inserts a new job into the database.
-	Create(ctx context.Context, job *model.JobM) error
+	// Create inserts a new Job record into the store.
+	Create(ctx context.Context, obj *model.JobM) error
 
-	// Update modifies an existing job in the database.
-	Update(ctx context.Context, job *model.JobM) error
+	// Update modifies an existing Job record in the store based on the given model.
+	Update(ctx context.Context, obj *model.JobM) error
 
-	// Delete removes jobs with the specified options.
+	// Delete removes Job records that satisfy the given query options.
 	Delete(ctx context.Context, opts *where.Options) error
 
-	// Get retrieves a job with the specified options..
+	// Get retrieves a single Job record that satisfies the given query options.
 	Get(ctx context.Context, opts *where.Options) (*model.JobM, error)
 
-	// List returns a list of jobs with the specified options.
+	// List retrieves a list of Job records and their total count based on the given query options.
 	List(ctx context.Context, opts *where.Options) (int64, []*model.JobM, error)
 
+	// JobExpansion is a placeholder for extension methods for jobs,
+	// to be implemented by additional interfaces if needed.
 	JobExpansion
 }
 
-// JobExpansion defines additional methods for job operations.
+// JobExpansion is an empty interface provided for extending
+// the JobStore interface.
+// Developers can define job-specific additional methods
+// in this interface for future expansion.
 type JobExpansion interface{}
 
-// jobStore implements the JobStore interface.
+// jobStore implements the JobStore interface and provides
+// default implementations of the methods.
 type jobStore struct {
 	*genericstore.Store[model.JobM]
 }
 
-// Ensure jobStore implements the JobStore interface.
+// Ensure that jobStore satisfies the JobStore interface at compile time.
 var _ JobStore = (*jobStore)(nil)
 
-// newJobStore creates a new instance of jobStore with the provided database connection.
-func newJobStore(ds *datastore) *jobStore {
+// newJobStore creates a new jobStore instance with the provided
+// datastore and logger.
+func newJobStore(store *datastore) *jobStore {
 	return &jobStore{
-		Store: genericstore.NewStore[model.JobM](ds, onex.NewLogger()),
+		Store: genericstore.NewStore[model.JobM](store, storelogger.NewLogger()),
 	}
 }

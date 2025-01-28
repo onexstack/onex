@@ -14,46 +14,48 @@ package usercenter
 //go:generate go run github.com/google/wire/cmd/wire
 
 import (
-	"github.com/go-kratos/kratos/v2"
 	"github.com/google/wire"
+	"github.com/onexstack/onexstack/pkg/db"
+	genericoptions "github.com/onexstack/onexstack/pkg/options"
+	"github.com/onexstack/onexstack/pkg/server"
+	genericvalidation "github.com/onexstack/onexstack/pkg/validation"
 
-	"github.com/onexstack/onex/internal/pkg/bootstrap"
-	"github.com/onexstack/onex/internal/pkg/validation"
-	"github.com/onexstack/onex/internal/usercenter/auth"
+	"github.com/onexstack/onex/internal/pkg/middleware/validate"
 	"github.com/onexstack/onex/internal/usercenter/biz"
-	"github.com/onexstack/onex/internal/usercenter/server"
-	"github.com/onexstack/onex/internal/usercenter/service"
+	"github.com/onexstack/onex/internal/usercenter/handler"
+	"github.com/onexstack/onex/internal/usercenter/pkg/auth"
+	"github.com/onexstack/onex/internal/usercenter/pkg/validation"
 	"github.com/onexstack/onex/internal/usercenter/store"
-	customvalidation "github.com/onexstack/onex/internal/usercenter/validation"
-	"github.com/onexstack/onex/pkg/db"
-	genericoptions "github.com/onexstack/onex/pkg/options"
 )
 
-// wireApp builds and returns a Kratos app with the given options.
-// It uses the Wire library to automatically generate the dependency injection code.
-func wireApp(
-	bootstrap.AppInfo,
-	*server.Config,
+func InitializeWebServer(
+	<-chan struct{},
+	*Config,
 	*db.MySQLOptions,
 	*genericoptions.JWTOptions,
 	*genericoptions.RedisOptions,
-	*genericoptions.EtcdOptions,
 	*genericoptions.KafkaOptions,
-) (*kratos.App, func(), error) {
+) (server.Server, error) {
 	wire.Build(
-		bootstrap.ProviderSet,
-		bootstrap.NewEtcdRegistrar,
-		server.ProviderSet,
-		store.ProviderSet,
-		db.ProviderSet,
-		biz.ProviderSet,
-		service.ProviderSet,
-		auth.ProviderSet,
-		store.SetterProviderSet,
+		wire.NewSet(server.NewEtcdRegistrar, wire.FieldsOf(new(*Config), "EtcdOptions")), // dep by AppConfig
+		ProvideKratosAppConfig, // server.KratosAppConfig, dep by NewWebServer
+		ProvideKratosLogger,    // dep by NewMiddlewares
+		// func NewMiddlewares(logger krtlog.Logger,authn authn.Authenticator, val validate.RequestValidator) []middleware.Middleware {
 		NewAuthenticator,
-		validation.ProviderSet,
-		customvalidation.ProviderSet,
+		NewWebServer,
+		NewMiddlewares,
+		store.SetterProviderSet,
+		auth.ProviderSet,
+		handler.ProviderSet,
+		store.ProviderSet,
+		biz.ProviderSet,
+		db.ProviderSet,
+		wire.NewSet(
+			validation.ProviderSet,
+			genericvalidation.NewValidator,
+			wire.Bind(new(validate.RequestValidator), new(*genericvalidation.Validator)),
+		),
+		wire.Struct(new(ServerConfig), "*"), // * 表示注入全部字段
 	)
-
-	return nil, nil, nil
+	return nil, nil
 }

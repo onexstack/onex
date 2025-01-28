@@ -1,0 +1,88 @@
+// Copyright 2021 Linka Cloud  All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto2";
+package defaults;
+
+option go_package = "github.com/onexstack/protoc-gen-defaults/defaults;defaults";
+
+import "google/protobuf/descriptor.proto";
+
+// Defaults values applied at the message level
+extend google.protobuf.MessageOptions {
+	// Disabled nullifies any defaults for this message, including any
+	// message fields associated with it that do support defaults.
+	optional bool disabled = 1171;
+	// Ignore skips generation of default methods for this message.
+	optional bool ignored = 1172;
+	// Unexported generate an unexported defaults method, this can
+	// be useful when we want both the generated defaults and a custom
+	// defaults method that will call the unexported method.
+	optional bool unexported = 1173;
+}
+
+// Defaults values applied at the oneof level
+extend google.protobuf.OneofOptions {
+	optional string oneof = 1171;
+}
+
+// Defaults values applied at the field level
+extend google.protobuf.FieldOptions {
+	// Value specify the default value to set on this field. By default,
+	// none is set on a field.
+	optional FieldDefaults value = 1171;
+}
+
+// FieldDefaults encapsulates the default values for each type of field. Depending on the
+// field, the correct set should be used to ensure proper defaults generation.
+message FieldDefaults {
+	oneof type {
+		// Scalar Field Types
+		float float = 1;
+		double double = 2;
+		int32 int32 = 3;
+		int64 int64 = 4;
+		uint32 uint32 = 5;
+		uint64 uint64 = 6;
+		sint32 sint32 = 7;
+		sint64 sint64 = 8;
+		fixed32 fixed32 = 9;
+		fixed64 fixed64 = 10;
+		sfixed32 sfixed32 = 11;
+		sfixed64 sfixed64 = 12;
+		bool bool = 13;
+		string string = 14;
+		bytes bytes = 15;
+
+		// Complex Field Types
+		uint32 enum = 16;
+		MessageDefaults message = 17;
+		// repeated = 18;
+		// map      = 19;
+
+		// Well-Known Field Types
+		// any       = 20;
+		string duration = 21;
+		string timestamp = 22;
+	}
+	reserved 18 to 20;
+}
+
+// MessageDefaults define the default behaviour for this field.
+message MessageDefaults {
+	// Initialize specify that the message should be initialized
+	optional bool initialize = 1;
+	// Defaults specifies that the messages' defaults should be applied
+	optional bool defaults = 2;
+}

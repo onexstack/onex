@@ -15,7 +15,7 @@ import (
 
 	restclient "k8s.io/client-go/rest"
 
-	"github.com/onexstack/onex/pkg/version"
+	"github.com/onexstack/onexstack/pkg/version"
 )
 
 const (

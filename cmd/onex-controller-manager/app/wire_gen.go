@@ -14,7 +14,7 @@ package app
 
 import (
 	"github.com/onexstack/onex/internal/gateway/store"
-	"github.com/onexstack/onex/pkg/db"
+	"github.com/onexstack/onexstack/pkg/db"
 )
 
 // Injectors from wire.go:

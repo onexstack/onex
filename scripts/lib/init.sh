@@ -21,20 +21,20 @@ unset CDPATH
 export GO111MODULE=on
 
 # The root of the build/dist directory
-ONEX_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd -P)"
+PROJ_ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd -P)"
 
 ONEX_OUTPUT_SUBPATH="${ONEX_OUTPUT_SUBPATH:-_output}"
-ONEX_OUTPUT="${ONEX_ROOT}/${ONEX_OUTPUT_SUBPATH}"
+ONEX_OUTPUT="${PROJ_ROOT_DIR}/${ONEX_OUTPUT_SUBPATH}"
 
-source "${ONEX_ROOT}/scripts/lib/util.sh"
-source "${ONEX_ROOT}/scripts/lib/logging.sh"
-source "${ONEX_ROOT}/scripts/lib/color.sh"
+source "${PROJ_ROOT_DIR}/scripts/lib/util.sh"
+source "${PROJ_ROOT_DIR}/scripts/lib/logging.sh"
+source "${PROJ_ROOT_DIR}/scripts/lib/color.sh"
 
 onex::log::install_errexit
 onex::util::ensure-bash-version
 
-source "${ONEX_ROOT}/scripts/lib/version.sh"
-source "${ONEX_ROOT}/scripts/lib/golang.sh"
+source "${PROJ_ROOT_DIR}/scripts/lib/version.sh"
+source "${PROJ_ROOT_DIR}/scripts/lib/golang.sh"
 
 # list of all available group versions. This should be used when generated code
 # or when starting an API server that you want to have everything.

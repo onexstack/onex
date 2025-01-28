@@ -1,8 +1,8 @@
 package initializer
 
 import (
-	"code.byted.org/ies/hiagents/pkg/watch/manager"
-	"code.byted.org/ies/hiagents/pkg/watch/registry"
+	"github.com/onexstack/onexstack/pkg/watch/manager"
+	"github.com/onexstack/onexstack/pkg/watch/registry"
 )
 
 // WatcherInitializer is used for initialization of shareable resources between watcher plugins.

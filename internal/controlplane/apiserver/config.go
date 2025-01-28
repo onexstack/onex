@@ -45,7 +45,7 @@ import (
 	"github.com/onexstack/onex/internal/controlplane/admission/initializer"
 	controlplaneoptions "github.com/onexstack/onex/internal/controlplane/apiserver/options"
 	"github.com/onexstack/onex/pkg/apiserver/storage"
-	"github.com/onexstack/onex/pkg/version"
+	"github.com/onexstack/onexstack/pkg/version"
 )
 
 const (

@@ -14,14 +14,14 @@ import (
 	"github.com/go-kratos/kratos/v2/transport"
 
 	"github.com/onexstack/onex/internal/pkg/idempotent"
+	"github.com/onexstack/onex/pkg/api/errno"
 	v1 "github.com/onexstack/onex/pkg/api/gateway/v1"
-	"github.com/onexstack/onex/pkg/api/zerrors"
 )
 
 func idempotentBlacklist() selector.MatchFunc {
 	blacklist := make(map[string]struct{})
-	blacklist[v1.OperationGatewayCreateMiner] = struct{}{}
-	blacklist[v1.OperationGatewayCreateMinerSet] = struct{}{}
+	blacklist[v1.Gateway_CreateMiner_FullMethodName] = struct{}{}
+	blacklist[v1.Gateway_CreateMinerSet_FullMethodName] = struct{}{}
 	return func(ctx context.Context, operation string) bool {
 		if _, ok := blacklist[operation]; ok {
 			return true
@@ -40,11 +40,11 @@ func Idempotent(idt *idempotent.Idempotent) middleware.Middleware {
 						if idt.Check(ctx, token) {
 							return handler(ctx, rq)
 						}
-						return nil, zerrors.ErrorIdempotentTokenExpired("idempotent token is invalid")
+						return nil, errno.ErrorIdempotentTokenExpired("idempotent token is invalid")
 					}
 				}
 
-				return nil, zerrors.ErrorIdempotentMissingToken("idempotent token is missing")
+				return nil, errno.ErrorIdempotentMissingToken("idempotent token is missing")
 			}
 		},
 	).Match(idempotentBlacklist()).Build()

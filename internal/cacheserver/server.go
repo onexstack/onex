@@ -7,60 +7,78 @@
 package cacheserver
 
 import (
-	"net"
+	"context"
 
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
+	"github.com/golang/protobuf/ptypes/any"
+	"github.com/jinzhu/copier"
+	"github.com/onexstack/onexstack/pkg/db"
+	genericoptions "github.com/onexstack/onexstack/pkg/options"
+	"github.com/onexstack/onexstack/pkg/server"
+	"k8s.io/apimachinery/pkg/util/wait"
 
-	pb "github.com/onexstack/onex/pkg/api/cacheserver/v1"
-	"github.com/onexstack/onex/pkg/log"
-	genericoptions "github.com/onexstack/onex/pkg/options"
+	v1 "github.com/onexstack/onex/pkg/api/cacheserver/v1"
+	"github.com/onexstack/onex/pkg/cache"
+	redisstore "github.com/onexstack/onex/pkg/cache/store/redis"
 )
 
-type Server interface {
-	RunOrDie()
-	GracefulStop()
+// Config contains application-related configurations.
+type Config struct {
+	DisableCache  bool
+	GRPCOptions   *genericoptions.GRPCOptions
+	TLSOptions    *genericoptions.TLSOptions
+	RedisOptions  *genericoptions.RedisOptions
+	MySQLOptions  *genericoptions.MySQLOptions
+	JaegerOptions *genericoptions.JaegerOptions
 }
 
-type GRPCServer struct {
-	srv  *grpc.Server
-	opts *genericoptions.GRPCOptions
+// Server represents the web server.
+type Server struct {
+	srv server.Server
 }
 
-func NewGRPCServer(
-	grpcOptions *genericoptions.GRPCOptions,
-	tlsOptions *genericoptions.TLSOptions,
-	srv pb.CacheServerServer,
-) (*GRPCServer, error) {
-	dialOptions := []grpc.ServerOption{}
-	if tlsOptions != nil && tlsOptions.UseTLS {
-		tlsConfig, err := tlsOptions.TLSConfig()
-		if err != nil {
-			return nil, err
-		}
+// ServerConfig contains the core dependencies and configurations of the server.
+type ServerConfig struct {
+	cfg     *Config
+	handler v1.CacheServerServer
+}
 
-		dialOptions = append(dialOptions, grpc.Creds(credentials.NewTLS(tlsConfig)))
+// NewServer initializes and returns a new Server instance.
+func (cfg *Config) NewServer(ctx context.Context) (*Server, error) {
+	// Initialize Jaeger tracing.
+	if err := cfg.JaegerOptions.SetTracerProvider(); err != nil {
+		return nil, err
 	}
 
-	grpcsrv := grpc.NewServer(dialOptions...)
-	pb.RegisterCacheServerServer(grpcsrv, srv)
-
-	return &GRPCServer{srv: grpcsrv, opts: grpcOptions}, nil
-}
-
-func (s *GRPCServer) RunOrDie() {
-	lis, err := net.Listen("tcp", s.opts.Addr)
+	rds, err := cfg.RedisOptions.NewClient()
 	if err != nil {
-		log.Fatalw("Failed to listen", "err", err)
+		return nil, err
 	}
 
-	log.Infow("Start to listening the incoming requests on grpc address", "addr", s.opts.Addr)
-	if err := s.srv.Serve(lis); err != nil {
-		log.Fatalw(err.Error())
+	redisStore := redisstore.NewRedis(rds)
+	l2cache := cache.New[*any.Any](redisStore)
+	l2mgr := cache.NewL2[*any.Any](l2cache, cache.L2WithDisableCache(cfg.DisableCache))
+	l2mgr.Wait(wait.ContextForChannel(ctx.Done()))
+
+	// Copy MySQL options to avoid modifying the original configuration.
+	var dbOptions db.MySQLOptions
+	_ = copier.Copy(&dbOptions, cfg.MySQLOptions)
+
+	// Create the core server instance.
+	srv, err := InitializeWebServer(cfg, &dbOptions, l2mgr, cfg.DisableCache)
+	if err != nil {
+		return nil, err
 	}
+
+	return &Server{srv: srv}, nil
 }
 
-func (s *GRPCServer) GracefulStop() {
-	log.Infof("Gracefully stop grpc server")
-	s.srv.GracefulStop()
+// Run starts the server and listens for termination signals.
+// It gracefully shuts down the server upon receiving a termination signal.
+func (s *Server) Run(ctx context.Context) error {
+	return server.Serve(ctx, s.srv)
+}
+
+// NewWebServer creates and configures a new core web server.
+func NewWebServer(serverConfig *ServerConfig) (server.Server, error) {
+	return serverConfig.NewGRPCServer()
 }

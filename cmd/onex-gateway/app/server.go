@@ -7,47 +7,59 @@
 package app
 
 import (
+	"context"
+	"fmt"
+
+	"github.com/onexstack/onexstack/pkg/app"
 	genericapiserver "k8s.io/apiserver/pkg/server"
 
 	"github.com/onexstack/onex/cmd/onex-gateway/app/options"
 	"github.com/onexstack/onex/internal/gateway"
-	"github.com/onexstack/onex/pkg/app"
+	"github.com/onexstack/onex/internal/pkg/contextx"
+	"github.com/onexstack/onex/internal/pkg/known"
 )
 
 const commandDesc = `The gateway server is the back-end portal server of onex. All 
 requests from the front-end will arrive at the gateway, requests will be uniformly processed 
 and distributed by the gateway.`
 
-// NewApp creates an App object with default parameters.
+// NewApp creates and returns a new App object with default parameters.
 func NewApp() *app.App {
-	opts := options.NewOptions()
-	application := app.NewApp(gateway.Name, "Launch a onex gateway server",
+	opts := options.NewServerOptions()
+	application := app.NewApp(
+		gateway.Name,
+		"Launch a onex gateway server",
 		app.WithDescription(commandDesc),
 		app.WithOptions(opts),
 		app.WithDefaultValidArgs(),
 		app.WithRunFunc(run(opts)),
+		app.WithLoggerContextExtractor(map[string]func(context.Context) string{
+			known.XTraceID: contextx.TraceID,
+			known.XUserID:  contextx.UserID,
+		}),
 	)
 
 	return application
 }
 
-func run(opts *options.Options) app.RunFunc {
+// run contains the main logic for initializing and running the server.
+func run(opts *options.ServerOptions) app.RunFunc {
 	return func() error {
+		// Load the configuration options
 		cfg, err := opts.Config()
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to load configuration: %w", err)
 		}
 
-		return Run(cfg, genericapiserver.SetupSignalHandler())
-	}
-}
+		ctx := genericapiserver.SetupSignalContext()
 
-// Run runs the specified APIServer. This should never exit.
-func Run(c *gateway.Config, stopCh <-chan struct{}) error {
-	server, err := c.Complete().New(stopCh)
-	if err != nil {
-		return err
-	}
+		// Build the server using the configuration
+		server, err := cfg.NewServer(ctx)
+		if err != nil {
+			return fmt.Errorf("failed to create server: %w", err)
+		}
 
-	return server.Run(stopCh)
+		// Run the server with signal context for graceful shutdown
+		return server.Run(ctx)
+	}
 }

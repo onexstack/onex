@@ -10,13 +10,13 @@
 set -eEuo pipefail
 
 # The root of the build/dist directory
-ONEX_ROOT=$(dirname "${BASH_SOURCE[0]}")/../..
+PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/../..
 
 # 所有的 OneX 都会统一加载 scripts/common.sh 脚本
-source "${ONEX_ROOT}/scripts/common.sh"
+source "${PROJ_ROOT_DIR}/scripts/common.sh"
 
 # 设置 ONEX_ENV_FILE（重要）
-ONEX_ENV_FILE=${ONEX_ENV_FILE:-${ONEX_ROOT}/manifests/env.local}
+ONEX_ENV_FILE=${ONEX_ENV_FILE:-${PROJ_ROOT_DIR}/manifests/env.local}
 # 加载本地安装环境变量（非常重要的一步，后面很多步骤都依赖于env.local中的变量设置）
 source ${ONEX_ENV_FILE}
 

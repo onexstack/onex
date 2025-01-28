@@ -36,7 +36,7 @@ import (
 	"github.com/onexstack/onex/internal/pkg/util/ssa"
 	"github.com/onexstack/onex/pkg/apis/apps/v1beta1"
 	"github.com/onexstack/onex/pkg/record"
-	retryutil "github.com/onexstack/onex/pkg/util/retry"
+	retryutil "github.com/onexstack/onexstack/pkg/util/retry"
 )
 
 // MaxConcurrency used to prevent the high load of onex-apiserver caused by excessive concurrency,

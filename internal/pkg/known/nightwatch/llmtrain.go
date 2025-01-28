@@ -1,7 +1,7 @@
 package known
 
 import (
-	stringsutil "github.com/onexstack/onex/pkg/util/strings"
+	stringsutil "github.com/onexstack/onexstack/pkg/util/strings"
 )
 
 // LLM train statuses represent the various phases of llm train.

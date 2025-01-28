@@ -12,7 +12,7 @@ import (
 
 	"github.com/onexstack/onex/internal/pkg/client/store"
 	"github.com/onexstack/onex/internal/pkg/client/usercenter"
-	genericoptions "github.com/onexstack/onex/pkg/options"
+	genericoptions "github.com/onexstack/onexstack/pkg/options"
 )
 
 // Interface is an interface that presents a aggregate clientset.

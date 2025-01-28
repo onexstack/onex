@@ -56,7 +56,7 @@ endif
 
 .PHONY: gen-k8s
 gen-k8s: ## Generate all necessary kubernetes related files, such as deepcopy files
-	@$(ONEX_ROOT)/scripts/update-codegen.sh
+	@$(PROJ_ROOT_DIR)/scripts/update-codegen.sh
 	# The following command is old generate way with makefile script.
 	# Comment here as a code history.
 	# $(MAKE) -s generated.files
@@ -141,7 +141,7 @@ ifeq ($(ALL),1)
 	@$(FIND) -type f -name 'zz_generated.*go' -delete
 	@$(FIND) -type f -name '*_generated.go' -delete
 	@$(FIND) -type f -name 'types_swagger_doc_generated.go' -delete
-	@-rm -vrf $(ONEX_ROOT)/pkg/generated
+	@-rm -vrf $(PROJ_ROOT_DIR)/pkg/generated
 	@-rm -vrf $(GENERATED_DOCKERFILE_DIR)
 endif
 

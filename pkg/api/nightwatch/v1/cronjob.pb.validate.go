@@ -844,6 +844,210 @@ var _ interface {
 	ErrorName() string
 } = UpdateCronJobResponseValidationError{}
 
+// Validate checks the field values on DeleteCronJobRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *DeleteCronJobRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on DeleteCronJobRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// DeleteCronJobRequestMultiError, or nil if none found.
+func (m *DeleteCronJobRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *DeleteCronJobRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if len(errors) > 0 {
+		return DeleteCronJobRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// DeleteCronJobRequestMultiError is an error wrapping multiple validation
+// errors returned by DeleteCronJobRequest.ValidateAll() if the designated
+// constraints aren't met.
+type DeleteCronJobRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m DeleteCronJobRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m DeleteCronJobRequestMultiError) AllErrors() []error { return m }
+
+// DeleteCronJobRequestValidationError is the validation error returned by
+// DeleteCronJobRequest.Validate if the designated constraints aren't met.
+type DeleteCronJobRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e DeleteCronJobRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e DeleteCronJobRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e DeleteCronJobRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e DeleteCronJobRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e DeleteCronJobRequestValidationError) ErrorName() string {
+	return "DeleteCronJobRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e DeleteCronJobRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sDeleteCronJobRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = DeleteCronJobRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = DeleteCronJobRequestValidationError{}
+
+// Validate checks the field values on DeleteCronJobResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *DeleteCronJobResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on DeleteCronJobResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// DeleteCronJobResponseMultiError, or nil if none found.
+func (m *DeleteCronJobResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *DeleteCronJobResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if len(errors) > 0 {
+		return DeleteCronJobResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// DeleteCronJobResponseMultiError is an error wrapping multiple validation
+// errors returned by DeleteCronJobResponse.ValidateAll() if the designated
+// constraints aren't met.
+type DeleteCronJobResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m DeleteCronJobResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m DeleteCronJobResponseMultiError) AllErrors() []error { return m }
+
+// DeleteCronJobResponseValidationError is the validation error returned by
+// DeleteCronJobResponse.Validate if the designated constraints aren't met.
+type DeleteCronJobResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e DeleteCronJobResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e DeleteCronJobResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e DeleteCronJobResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e DeleteCronJobResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e DeleteCronJobResponseValidationError) ErrorName() string {
+	return "DeleteCronJobResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e DeleteCronJobResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sDeleteCronJobResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = DeleteCronJobResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = DeleteCronJobResponseValidationError{}
+
 // Validate checks the field values on GetCronJobRequest with the rules defined
 // in the proto definition for this message. If any rules are violated, the
 // first error encountered is returned, or nil if there are no violations.
@@ -1207,7 +1411,7 @@ func (m *ListCronJobResponse) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for TotalCount
+	// no validation rules for Total
 
 	for idx, item := range m.GetCronJobs() {
 		_, _ = idx, item
@@ -1322,207 +1526,3 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = ListCronJobResponseValidationError{}
-
-// Validate checks the field values on DeleteCronJobRequest with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the first error encountered is returned, or nil if there are no violations.
-func (m *DeleteCronJobRequest) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on DeleteCronJobRequest with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the result is a list of violation errors wrapped in
-// DeleteCronJobRequestMultiError, or nil if none found.
-func (m *DeleteCronJobRequest) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *DeleteCronJobRequest) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	if len(errors) > 0 {
-		return DeleteCronJobRequestMultiError(errors)
-	}
-
-	return nil
-}
-
-// DeleteCronJobRequestMultiError is an error wrapping multiple validation
-// errors returned by DeleteCronJobRequest.ValidateAll() if the designated
-// constraints aren't met.
-type DeleteCronJobRequestMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m DeleteCronJobRequestMultiError) Error() string {
-	var msgs []string
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m DeleteCronJobRequestMultiError) AllErrors() []error { return m }
-
-// DeleteCronJobRequestValidationError is the validation error returned by
-// DeleteCronJobRequest.Validate if the designated constraints aren't met.
-type DeleteCronJobRequestValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e DeleteCronJobRequestValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e DeleteCronJobRequestValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e DeleteCronJobRequestValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e DeleteCronJobRequestValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e DeleteCronJobRequestValidationError) ErrorName() string {
-	return "DeleteCronJobRequestValidationError"
-}
-
-// Error satisfies the builtin error interface
-func (e DeleteCronJobRequestValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sDeleteCronJobRequest.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = DeleteCronJobRequestValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = DeleteCronJobRequestValidationError{}
-
-// Validate checks the field values on DeleteCronJobResponse with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the first error encountered is returned, or nil if there are no violations.
-func (m *DeleteCronJobResponse) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on DeleteCronJobResponse with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the result is a list of violation errors wrapped in
-// DeleteCronJobResponseMultiError, or nil if none found.
-func (m *DeleteCronJobResponse) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *DeleteCronJobResponse) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	if len(errors) > 0 {
-		return DeleteCronJobResponseMultiError(errors)
-	}
-
-	return nil
-}
-
-// DeleteCronJobResponseMultiError is an error wrapping multiple validation
-// errors returned by DeleteCronJobResponse.ValidateAll() if the designated
-// constraints aren't met.
-type DeleteCronJobResponseMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m DeleteCronJobResponseMultiError) Error() string {
-	var msgs []string
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m DeleteCronJobResponseMultiError) AllErrors() []error { return m }
-
-// DeleteCronJobResponseValidationError is the validation error returned by
-// DeleteCronJobResponse.Validate if the designated constraints aren't met.
-type DeleteCronJobResponseValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e DeleteCronJobResponseValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e DeleteCronJobResponseValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e DeleteCronJobResponseValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e DeleteCronJobResponseValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e DeleteCronJobResponseValidationError) ErrorName() string {
-	return "DeleteCronJobResponseValidationError"
-}
-
-// Error satisfies the builtin error interface
-func (e DeleteCronJobResponseValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sDeleteCronJobResponse.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = DeleteCronJobResponseValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = DeleteCronJobResponseValidationError{}

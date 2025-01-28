@@ -52,7 +52,7 @@ import (
 	"github.com/onexstack/onex/internal/controlplane"
 	controlplaneapiserver "github.com/onexstack/onex/internal/controlplane/apiserver"
 	"github.com/onexstack/onex/pkg/apiserver/storage"
-	"github.com/onexstack/onex/pkg/version"
+	"github.com/onexstack/onexstack/pkg/version"
 )
 
 const appName = "onex-apiserver"

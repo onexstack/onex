@@ -8,7 +8,7 @@ import (
 	"github.com/tmc/langchaingo/llms/ollama"
 
 	"github.com/onexstack/onex/internal/pkg/embedding/embedder/onex"
-	"github.com/onexstack/onex/pkg/log"
+	"github.com/onexstack/onexstack/pkg/log"
 )
 
 // EmbeddingData holds the embedding data.

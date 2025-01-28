@@ -6,7 +6,7 @@
 
 syntax = "proto3";
 
-package usercenter.v1;
+package toyblc.v1;
 
 option go_package = "github.com/onexstack/onex/pkg/api/toyblc/v1;v1";
 

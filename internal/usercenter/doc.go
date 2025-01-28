@@ -4,4 +4,4 @@
 // this file is https://github.com/onexstack/onex.
 //
 
-package usercenter // import "github.com/onexstack/onex/pkg/usercenter"
+package usercenter // import "github.com/onexstack/onex/internal/usercenter"

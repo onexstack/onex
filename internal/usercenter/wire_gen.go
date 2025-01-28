@@ -7,71 +7,61 @@
 package usercenter
 
 import (
-	"github.com/go-kratos/kratos/v2"
-	"github.com/onexstack/onex/internal/pkg/bootstrap"
-	validation2 "github.com/onexstack/onex/internal/pkg/validation"
-	"github.com/onexstack/onex/internal/usercenter/auth"
 	"github.com/onexstack/onex/internal/usercenter/biz"
-	"github.com/onexstack/onex/internal/usercenter/server"
-	"github.com/onexstack/onex/internal/usercenter/service"
+	"github.com/onexstack/onex/internal/usercenter/handler"
+	"github.com/onexstack/onex/internal/usercenter/pkg/auth"
+	"github.com/onexstack/onex/internal/usercenter/pkg/validation"
 	"github.com/onexstack/onex/internal/usercenter/store"
-	"github.com/onexstack/onex/internal/usercenter/validation"
-	"github.com/onexstack/onex/pkg/db"
-	"github.com/onexstack/onex/pkg/options"
+	"github.com/onexstack/onexstack/pkg/db"
+	"github.com/onexstack/onexstack/pkg/options"
+	"github.com/onexstack/onexstack/pkg/server"
+	validation2 "github.com/onexstack/onexstack/pkg/validation"
 )
 
 // Injectors from wire.go:
 
-// wireApp builds and returns a Kratos app with the given options.
-// It uses the Wire library to automatically generate the dependency injection code.
-func wireApp(appInfo bootstrap.AppInfo, config *server.Config, mySQLOptions *db.MySQLOptions, jwtOptions *options.JWTOptions, redisOptions *options.RedisOptions, etcdOptions *options.EtcdOptions, kafkaOptions *options.KafkaOptions) (*kratos.App, func(), error) {
-	logger := bootstrap.NewLogger(appInfo)
-	registrar := bootstrap.NewEtcdRegistrar(etcdOptions)
-	appConfig := bootstrap.AppConfig{
-		Info:      appInfo,
-		Logger:    logger,
-		Registrar: registrar,
-	}
+func InitializeWebServer(arg <-chan struct{}, config *Config, mySQLOptions *db.MySQLOptions, jwtOptions *options.JWTOptions, redisOptions *options.RedisOptions, kafkaOptions *options.KafkaOptions) (server.Server, error) {
+	etcdOptions := config.EtcdOptions
+	registrar := server.NewEtcdRegistrar(etcdOptions)
+	kratosAppConfig := ProvideKratosAppConfig(registrar)
 	gormDB, err := db.NewMySQL(mySQLOptions)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	datastore := store.NewStore(gormDB)
-	authenticator, cleanup, err := NewAuthenticator(jwtOptions, redisOptions)
+	authenticator, err := NewAuthenticator(jwtOptions, redisOptions)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	secretSetter := store.NewSecretSetter(datastore)
 	authnImpl, err := auth.NewAuthn(secretSetter)
 	if err != nil {
-		cleanup()
-		return nil, nil, err
+		return nil, err
 	}
 	kafkaLogger, err := auth.NewLogger(kafkaOptions)
 	if err != nil {
-		cleanup()
-		return nil, nil, err
+		return nil, err
 	}
 	authzImpl, err := auth.NewAuthz(gormDB, redisOptions, kafkaLogger)
 	if err != nil {
-		cleanup()
-		return nil, nil, err
+		return nil, err
 	}
 	authAuth := auth.NewAuth(authnImpl, authzImpl)
 	bizBiz := biz.NewBiz(datastore, authenticator, authAuth)
-	userCenterService := service.NewUserCenterService(bizBiz)
-	validator, err := validation.New(datastore)
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
+	handlerHandler := handler.NewHandler(bizBiz)
+	logger := ProvideKratosLogger()
+	validator := validation.New(datastore)
 	validationValidator := validation2.NewValidator(validator)
-	v := server.NewMiddlewares(logger, authenticator, validationValidator)
-	httpServer := server.NewHTTPServer(config, userCenterService, authenticator, v)
-	grpcServer := server.NewGRPCServer(config, userCenterService, v)
-	v2 := server.NewServers(httpServer, grpcServer)
-	app := bootstrap.NewApp(appConfig, v2...)
-	return app, func() {
-		cleanup()
-	}, nil
+	v := NewMiddlewares(logger, authenticator, validationValidator)
+	serverConfig := &ServerConfig{
+		cfg:         config,
+		appConfig:   kratosAppConfig,
+		handler:     handlerHandler,
+		middlewares: v,
+	}
+	serverServer, err := NewWebServer(serverConfig)
+	if err != nil {
+		return nil, err
+	}
+	return serverServer, nil
 }
