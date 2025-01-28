@@ -3,11 +3,11 @@ package llmtrain
 import (
 	"time"
 
-	"github.com/onexstack/onex/internal/nightwatch/dao/model"
-	onexembedder "github.com/onexstack/onex/internal/pkg/embedding/embedder/onex"
+	"github.com/onexstack/onex/internal/nightwatch/model"
+	embedder "github.com/onexstack/onex/internal/pkg/embedding/embedder/onex"
 	known "github.com/onexstack/onex/internal/pkg/known/nightwatch"
 	jobconditionsutil "github.com/onexstack/onex/internal/pkg/util/jobconditions"
-	nwv1 "github.com/onexstack/onex/pkg/api/nightwatch/v1"
+	v1 "github.com/onexstack/onex/pkg/api/nightwatch/v1"
 )
 
 // isJobTimeout checks if the job has exceeded its allowed execution time.
@@ -39,11 +39,11 @@ func SetDefaultJobParams(job *model.JobM) {
 }
 
 // buildEmbedderInputs generates inputs for embedding based on the specified embedder type.
-func buildEmbedderInputs(embedderType onexembedder.EmbeddingType, params *nwv1.TrainParams) []any {
+func buildEmbedderInputs(embedderType embedder.EmbeddingType, params *v1.TrainParams) []any {
 	switch embedderType {
-	case onexembedder.TextEmbeddingType:
+	case embedder.TextEmbeddingType:
 		return []any{}
-	case onexembedder.ImageEmbeddingType:
+	case embedder.ImageEmbeddingType:
 		return []any{}
 	default:
 		return nil

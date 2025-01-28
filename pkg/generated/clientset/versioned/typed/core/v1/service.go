@@ -8,11 +8,11 @@
 package v1
 
 import (
-	"context"
+	context "context"
 
-	corev1 "github.com/onexstack/onex/pkg/generated/applyconfigurations/core/v1"
+	applyconfigurationscorev1 "github.com/onexstack/onex/pkg/generated/applyconfigurations/core/v1"
 	scheme "github.com/onexstack/onex/pkg/generated/clientset/versioned/scheme"
-	v1 "k8s.io/api/core/v1"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"
@@ -27,35 +27,37 @@ type ServicesGetter interface {
 
 // ServiceInterface has methods to work with Service resources.
 type ServiceInterface interface {
-	Create(ctx context.Context, service *v1.Service, opts metav1.CreateOptions) (*v1.Service, error)
-	Update(ctx context.Context, service *v1.Service, opts metav1.UpdateOptions) (*v1.Service, error)
+	Create(ctx context.Context, service *corev1.Service, opts metav1.CreateOptions) (*corev1.Service, error)
+	Update(ctx context.Context, service *corev1.Service, opts metav1.UpdateOptions) (*corev1.Service, error)
 	// Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-	UpdateStatus(ctx context.Context, service *v1.Service, opts metav1.UpdateOptions) (*v1.Service, error)
+	UpdateStatus(ctx context.Context, service *corev1.Service, opts metav1.UpdateOptions) (*corev1.Service, error)
 	Delete(ctx context.Context, name string, opts metav1.DeleteOptions) error
-	Get(ctx context.Context, name string, opts metav1.GetOptions) (*v1.Service, error)
-	List(ctx context.Context, opts metav1.ListOptions) (*v1.ServiceList, error)
+	Get(ctx context.Context, name string, opts metav1.GetOptions) (*corev1.Service, error)
+	List(ctx context.Context, opts metav1.ListOptions) (*corev1.ServiceList, error)
 	Watch(ctx context.Context, opts metav1.ListOptions) (watch.Interface, error)
-	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts metav1.PatchOptions, subresources ...string) (result *v1.Service, err error)
-	Apply(ctx context.Context, service *corev1.ServiceApplyConfiguration, opts metav1.ApplyOptions) (result *v1.Service, err error)
+	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts metav1.PatchOptions, subresources ...string) (result *corev1.Service, err error)
+	Apply(ctx context.Context, service *applyconfigurationscorev1.ServiceApplyConfiguration, opts metav1.ApplyOptions) (result *corev1.Service, err error)
 	// Add a +genclient:noStatus comment above the type to avoid generating ApplyStatus().
-	ApplyStatus(ctx context.Context, service *corev1.ServiceApplyConfiguration, opts metav1.ApplyOptions) (result *v1.Service, err error)
+	ApplyStatus(ctx context.Context, service *applyconfigurationscorev1.ServiceApplyConfiguration, opts metav1.ApplyOptions) (result *corev1.Service, err error)
 	ServiceExpansion
 }
 
 // services implements ServiceInterface
 type services struct {
-	*gentype.ClientWithListAndApply[*v1.Service, *v1.ServiceList, *corev1.ServiceApplyConfiguration]
+	*gentype.ClientWithListAndApply[*corev1.Service, *corev1.ServiceList, *applyconfigurationscorev1.ServiceApplyConfiguration]
 }
 
 // newServices returns a Services
 func newServices(c *CoreV1Client, namespace string) *services {
 	return &services{
-		gentype.NewClientWithListAndApply[*v1.Service, *v1.ServiceList, *corev1.ServiceApplyConfiguration](
+		gentype.NewClientWithListAndApply[*corev1.Service, *corev1.ServiceList, *applyconfigurationscorev1.ServiceApplyConfiguration](
 			"services",
 			c.RESTClient(),
 			scheme.ParameterCodec,
 			namespace,
-			func() *v1.Service { return &v1.Service{} },
-			func() *v1.ServiceList { return &v1.ServiceList{} }),
+			func() *corev1.Service { return &corev1.Service{} },
+			func() *corev1.ServiceList { return &corev1.ServiceList{} },
+			gentype.PrefersProtobuf[*corev1.Service](),
+		),
 	}
 }

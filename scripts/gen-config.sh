@@ -12,9 +12,9 @@
 env_file="$1"
 template_file="$2"
 
-ONEX_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
+PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/..
 
-source "${ONEX_ROOT}/scripts/lib/init.sh"
+source "${PROJ_ROOT_DIR}/scripts/lib/init.sh"
 
 if [ $# -ne 2 ];then
     onex::log::error "Usage: gen-config.sh manifests/env.local configs/onex.service.tmpl"

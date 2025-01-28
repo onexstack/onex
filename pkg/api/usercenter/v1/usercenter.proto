@@ -9,9 +9,9 @@ syntax = "proto3";
 package usercenter.v1;
 
 import "google/api/annotations.proto";
-import "google/protobuf/empty.proto";
-import "google/protobuf/timestamp.proto";
-import "validate/validate.proto";
+import "usercenter/v1/secret.proto";
+import "usercenter/v1/user.proto";
+import "usercenter/v1/auth.proto";
 
 option go_package = "github.com/onexstack/onex/pkg/api/usercenter/v1;v1";
 
@@ -26,7 +26,7 @@ service UserCenter{
   }
 
   // Logout
-  rpc Logout(LogoutRequest) returns (google.protobuf.Empty) {
+  rpc Logout(LogoutRequest) returns (LogoutResponse) {
     option (google.api.http) = {
       post: "/v1/auth/logout",
       body: "*",
@@ -65,12 +65,29 @@ service UserCenter{
     };
   }
 
-  // CreateUser
-  rpc CreateUser(CreateUserRequest) returns (UserReply) {
+
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
     option (google.api.http) = {
       post: "/v1/users",
       body: "*",
     };
+  }
+
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {
+    option (google.api.http) = {
+      put: "/v1/users/{userID}",
+      body: "*",
+    };
+  }
+
+  // DeleteUser
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {
+    option (google.api.http) = {delete: "/v1/users/{userID}"};
+  }
+
+
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {
+    option (google.api.http) = {get: "/v1/users/{userID}"};
   }
 
   // ListUser
@@ -78,52 +95,24 @@ service UserCenter{
     option (google.api.http) = {get: "/v1/users"};
   }
 
-  // GetUser
-  rpc GetUser(GetUserRequest) returns (UserReply) {
-    option (google.api.http) = {get: "/v1/users/{username}"};
-  }
-
-  // UpdateUser
-  rpc UpdateUser(UpdateUserRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      put: "/v1/users/{username}",
-      body: "*",
-    };
-  }
-
-  // DeleteUser
-  rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = {delete: "/v1/users/{username}"};
-  }
-
   // UpdatePassword
-  rpc UpdatePassword(UpdatePasswordRequest) returns (google.protobuf.Empty) {
+  rpc UpdatePassword(UpdatePasswordRequest) returns (UpdatePasswordResponse) {
     option (google.api.http) = {
-      put: "/v1/users/{username}/update-password",
+      put: "/v1/users/{userID}/update-password",
       body: "*",
     };
   }
 
   // CreateSecret
-  rpc CreateSecret(CreateSecretRequest) returns (SecretReply) {
+  rpc CreateSecret(CreateSecretRequest) returns (CreateSecretResponse) {
     option (google.api.http) = {
       post: "/v1/secrets",
       body: "*",
     };
   }
 
-  // ListSecret
-  rpc ListSecret(ListSecretRequest) returns (ListSecretResponse) {
-    option (google.api.http) = {get: "/v1/secrets"};
-  }
-
-  // GetSecret
-  rpc GetSecret(GetSecretRequest) returns (SecretReply) {
-    option (google.api.http) = {get: "/v1/secrets/{name}"};
-  }
-
   // UpdateSecret
-  rpc UpdateSecret(UpdateSecretRequest) returns (google.protobuf.Empty) {
+  rpc UpdateSecret(UpdateSecretRequest) returns (UpdateSecretResponse) {
     option (google.api.http) = {
       put: "/v1/secrets/{name}",
       body: "*",
@@ -131,148 +120,18 @@ service UserCenter{
   }
 
   // DeleteSecret
-  rpc DeleteSecret(DeleteSecretRequest) returns (google.protobuf.Empty) {
+  rpc DeleteSecret(DeleteSecretRequest) returns (DeleteSecretResponse) {
     option (google.api.http) = {delete: "/v1/secrets/{name}"};
   }
-}
 
-message UserReply {
-  string userID = 1;
-  string username = 2;
-  string nickname = 3;
-  string password = 4;
-  string email = 5;
-  string phone = 6;
-  int64 secrets = 7;
-  google.protobuf.Timestamp createdAt = 8;
-  google.protobuf.Timestamp updatedAt = 9;
-}
+  // GetSecret
+  rpc GetSecret(GetSecretRequest) returns (GetSecretResponse) {
+    option (google.api.http) = {get: "/v1/secrets/{name}"};
+  }
 
-message LoginRequest {
-  string username = 1;
-  string password = 2;
-}
 
-message LoginReply {
-  string refresh_token = 1;
-  string access_token = 2;
-  string type = 3;
-  int64 expiresAt = 4;
-}
-
-message LogoutRequest {}
-
-message RefreshTokenRequest {}
-
-message GetUserRequest {
-  string username = 1;
-}
-
-message DeleteUserRequest {
-  string username = 1;
-}
-
-message UpdateUserRequest {
-  string username = 1;
-
-  optional string nickname = 2;
-  optional string email = 3;
-  optional string phone = 4;
-}
-
-message ListUserRequest {
-  int64 limit = 1;
-  int64 offset = 2;
-}
-
-message ListUserResponse {
-  int64 totalCount = 1;
-  repeated UserReply Users = 2;
-}
-
-message CreateUserRequest {
-  string username = 1 [(validate.rules).string = {min_len: 1, max_len: 253}];
-  string nickname = 2 [(validate.rules).string = {min_len: 1, max_len: 253}];
-  string password = 3 [(validate.rules).string = {min_len: 6, max_len: 16}];
-  string email = 4 [(validate.rules).string.email = true];
-  string phone = 5 [(validate.rules).string.len = 11];
-}
-
-message UpdatePasswordRequest {
-  string username = 1;
-  string oldPassword = 2;
-  string newPassword = 3;
-}
-
-message SecretReply {
-  string userID = 1;
-  string name = 2;
-  string secretID= 3;
-  string secretKey= 4;
-  int64 expires = 5;
-  int32 status= 6;
-  string description = 7;
-  google.protobuf.Timestamp createdAt = 8;
-  google.protobuf.Timestamp updatedAt = 9;
-}
-
-message GetSecretRequest {
-  string name = 1;
-}
-
-message DeleteSecretRequest {
-  string name = 1;
-}
-
-message UpdateSecretRequest {
-  string name = 1;
-
-  optional int64 expires = 2;
-  optional int32 status = 3 [(validate.rules).int32= {in: [0,1]}];
-  optional string description = 4 [(validate.rules).string.max_len = 256];
-}
-
-message ListSecretRequest {
-  int64 limit = 1;
-  int64 offset = 2;
-}
-
-message ListSecretResponse {
-  int64 totalCount = 1; 
-  repeated SecretReply Secrets = 2;
-}
-
-message CreateSecretRequest {
-  string name = 1 [(validate.rules).string = {min_len: 1, max_len: 253}];
-  int64 expires = 2;
-  string description = 3 [(validate.rules).string.max_len = 256];
-}
-
-message AuthenticateRequest {
-  string token = 1;
-}
-
-message AuthenticateResponse{
-  string userID= 1;
-}
-
-message AuthorizeRequest {
-  string sub = 1;
-  string obj = 3;
-  string act = 4;
-}
-
-message AuthorizeResponse{
-  bool allowed = 1;
-}
-
-message AuthRequest {
-  string token = 1;
-  string obj = 2;
-  string act = 3;
-}
-
-message AuthResponse{
-  string userID = 1;
-  bool allowed = 2;
+  // ListSecret
+  rpc ListSecret(ListSecretRequest) returns (ListSecretResponse) {
+    option (google.api.http) = {get: "/v1/secrets"};
+  }
 }

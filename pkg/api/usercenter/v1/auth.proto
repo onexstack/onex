@@ -1,0 +1,37 @@
+// This file defines the Protobuf messages for managing Users.
+//
+syntax = "proto3"; // Specifies the syntax version used in this file.
+
+package usercenter.v1;
+
+// Specifies the Go package for generated code.
+option go_package = "github.com/onexstack/onex/pkg/api/usercenter/v1;v1";
+
+message AuthenticateRequest {
+  string token = 1;
+}
+
+message AuthenticateResponse{
+  string userID= 1;
+}
+
+message AuthorizeRequest {
+  string sub = 1;
+  string obj = 3;
+  string act = 4;
+}
+
+message AuthorizeResponse{
+  bool allowed = 1;
+}
+
+message AuthRequest {
+  string token = 1;
+  string obj = 2;
+  string act = 3;
+}
+
+message AuthResponse{
+  string userID = 1;
+  bool allowed = 2;
+}

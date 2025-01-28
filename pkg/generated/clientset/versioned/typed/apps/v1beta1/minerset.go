@@ -8,12 +8,11 @@
 package v1beta1
 
 import (
-	"context"
-	json "encoding/json"
-	"fmt"
+	context "context"
+	fmt "fmt"
 
-	v1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
-	appsv1beta1 "github.com/onexstack/onex/pkg/generated/applyconfigurations/apps/v1beta1"
+	appsv1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
+	applyconfigurationsappsv1beta1 "github.com/onexstack/onex/pkg/generated/applyconfigurations/apps/v1beta1"
 	applyconfigurationsautoscalingv1 "github.com/onexstack/onex/pkg/generated/applyconfigurations/autoscaling/v1"
 	scheme "github.com/onexstack/onex/pkg/generated/clientset/versioned/scheme"
 	autoscalingv1 "k8s.io/api/autoscaling/v1"
@@ -21,6 +20,7 @@ import (
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"
 	gentype "k8s.io/client-go/gentype"
+	apply "k8s.io/client-go/util/apply"
 )
 
 // MinerSetsGetter has a method to return a MinerSetInterface.
@@ -31,19 +31,19 @@ type MinerSetsGetter interface {
 
 // MinerSetInterface has methods to work with MinerSet resources.
 type MinerSetInterface interface {
-	Create(ctx context.Context, minerSet *v1beta1.MinerSet, opts v1.CreateOptions) (*v1beta1.MinerSet, error)
-	Update(ctx context.Context, minerSet *v1beta1.MinerSet, opts v1.UpdateOptions) (*v1beta1.MinerSet, error)
+	Create(ctx context.Context, minerSet *appsv1beta1.MinerSet, opts v1.CreateOptions) (*appsv1beta1.MinerSet, error)
+	Update(ctx context.Context, minerSet *appsv1beta1.MinerSet, opts v1.UpdateOptions) (*appsv1beta1.MinerSet, error)
 	// Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-	UpdateStatus(ctx context.Context, minerSet *v1beta1.MinerSet, opts v1.UpdateOptions) (*v1beta1.MinerSet, error)
+	UpdateStatus(ctx context.Context, minerSet *appsv1beta1.MinerSet, opts v1.UpdateOptions) (*appsv1beta1.MinerSet, error)
 	Delete(ctx context.Context, name string, opts v1.DeleteOptions) error
 	DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error
-	Get(ctx context.Context, name string, opts v1.GetOptions) (*v1beta1.MinerSet, error)
-	List(ctx context.Context, opts v1.ListOptions) (*v1beta1.MinerSetList, error)
+	Get(ctx context.Context, name string, opts v1.GetOptions) (*appsv1beta1.MinerSet, error)
+	List(ctx context.Context, opts v1.ListOptions) (*appsv1beta1.MinerSetList, error)
 	Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error)
-	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.MinerSet, err error)
-	Apply(ctx context.Context, minerSet *appsv1beta1.MinerSetApplyConfiguration, opts v1.ApplyOptions) (result *v1beta1.MinerSet, err error)
+	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *appsv1beta1.MinerSet, err error)
+	Apply(ctx context.Context, minerSet *applyconfigurationsappsv1beta1.MinerSetApplyConfiguration, opts v1.ApplyOptions) (result *appsv1beta1.MinerSet, err error)
 	// Add a +genclient:noStatus comment above the type to avoid generating ApplyStatus().
-	ApplyStatus(ctx context.Context, minerSet *appsv1beta1.MinerSetApplyConfiguration, opts v1.ApplyOptions) (result *v1beta1.MinerSet, err error)
+	ApplyStatus(ctx context.Context, minerSet *applyconfigurationsappsv1beta1.MinerSetApplyConfiguration, opts v1.ApplyOptions) (result *appsv1beta1.MinerSet, err error)
 	GetScale(ctx context.Context, minerSetName string, options v1.GetOptions) (*autoscalingv1.Scale, error)
 	UpdateScale(ctx context.Context, minerSetName string, scale *autoscalingv1.Scale, opts v1.UpdateOptions) (*autoscalingv1.Scale, error)
 	ApplyScale(ctx context.Context, minerSetName string, scale *applyconfigurationsautoscalingv1.ScaleApplyConfiguration, opts v1.ApplyOptions) (*autoscalingv1.Scale, error)
@@ -53,19 +53,21 @@ type MinerSetInterface interface {
 
 // minerSets implements MinerSetInterface
 type minerSets struct {
-	*gentype.ClientWithListAndApply[*v1beta1.MinerSet, *v1beta1.MinerSetList, *appsv1beta1.MinerSetApplyConfiguration]
+	*gentype.ClientWithListAndApply[*appsv1beta1.MinerSet, *appsv1beta1.MinerSetList, *applyconfigurationsappsv1beta1.MinerSetApplyConfiguration]
 }
 
 // newMinerSets returns a MinerSets
 func newMinerSets(c *AppsV1beta1Client, namespace string) *minerSets {
 	return &minerSets{
-		gentype.NewClientWithListAndApply[*v1beta1.MinerSet, *v1beta1.MinerSetList, *appsv1beta1.MinerSetApplyConfiguration](
+		gentype.NewClientWithListAndApply[*appsv1beta1.MinerSet, *appsv1beta1.MinerSetList, *applyconfigurationsappsv1beta1.MinerSetApplyConfiguration](
 			"minersets",
 			c.RESTClient(),
 			scheme.ParameterCodec,
 			namespace,
-			func() *v1beta1.MinerSet { return &v1beta1.MinerSet{} },
-			func() *v1beta1.MinerSetList { return &v1beta1.MinerSetList{} }),
+			func() *appsv1beta1.MinerSet { return &appsv1beta1.MinerSet{} },
+			func() *appsv1beta1.MinerSetList { return &appsv1beta1.MinerSetList{} },
+			gentype.PrefersProtobuf[*appsv1beta1.MinerSet](),
+		),
 	}
 }
 
@@ -73,6 +75,7 @@ func newMinerSets(c *AppsV1beta1Client, namespace string) *minerSets {
 func (c *minerSets) GetScale(ctx context.Context, minerSetName string, options v1.GetOptions) (result *autoscalingv1.Scale, err error) {
 	result = &autoscalingv1.Scale{}
 	err = c.GetClient().Get().
+		UseProtobufAsDefault().
 		Namespace(c.GetNamespace()).
 		Resource("minersets").
 		Name(minerSetName).
@@ -87,6 +90,7 @@ func (c *minerSets) GetScale(ctx context.Context, minerSetName string, options v
 func (c *minerSets) UpdateScale(ctx context.Context, minerSetName string, scale *autoscalingv1.Scale, opts v1.UpdateOptions) (result *autoscalingv1.Scale, err error) {
 	result = &autoscalingv1.Scale{}
 	err = c.GetClient().Put().
+		UseProtobufAsDefault().
 		Namespace(c.GetNamespace()).
 		Resource("minersets").
 		Name(minerSetName).
@@ -105,19 +109,19 @@ func (c *minerSets) ApplyScale(ctx context.Context, minerSetName string, scale *
 		return nil, fmt.Errorf("scale provided to ApplyScale must not be nil")
 	}
 	patchOpts := opts.ToPatchOptions()
-	data, err := json.Marshal(scale)
+	request, err := apply.NewRequest(c.GetClient(), scale)
 	if err != nil {
 		return nil, err
 	}
 
 	result = &autoscalingv1.Scale{}
-	err = c.GetClient().Patch(types.ApplyPatchType).
+	err = request.
+		UseProtobufAsDefault().
 		Namespace(c.GetNamespace()).
 		Resource("minersets").
 		Name(minerSetName).
 		SubResource("scale").
 		VersionedParams(&patchOpts, scheme.ParameterCodec).
-		Body(data).
 		Do(ctx).
 		Into(result)
 	return

@@ -166,7 +166,7 @@ func (c completedConfig) New(delegationTarget genericapiserver.DelegationTarget)
 	}
 
 	m.GenericAPIServer.AddPostStartHookOrDie("start-system-namespaces-controller", func(hookContext genericapiserver.PostStartHookContext) error {
-		go systemnamespaces.NewController(clientset, c.ExtraConfig.InternalVersionedInformers.Core().V1().Namespaces()).Run(hookContext.StopCh)
+		go systemnamespaces.NewController(clientset, c.ExtraConfig.InternalVersionedInformers.Core().V1().Namespaces()).Run(hookContext.Done())
 		return nil
 	})
 
@@ -179,7 +179,7 @@ func (c completedConfig) New(delegationTarget genericapiserver.DelegationTarget)
 		func(context genericapiserver.PostStartHookContext) error {
 			// remove dependence with kube-apiserver
 			//c.ExtraConfig.KubeVersionedInformers.Start(context.StopCh)
-			c.ExtraConfig.InternalVersionedInformers.Start(context.StopCh)
+			c.ExtraConfig.InternalVersionedInformers.Start(context.Done())
 			return nil
 		},
 	)
@@ -188,7 +188,7 @@ func (c completedConfig) New(delegationTarget genericapiserver.DelegationTarget)
 		"start-external-informers",
 		func(context genericapiserver.PostStartHookContext) error {
 			if c.ExtraConfig.ExternalVersionedInformers != nil {
-				c.ExtraConfig.ExternalVersionedInformers.Start(context.StopCh)
+				c.ExtraConfig.ExternalVersionedInformers.Start(context.Done())
 			}
 			return nil
 		},
@@ -201,7 +201,7 @@ func (c completedConfig) New(delegationTarget genericapiserver.DelegationTarget)
 	// Add PostStartHooks for Unknown Version Proxy filter.
 	if c.ExtraConfig.PeerProxy != nil {
 		c.GenericConfig.AddPostStartHookOrDie("unknown-version-proxy-filter", func(context genericapiserver.PostStartHookContext) error {
-			err := c.ExtraConfig.PeerProxy.WaitForCacheSync(context.StopCh)
+			err := c.ExtraConfig.PeerProxy.WaitForCacheSync(context.Done())
 			return err
 		})
 	}

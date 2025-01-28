@@ -12,4 +12,8 @@ import (
 )
 
 // ProviderSet is db providers.
-var ProviderSet = wire.NewSet(NewMySQL, NewRedis, wire.Bind(new(redis.UniversalClient), new(*redis.Client)))
+var ProviderSet = wire.NewSet(
+	NewMySQL,
+	NewRedis,
+	wire.Bind(new(redis.UniversalClient), new(*redis.Client)), // 正确绑定接口和实现
+)

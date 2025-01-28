@@ -28,5 +28,5 @@
 
 ## 参考
 
-- [错误规范](https://github.com/onexstack/zero/blob/master/docs/devel/zh-CN/conversions/errors.md)
+- [错误规范](https://github.com/superproj/zero/blob/master/docs/devel/zh-CN/conversions/errors.md)
 

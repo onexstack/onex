@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/onexstack/onex/internal/nightwatch/dao/model"
-	nwv1 "github.com/onexstack/onex/pkg/api/nightwatch/v1"
+	"github.com/onexstack/onex/internal/nightwatch/model"
+	v1 "github.com/onexstack/onex/pkg/api/nightwatch/v1"
 )
 
 // Set updates or adds a JobCondition to the provided JobConditions.
-func Set(conditions *model.JobConditions, cond *nwv1.JobCondition) *model.JobConditions {
+func Set(conditions *model.JobConditions, cond *v1.JobCondition) *model.JobConditions {
 	if cond == nil {
 		return conditions
 	}
@@ -57,16 +57,16 @@ func Delete(conditions *model.JobConditions, condType string) {
 }
 
 // TrueCondition returns a condition with Status=True and the given type.
-func TrueCondition(t string) *nwv1.JobCondition {
-	return &nwv1.JobCondition{
+func TrueCondition(t string) *v1.JobCondition {
+	return &v1.JobCondition{
 		Type:   t,
 		Status: model.ConditionTrue,
 	}
 }
 
 // FalseCondition returns a condition with Status=False and the given type.
-func FalseCondition(t string, messageFormat string, messageArgs ...any) *nwv1.JobCondition {
-	return &nwv1.JobCondition{
+func FalseCondition(t string, messageFormat string, messageArgs ...any) *v1.JobCondition {
+	return &v1.JobCondition{
 		Type:    t,
 		Status:  model.ConditionFalse,
 		Message: fmt.Sprintf(messageFormat, messageArgs...),
@@ -74,8 +74,8 @@ func FalseCondition(t string, messageFormat string, messageArgs ...any) *nwv1.Jo
 }
 
 // UnknownCondition returns a condition with Status=Unknown and the given type.
-func UnknownCondition(t string, messageFormat string, messageArgs ...any) *nwv1.JobCondition {
-	return &nwv1.JobCondition{
+func UnknownCondition(t string, messageFormat string, messageArgs ...any) *v1.JobCondition {
+	return &v1.JobCondition{
 		Type:    t,
 		Status:  model.ConditionUnknown,
 		Message: fmt.Sprintf(messageFormat, messageArgs...),
@@ -84,6 +84,6 @@ func UnknownCondition(t string, messageFormat string, messageArgs ...any) *nwv1.
 
 // hasSameState returns true if a condition has the same state of another; state is defined
 // by the union of following fields: Type, Status, Reason, Severity and Message (it excludes LastTransitionTime).
-func hasSameState(i, j *nwv1.JobCondition) bool {
+func hasSameState(i, j *v1.JobCondition) bool {
 	return i.Type == j.Type && i.Status == j.Status && i.Message == j.Message
 }

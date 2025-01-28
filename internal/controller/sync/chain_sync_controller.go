@@ -22,7 +22,7 @@ import (
 	gwmodel "github.com/onexstack/onex/internal/gateway/model"
 	"github.com/onexstack/onex/internal/gateway/store"
 	"github.com/onexstack/onex/pkg/apis/apps/v1beta1"
-	"github.com/onexstack/onex/pkg/store/where"
+	"github.com/onexstack/onexstack/pkg/store/where"
 )
 
 const chainControllerName = "controller-manager.chainSync"

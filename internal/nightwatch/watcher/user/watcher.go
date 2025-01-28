@@ -12,15 +12,15 @@ import (
 
 	"github.com/gammazero/workerpool"
 	"github.com/looplab/fsm"
+	"github.com/onexstack/onexstack/pkg/log"
+	stringsutil "github.com/onexstack/onexstack/pkg/util/strings"
+	"github.com/onexstack/onexstack/pkg/watch/registry"
 
 	"github.com/onexstack/onex/internal/nightwatch/watcher"
 	"github.com/onexstack/onex/internal/pkg/client/store"
-	known "github.com/onexstack/onex/internal/pkg/known/usercenter"
 	"github.com/onexstack/onex/internal/pkg/contextx"
+	known "github.com/onexstack/onex/internal/pkg/known/usercenter"
 	"github.com/onexstack/onex/internal/usercenter/model"
-	"github.com/onexstack/onex/pkg/log"
-	stringsutil "github.com/onexstack/onex/pkg/util/strings"
-	"github.com/onexstack/onex/pkg/watch/registry"
 )
 
 var _ registry.Watcher = (*userWatcher)(nil)
@@ -39,7 +39,7 @@ type UserStateMachine struct {
 
 // Run runs the watcher.
 func (w *userWatcher) Run() {
-	_, users, err := w.store.UserCenter().Users().List(context.Background(), nil)
+	_, users, err := w.store.UserCenter().User().List(context.Background(), nil)
 	if err != nil {
 		log.Errorw(err, "Failed to list users")
 		return
@@ -64,7 +64,7 @@ func (w *userWatcher) Run() {
 		}
 
 		wp.Submit(func() {
-			ctx := contextx.NewUserM(context.Background(), user)
+			ctx := contextx.WithUserM(context.Background(), user)
 
 			usm := &UserStateMachine{UserM: user, FSM: NewFSM(user.Status, w)}
 			if err := usm.FSM.Event(ctx, user.Status); err != nil {

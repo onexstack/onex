@@ -22,17 +22,17 @@ set -o pipefail
 # This tool wants a different default than usual.
 KUBE_VERBOSE="${KUBE_VERBOSE:-1}"
 
-ONEX_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
-source "${ONEX_ROOT}/scripts/lib/init.sh"
-source "${ONEX_ROOT}/scripts/lib/protoc.sh"
-cd "${ONEX_ROOT}"
+PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/..
+source "${PROJ_ROOT_DIR}/scripts/lib/init.sh"
+source "${PROJ_ROOT_DIR}/scripts/lib/protoc.sh"
+cd "${PROJ_ROOT_DIR}"
 
 onex::golang::setup_env
 
 DBG_CODEGEN="${DBG_CODEGEN:-0}"
 GENERATED_FILE_PREFIX="${GENERATED_FILE_PREFIX:-zz_generated.}"
 UPDATE_API_KNOWN_VIOLATIONS="${UPDATE_API_KNOWN_VIOLATIONS:-}"
-API_KNOWN_VIOLATIONS_DIR="${API_KNOWN_VIOLATIONS_DIR:-"${ONEX_ROOT}/api/api-rules"}"
+API_KNOWN_VIOLATIONS_DIR="${API_KNOWN_VIOLATIONS_DIR:-"${PROJ_ROOT_DIR}/api/api-rules"}"
 
 OUT_DIR="_output"
 BOILERPLATE_FILENAME="scripts/boilerplate/boilerplate.go.txt"
@@ -128,12 +128,12 @@ function codegen::protobuf() {
     # NOTICE: must include k8s.io/api/core/v1, otherwise it will generate the message ObjectReference
     # in pkg/apis/apps/v1beta1/generated.proto, which will cause a compilation error when compiling
     # onex-apiserver: undefined: ObjectReference.
-    # but include k8s.io/api/core/v1 will cause remove xx/pkg/mod/k8s.io/api@v0.31.2/core/v1/generated.proto: permission denied error.
+    # but include k8s.io/api/core/v1 will cause remove xx/pkg/mod/k8s.io/api@v0.32.1/core/v1/generated.proto: permission denied error.
     # workaround:
     #   $ sudo chmod -R 777 xx/pkg/mod/k8s.io/
     #   $ ./scripts/update-codegen.sh protobuf
-    #   $ rm -rf m -rf /data00/.cache/golang/pkg/mod/k8s.io/api@v0.31.2
-    #   $ go get k8s.io/api@v0.31.2
+    #   $ rm -rf m -rf /data00/.cache/golang/pkg/mod/k8s.io/api@v0.32.1
+    #   $ go get k8s.io/api@v0.32.1
     apis+=("${EXTRA_GENERATE_PKG}")
 
     # Comment this out, otherwise it will delete some useful protobuf files.
@@ -150,7 +150,7 @@ function codegen::protobuf() {
     fi
 
     # Fix `pkg/apis/apps/v1beta1/generated.pb.go:49:10: undefined: ObjectReference` compile errors
-    # cp ${ONEX_ROOT}/manifests/generated.pb.go.fix ${ONEX_ROOT}/pkg/apis/apps/v1beta1/generated.pb.go
+    # cp ${PROJ_ROOT_DIR}/manifests/generated.pb.go.fix ${PROJ_ROOT_DIR}/pkg/apis/apps/v1beta1/generated.pb.go
     ${SCRIPTS_DIR}/fix-protobuf.sh
 }
 
@@ -167,7 +167,7 @@ function codegen::protobuf() {
 function codegen::deepcopy() {
     # Build the tool.
     if ! command -v deepcopy-gen &> /dev/null ; then
-        make -C ${ONEX_ROOT} tools.install.code-generator.deepcopy-gen
+        make -C ${PROJ_ROOT_DIR} tools.install.code-generator.deepcopy-gen
     fi
 
     # The result file, in each pkg, of deep-copy generation.
@@ -272,7 +272,7 @@ EOF
 function codegen::swagger() {
     # Build the tool
     if ! command -v gen-swaggertype-docs &> /dev/null ; then
-        GOPROXY=off go install ${ONEX_ROOT}/cmd/gen-swaggertype-docs
+        GOPROXY=off go install ${PROJ_ROOT_DIR}/cmd/gen-swaggertype-docs
     fi
 
     local group_versions=()
@@ -296,7 +296,7 @@ function codegen::swagger() {
 function codegen::prerelease() {
     # Build the tool.
     if ! command -v prerelease-lifecycle-gen &> /dev/null ; then
-        make -C ${ONEX_ROOT} tools.install.code-generator.prerelease-lifecycle-gen
+        make -C ${PROJ_ROOT_DIR} tools.install.code-generator.prerelease-lifecycle-gen
     fi
 
     # The result file, in each pkg, of prerelease-lifecycle generation.
@@ -361,7 +361,7 @@ function codegen::prerelease() {
 function codegen::defaults() {
     # Build the tool.
     if ! command -v defaulter-gen &> /dev/null ; then
-        make -C ${ONEX_ROOT} tools.install.code-generator.defaulter-gen
+        make -C ${PROJ_ROOT_DIR} tools.install.code-generator.defaulter-gen
     fi
 
     # The result file, in each pkg, of defaulter generation.
@@ -431,7 +431,7 @@ function codegen::defaults() {
 function codegen::conversions() {
     # Build the tool.
     if ! command -v conversion-gen &> /dev/null ; then
-        make -C ${ONEX_ROOT} tools.install.code-generator.conversion-gen
+        make -C ${PROJ_ROOT_DIR} tools.install.code-generator.conversion-gen
     fi
 
     # The result file, in each pkg, of conversion generation.
@@ -510,7 +510,7 @@ function k8s_tag_files_except() {
 function todo::codegen::openapi() {
     # Build the tool.
     if ! command -v openapi-gen &> /dev/null ; then
-        make -C ${ONEX_ROOT} tools.install.code-generator.openapi-gen
+        make -C ${PROJ_ROOT_DIR} tools.install.code-generator.openapi-gen
     fi
 
     # The result file, in each pkg, of open-api generation.
@@ -593,13 +593,12 @@ function todo::codegen::openapi() {
 #     // +k8s:openapi-gen=true
 function codegen::openapi() {
     # Build the tool.
-    # Please make sure to use openapi-gen version v0.29.3 here.
     if ! command -v openapi-gen &> /dev/null ; then
-        go install k8s.io/code-generator/cmd/openapi-gen@v0.29.3
+        go install k8s.io/kube-openapi/cmd/openapi-gen@latest
     fi
 
     # The result file, in each pkg, of open-api generation.
-    local output_file="${GENERATED_FILE_PREFIX}openapi"
+    local output_file="${GENERATED_FILE_PREFIX}openapi.go"
 
     local output_dir="pkg/generated/openapi"
     local output_pkg="github.com/onexstack/onex/${output_dir}"
@@ -652,12 +651,12 @@ function codegen::openapi() {
     openapi-gen \
         -v "${KUBE_VERBOSE}" \
         --go-header-file "${BOILERPLATE_FILENAME}" \
-        -O "${output_file}" \
-        -i 'k8s.io/apimachinery/pkg/apis/meta/v1,k8s.io/apimachinery/pkg/runtime,k8s.io/apimachinery/pkg/version,k8s.io/apimachinery/pkg/util/intstr,k8s.io/kubernetes/pkg/apis/core,k8s.io/api/core/v1,k8s.io/api/autoscaling/v1,k8s.io/api/coordination/v1,k8s.io/kubernetes/pkg/apis/flowcontrol,k8s.io/api/flowcontrol/v1,k8s.io/apiextensions-apiserver/pkg/apis/apiextensions,k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1,k8s.io/kube-aggregator/pkg/apis/apiregistration,k8s.io/kube-aggregator/pkg/apis/apiregistration/v1,github.com/onexstack/onex/pkg/apis/apps/v1beta1' \
-        --output-base "${GOPATH}/src" \
-        -p "${output_pkg}" \
+        --output-file "${output_file}" \
+        --output-dir "${output_dir}" \
+        --output-pkg "${output_pkg}" \
         --report-filename "${report_file}" \
         "${tag_pkgs[@]}" \
+        k8s.io/apimachinery/pkg/apis/meta/v1 k8s.io/apimachinery/pkg/runtime k8s.io/apimachinery/pkg/version k8s.io/apimachinery/pkg/util/intstr k8s.io/kubernetes/pkg/apis/core k8s.io/api/core/v1 k8s.io/api/autoscaling/v1 k8s.io/api/coordination/v1 k8s.io/kubernetes/pkg/apis/flowcontrol k8s.io/api/flowcontrol/v1 k8s.io/apiextensions-apiserver/pkg/apis/apiextensions k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1 k8s.io/kube-aggregator/pkg/apis/apiregistration k8s.io/kube-aggregator/pkg/apis/apiregistration/v1 \
         "$@"
 
     if [[ "${DBG_CODEGEN}" == 1 ]]; then
@@ -668,12 +667,12 @@ function codegen::openapi() {
 function codegen::applyconfigs() {
     if ! command -v applyconfiguration-gen &> /dev/null ; then
         GOPROXY=off go install k8s.io/kubernetes/pkg/generated/openapi/cmd/models-schema
-        make -C ${ONEX_ROOT} tools.install.code-generator.applyconfiguration-gen
+        make -C ${PROJ_ROOT_DIR} tools.install.code-generator.applyconfiguration-gen
     fi
 
     local ext_apis=()
     onex::util::read-array ext_apis < <(
-        cd "${ONEX_ROOT}"
+        cd "${PROJ_ROOT_DIR}"
         git_find -z ':(glob)pkg/apis/**/*types.go' \
             | while read -r -d $'\0' F; do dirname "${ONEX_MODULE_NAME}/${F}"; done \
             | sort -u)
@@ -699,7 +698,7 @@ function codegen::applyconfigs() {
         -v "${KUBE_VERBOSE}" \
         --openapi-schema <(models-schema) \
         --go-header-file "${BOILERPLATE_FILENAME}" \
-        --output-dir "${ONEX_ROOT}/pkg/generated/applyconfigurations" \
+        --output-dir "${PROJ_ROOT_DIR}/pkg/generated/applyconfigurations" \
         --output-pkg "${APPLYCONFIG_PKG}" \
         "${ext_apis[@]}" \
         "$@"
@@ -711,7 +710,7 @@ function codegen::applyconfigs() {
 
 function codegen::clients() {
     if ! command -v client-gen &> /dev/null ; then
-        make -C ${ONEX_ROOT} tools.install.code-generator.client-gen
+        make -C ${PROJ_ROOT_DIR} tools.install.code-generator.client-gen
     fi
 
     IFS=" " read -r -a group_versions <<< "${ONEX_AVAILABLE_GROUP_VERSIONS}"
@@ -753,17 +752,18 @@ function codegen::clients() {
         -v "${KUBE_VERBOSE}" \
         --go-header-file "${BOILERPLATE_FILENAME}" \
         --included-types-overrides core/v1/Namespace,core/v1/ConfigMap,core/v1/Event,core/v1/Secret,apiextensions/v1/CustomResourceDefinition \
-        --output-dir "${ONEX_ROOT}/pkg/generated/clientset" \
+        --output-dir "${PROJ_ROOT_DIR}/pkg/generated/clientset" \
         --output-pkg="${OUTPUT_PKG}/clientset" \
         --clientset-name="versioned" \
         --input-base="" \
         --plural-exceptions "${PLURAL_EXCEPTIONS}" \
         --apply-configuration-package "${APPLYCONFIG_PKG}" \
+        --prefers-protobuf \
         $(printf -- " --input %s" "${gv_dirs[@]}") \
         "$@"
 
     # Fix generated namespace clients
-    ${ONEX_ROOT}/scripts/fix-generated-client.sh
+    ${PROJ_ROOT_DIR}/scripts/fix-generated-client.sh
 
     if [[ "${DBG_CODEGEN}" == 1 ]]; then
         onex::log::status "Generated client code"
@@ -772,12 +772,12 @@ function codegen::clients() {
 
 function codegen::listers() {
     if ! command -v lister-gen &> /dev/null ; then
-        make -C ${ONEX_ROOT} tools.install.code-generator.client-gen
+        make -C ${PROJ_ROOT_DIR} tools.install.code-generator.client-gen
     fi
 
     local ext_apis=()
     onex::util::read-array ext_apis < <(
-        cd "${ONEX_ROOT}"
+        cd "${PROJ_ROOT_DIR}"
         git_find -z ':(glob)pkg/apis/**/*types.go' \
             | while read -r -d $'\0' F; do dirname "github.com/onexstack/onex/${F}"; done \
             | sort -u)
@@ -802,7 +802,7 @@ function codegen::listers() {
         -v "${KUBE_VERBOSE}" \
         --go-header-file "${BOILERPLATE_FILENAME}" \
         --included-types-overrides core/v1/Namespace,core/v1/ConfigMap,core/v1/Event,core/v1/Secret \
-        --output-dir "${ONEX_ROOT}/pkg/generated/listers" \
+        --output-dir "${PROJ_ROOT_DIR}/pkg/generated/listers" \
         --output-pkg "${OUTPUT_PKG}/listers" \
         --plural-exceptions "${PLURAL_EXCEPTIONS}" \
         "${ext_apis[@]}" \
@@ -815,12 +815,12 @@ function codegen::listers() {
 
 function codegen::informers() {
     if ! command -v informer-gen &> /dev/null ; then
-        make -C ${ONEX_ROOT} tools.install.code-generator.informer-gen
+        make -C ${PROJ_ROOT_DIR} tools.install.code-generator.informer-gen
     fi
 
     local ext_apis=()
     onex::util::read-array ext_apis < <(
-        cd "${ONEX_ROOT}"
+        cd "${PROJ_ROOT_DIR}"
         git_find -z ':(glob)pkg/apis/**/*types.go' \
             | while read -r -d $'\0' F; do dirname "github.com/onexstack/onex/${F}"; done \
             | sort -u)
@@ -845,7 +845,7 @@ function codegen::informers() {
         -v "${KUBE_VERBOSE}" \
         --go-header-file "${BOILERPLATE_FILENAME}" \
         --included-types-overrides core/v1/Namespace,core/v1/ConfigMap,core/v1/Event,core/v1/Secret \
-        --output-dir "${ONEX_ROOT}/pkg/generated/informers" \
+        --output-dir "${PROJ_ROOT_DIR}/pkg/generated/informers" \
         --output-pkg "${OUTPUT_PKG}/informers" \
         --single-directory \
         --versioned-clientset-package "${OUTPUT_PKG}/clientset/versioned" \
@@ -878,7 +878,7 @@ function unused::codegen::subprojects() {
     )
 
     local codegen
-    codegen="${ONEX_ROOT}/staging/src/k8s.io/code-generator"
+    codegen="${PROJ_ROOT_DIR}/staging/src/k8s.io/code-generator"
     for sub in "${subs[@]}"; do
         onex::log::status "Generating code for subproject ${sub}"
         pushd "${sub}" >/dev/null

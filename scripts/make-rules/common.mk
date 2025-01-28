@@ -6,11 +6,11 @@
 # Includes
 
 # include the common make file
-ifeq ($(origin ONEX_ROOT),undefined)
-ONEX_ROOT :=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+ifeq ($(origin PROJ_ROOT_DIR),undefined)
+PROJ_ROOT_DIR :=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 endif
 
-include $(ONEX_ROOT)/scripts/make-rules/common-versions.mk
+include $(PROJ_ROOT_DIR)/scripts/make-rules/common-versions.mk
 
 # It's necessary to set this because some environments don't link sh -> bash.
 SHELL := /usr/bin/env bash -o errexit -o pipefail +o nounset
@@ -29,7 +29,7 @@ SPACE :=
 SPACE +=
 
 ifeq ($(origin OUTPUT_DIR),undefined)
-OUTPUT_DIR := $(ONEX_ROOT)/_output
+OUTPUT_DIR := $(PROJ_ROOT_DIR)/_output
 $(shell mkdir -p $(OUTPUT_DIR))
 endif
 
@@ -124,16 +124,16 @@ ifeq ($(origin CERTIFICATES),undefined)
 CERTIFICATES=onex-apiserver admin
 endif
 
-MANIFESTS_DIR=$(ONEX_ROOT)/manifests
-SCRIPTS_DIR=$(ONEX_ROOT)/scripts
+MANIFESTS_DIR=$(PROJ_ROOT_DIR)/manifests
+SCRIPTS_DIR=$(PROJ_ROOT_DIR)/scripts
 
 # Image build releated variables.
 REGISTRY_PREFIX ?= ccr.ccs.tencentyun.com/onexstack
-GENERATED_DOCKERFILE_DIR=$(ONEX_ROOT)/build/docker
+GENERATED_DOCKERFILE_DIR=$(PROJ_ROOT_DIR)/build/docker
 
 # Kubernetes releated variables.
 ## Metadata for driving the build lives here.
-META_DIR := $(ONEX_ROOT)/.make
+META_DIR := $(PROJ_ROOT_DIR)/.make
 GENERATED_FILE_PREFIX := zz_generated.
 EXTRA_GENERATE_PKG := k8s.io/api/core/v1
 # This controls the verbosity of the build. Higher numbers mean more output.
@@ -147,6 +147,6 @@ KUSTOMIZE_INSTALL_SCRIPT ?= "https://raw.githubusercontent.com/kubernetes-sigs/k
 
 HADOLINT_FAILURE_THRESHOLD = warning
 
-APIROOT ?= $(ONEX_ROOT)/pkg/api
-APISROOT ?= $(ONEX_ROOT)/pkg/apis
+APIROOT ?= $(PROJ_ROOT_DIR)/pkg/api
+APISROOT ?= $(PROJ_ROOT_DIR)/pkg/apis
 

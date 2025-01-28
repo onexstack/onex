@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-ONEX_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
-source "${ONEX_ROOT}/scripts/lib/init.sh"
+PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/..
+source "${PROJ_ROOT_DIR}/scripts/lib/init.sh"
 
 if [ $# -ne 2 ];then
     onex::log::error "Usage: gen-dockerfile.sh ${DOCKERFILE_DIR} ${IMAGE_NAME}"
@@ -13,7 +13,7 @@ IMAGE_NAME=$2
 
 # OneX 通用配置
 ONEX_ALL_IN_ONE_IMAGE_NAME=onex-allinone
-ONEX_ENV_FILE=${ONEX_ENV_FILE:-${ONEX_ROOT}/manifests/env.local}
+ONEX_ENV_FILE=${ONEX_ENV_FILE:-${PROJ_ROOT_DIR}/manifests/env.local}
 source ${ONEX_ENV_FILE}
 
 declare -A envs

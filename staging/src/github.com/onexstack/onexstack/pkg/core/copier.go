@@ -36,6 +36,10 @@ func TypeConverters() []copier.TypeConverter {
 	}
 }
 
-func CopyWithTypeConverters(to any, from any) error {
+func CopyWithConverters(to any, from any) error {
 	return copier.CopyWithOption(to, from, copier.Option{IgnoreEmpty: true, DeepCopy: true, Converters: TypeConverters()})
+}
+
+func Copy(to any, from any) error {
+	return copier.Copy(to, from)
 }

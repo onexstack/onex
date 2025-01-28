@@ -12,7 +12,7 @@ import (
 	"github.com/blang/semver/v4"
 	kversion "k8s.io/apimachinery/pkg/version"
 
-	"github.com/onexstack/onex/pkg/version"
+	"github.com/onexstack/onexstack/pkg/version"
 )
 
 func convertVersion(info version.Info) *kversion.Info {

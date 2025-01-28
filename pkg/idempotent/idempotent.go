@@ -13,7 +13,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/onexstack/onex/pkg/log"
+	"github.com/onexstack/onexstack/pkg/log"
 )
 
 // redis lua script(read => delete => get delete flag).
@@ -46,7 +46,7 @@ func New(options ...func(*Options)) *Idempotent {
 
 func (i *Idempotent) Token(ctx context.Context) string {
 	if i.ops.redis == nil {
-		log.C(ctx).Warnw("please enable redis, otherwise the idempotent is invalid")
+		log.W(ctx).Warnw("please enable redis, otherwise the idempotent is invalid")
 		return ""
 	}
 
@@ -57,7 +57,7 @@ func (i *Idempotent) Token(ctx context.Context) string {
 
 func (i *Idempotent) Check(ctx context.Context, token string) bool {
 	if i.ops.redis == nil {
-		log.C(ctx).Warnw("please enable redis, otherwise the idempotent is invalid")
+		log.W(ctx).Warnw("please enable redis, otherwise the idempotent is invalid")
 		return true
 	}
 

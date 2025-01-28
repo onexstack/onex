@@ -13,4 +13,4 @@ type GetSecretRequest struct {
 	Name   string
 }
 
-type GetSecretResponse = v1.SecretReply
+type GetSecretResponse = v1.Secret

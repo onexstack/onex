@@ -17,14 +17,14 @@ import (
 
 	gwstore "github.com/onexstack/onex/internal/gateway/store"
 	"github.com/onexstack/onex/internal/nightwatch/biz"
-	"github.com/onexstack/onex/internal/nightwatch/service/v1"
+	"github.com/onexstack/onex/internal/nightwatch/handler"
+	"github.com/onexstack/onex/internal/nightwatch/pkg/validation"
 	nwstore "github.com/onexstack/onex/internal/nightwatch/store"
-	"github.com/onexstack/onex/internal/nightwatch/validation"
 	"github.com/onexstack/onex/internal/pkg/client/store"
 	ucstore "github.com/onexstack/onex/internal/usercenter/store"
 )
 
-func wireAggregateStore(*gorm.DB) (store.Interface, error) {
+func InitializeAggregateStore(*gorm.DB) (store.Interface, error) {
 	wire.Build(
 		store.ProviderSet,
 		gwstore.ProviderSet,
@@ -34,18 +34,18 @@ func wireAggregateStore(*gorm.DB) (store.Interface, error) {
 	return nil, nil
 }
 
-func wireService(*gorm.DB) *v1.NightWatchService {
+func InitializeHandler(*gorm.DB) *handler.Handler {
 	wire.Build(
-		validation.ProviderSet,
+		validation.New,
 		biz.ProviderSet,
 		nwstore.ProviderSet,
-		v1.NewNightWatchService,
+		handler.NewHandler,
 	)
 
 	return nil
 }
 
-func wireStore(*gorm.DB) (nwstore.IStore, error) {
+func InitializeStore(*gorm.DB) (nwstore.IStore, error) {
 	wire.Build(nwstore.ProviderSet)
 
 	return nil, nil

@@ -12,7 +12,7 @@ import (
 
 type translator struct{}
 
-func NewContext(ctx context.Context, i *I18n) context.Context {
+func WithContext(ctx context.Context, i *I18n) context.Context {
 	return context.WithValue(ctx, translator{}, i)
 }
 

@@ -15,7 +15,7 @@ import (
 	netutils "k8s.io/utils/net"
 	"k8s.io/utils/ptr"
 
-	controllerutil "github.com/onexstack/onex/pkg/util/controller"
+	controllerutil "github.com/onexstack/onexstack/pkg/util/controller"
 )
 
 // RecommendedDefaultGenericControllerManagerConfiguration defaults a pointer to a

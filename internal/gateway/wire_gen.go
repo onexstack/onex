@@ -7,62 +7,58 @@
 package gateway
 
 import (
-	"github.com/go-kratos/kratos/v2"
 	"github.com/onexstack/onex/internal/gateway/biz"
-	"github.com/onexstack/onex/internal/gateway/server"
-	"github.com/onexstack/onex/internal/gateway/service"
+	"github.com/onexstack/onex/internal/gateway/handler"
+	"github.com/onexstack/onex/internal/gateway/pkg/validation"
 	"github.com/onexstack/onex/internal/gateway/store"
-	"github.com/onexstack/onex/internal/gateway/validation"
-	"github.com/onexstack/onex/internal/pkg/bootstrap"
 	"github.com/onexstack/onex/internal/pkg/client/usercenter"
 	"github.com/onexstack/onex/internal/pkg/idempotent"
-	validation2 "github.com/onexstack/onex/internal/pkg/validation"
-	"github.com/onexstack/onex/pkg/db"
 	"github.com/onexstack/onex/pkg/generated/clientset/versioned"
-	"github.com/onexstack/onex/pkg/options"
+	"github.com/onexstack/onexstack/pkg/db"
+	"github.com/onexstack/onexstack/pkg/server"
+	validation2 "github.com/onexstack/onexstack/pkg/validation"
 )
 
 // Injectors from wire.go:
 
-// wireApp init kratos application.
-func wireApp(arg <-chan struct{}, appInfo bootstrap.AppInfo, config *server.Config, versionedInterface versioned.Interface, mySQLOptions *db.MySQLOptions, redisOptions *db.RedisOptions, userCenterOptions *usercenter.UserCenterOptions, optionsRedisOptions *options.RedisOptions, etcdOptions *options.EtcdOptions) (*kratos.App, func(), error) {
-	logger := bootstrap.NewLogger(appInfo)
-	registrar := bootstrap.NewEtcdRegistrar(etcdOptions)
-	appConfig := bootstrap.AppConfig{
-		Info:      appInfo,
-		Logger:    logger,
-		Registrar: registrar,
-	}
+func InitializeWebServer(arg <-chan struct{}, config *Config, versionedInterface versioned.Interface, mySQLOptions *db.MySQLOptions, redisOptions *db.RedisOptions) (server.Server, error) {
+	etcdOptions := config.EtcdOptions
+	registrar := server.NewEtcdRegistrar(etcdOptions)
+	kratosAppConfig := ProvideKratosAppConfig(registrar)
 	gormDB, err := db.NewMySQL(mySQLOptions)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	datastore := store.NewStore(gormDB)
 	sharedInformerFactory, err := createInformers(arg, versionedInterface)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	bizBiz := biz.NewBiz(datastore, versionedInterface, sharedInformerFactory)
 	client, err := db.NewRedis(redisOptions)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	idempotentIdempotent, err := idempotent.NewIdempotent(client)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
-	gatewayService := service.NewGatewayService(bizBiz, idempotentIdempotent)
+	handlerHandler := handler.NewHandler(bizBiz, idempotentIdempotent)
+	logger := ProvideKratosLogger()
+	userCenterOptions := config.UserCenterOptions
 	impl := usercenter.NewUserCenter(userCenterOptions, etcdOptions)
-	validator, err := validation.New(datastore)
-	if err != nil {
-		return nil, nil, err
-	}
+	validator := validation.New(datastore)
 	validationValidator := validation2.NewValidator(validator)
-	v := server.NewMiddlewares(logger, idempotentIdempotent, impl, validationValidator)
-	httpServer := server.NewHTTPServer(config, gatewayService, v)
-	grpcServer := server.NewGRPCServer(config, gatewayService, v)
-	v2 := server.NewServers(httpServer, grpcServer)
-	app := bootstrap.NewApp(appConfig, v2...)
-	return app, func() {
-	}, nil
+	v := NewMiddlewares(logger, idempotentIdempotent, impl, validationValidator)
+	serverConfig := &ServerConfig{
+		cfg:         config,
+		appConfig:   kratosAppConfig,
+		handler:     handlerHandler,
+		middlewares: v,
+	}
+	serverServer, err := NewWebServer(serverConfig)
+	if err != nil {
+		return nil, err
+	}
+	return serverServer, nil
 }

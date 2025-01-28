@@ -1,12 +1,12 @@
 package jobconditions
 
 import (
-	"github.com/onexstack/onex/internal/nightwatch/dao/model"
-	nwv1 "github.com/onexstack/onex/pkg/api/nightwatch/v1"
+	"github.com/onexstack/onex/internal/nightwatch/model"
+	v1 "github.com/onexstack/onex/pkg/api/nightwatch/v1"
 )
 
 // Get retrieves the JobCondition for a specified condition type from the provided JobConditions.
-func Get(conditions *model.JobConditions, condType string) *nwv1.JobCondition {
+func Get(conditions *model.JobConditions, condType string) *v1.JobCondition {
 	if conditions == nil {
 		return nil
 	}

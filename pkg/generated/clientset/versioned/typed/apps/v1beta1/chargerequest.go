@@ -8,10 +8,10 @@
 package v1beta1
 
 import (
-	"context"
+	context "context"
 
-	v1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
-	appsv1beta1 "github.com/onexstack/onex/pkg/generated/applyconfigurations/apps/v1beta1"
+	appsv1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
+	applyconfigurationsappsv1beta1 "github.com/onexstack/onex/pkg/generated/applyconfigurations/apps/v1beta1"
 	scheme "github.com/onexstack/onex/pkg/generated/clientset/versioned/scheme"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	types "k8s.io/apimachinery/pkg/types"
@@ -27,36 +27,38 @@ type ChargeRequestsGetter interface {
 
 // ChargeRequestInterface has methods to work with ChargeRequest resources.
 type ChargeRequestInterface interface {
-	Create(ctx context.Context, chargeRequest *v1beta1.ChargeRequest, opts v1.CreateOptions) (*v1beta1.ChargeRequest, error)
-	Update(ctx context.Context, chargeRequest *v1beta1.ChargeRequest, opts v1.UpdateOptions) (*v1beta1.ChargeRequest, error)
+	Create(ctx context.Context, chargeRequest *appsv1beta1.ChargeRequest, opts v1.CreateOptions) (*appsv1beta1.ChargeRequest, error)
+	Update(ctx context.Context, chargeRequest *appsv1beta1.ChargeRequest, opts v1.UpdateOptions) (*appsv1beta1.ChargeRequest, error)
 	// Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-	UpdateStatus(ctx context.Context, chargeRequest *v1beta1.ChargeRequest, opts v1.UpdateOptions) (*v1beta1.ChargeRequest, error)
+	UpdateStatus(ctx context.Context, chargeRequest *appsv1beta1.ChargeRequest, opts v1.UpdateOptions) (*appsv1beta1.ChargeRequest, error)
 	Delete(ctx context.Context, name string, opts v1.DeleteOptions) error
 	DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error
-	Get(ctx context.Context, name string, opts v1.GetOptions) (*v1beta1.ChargeRequest, error)
-	List(ctx context.Context, opts v1.ListOptions) (*v1beta1.ChargeRequestList, error)
+	Get(ctx context.Context, name string, opts v1.GetOptions) (*appsv1beta1.ChargeRequest, error)
+	List(ctx context.Context, opts v1.ListOptions) (*appsv1beta1.ChargeRequestList, error)
 	Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error)
-	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.ChargeRequest, err error)
-	Apply(ctx context.Context, chargeRequest *appsv1beta1.ChargeRequestApplyConfiguration, opts v1.ApplyOptions) (result *v1beta1.ChargeRequest, err error)
+	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *appsv1beta1.ChargeRequest, err error)
+	Apply(ctx context.Context, chargeRequest *applyconfigurationsappsv1beta1.ChargeRequestApplyConfiguration, opts v1.ApplyOptions) (result *appsv1beta1.ChargeRequest, err error)
 	// Add a +genclient:noStatus comment above the type to avoid generating ApplyStatus().
-	ApplyStatus(ctx context.Context, chargeRequest *appsv1beta1.ChargeRequestApplyConfiguration, opts v1.ApplyOptions) (result *v1beta1.ChargeRequest, err error)
+	ApplyStatus(ctx context.Context, chargeRequest *applyconfigurationsappsv1beta1.ChargeRequestApplyConfiguration, opts v1.ApplyOptions) (result *appsv1beta1.ChargeRequest, err error)
 	ChargeRequestExpansion
 }
 
 // chargeRequests implements ChargeRequestInterface
 type chargeRequests struct {
-	*gentype.ClientWithListAndApply[*v1beta1.ChargeRequest, *v1beta1.ChargeRequestList, *appsv1beta1.ChargeRequestApplyConfiguration]
+	*gentype.ClientWithListAndApply[*appsv1beta1.ChargeRequest, *appsv1beta1.ChargeRequestList, *applyconfigurationsappsv1beta1.ChargeRequestApplyConfiguration]
 }
 
 // newChargeRequests returns a ChargeRequests
 func newChargeRequests(c *AppsV1beta1Client, namespace string) *chargeRequests {
 	return &chargeRequests{
-		gentype.NewClientWithListAndApply[*v1beta1.ChargeRequest, *v1beta1.ChargeRequestList, *appsv1beta1.ChargeRequestApplyConfiguration](
+		gentype.NewClientWithListAndApply[*appsv1beta1.ChargeRequest, *appsv1beta1.ChargeRequestList, *applyconfigurationsappsv1beta1.ChargeRequestApplyConfiguration](
 			"chargerequests",
 			c.RESTClient(),
 			scheme.ParameterCodec,
 			namespace,
-			func() *v1beta1.ChargeRequest { return &v1beta1.ChargeRequest{} },
-			func() *v1beta1.ChargeRequestList { return &v1beta1.ChargeRequestList{} }),
+			func() *appsv1beta1.ChargeRequest { return &appsv1beta1.ChargeRequest{} },
+			func() *appsv1beta1.ChargeRequestList { return &appsv1beta1.ChargeRequestList{} },
+			gentype.PrefersProtobuf[*appsv1beta1.ChargeRequest](),
+		),
 	}
 }

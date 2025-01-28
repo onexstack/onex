@@ -7,11 +7,12 @@
 package app
 
 import (
+	"fmt"
+
+	"github.com/onexstack/onexstack/pkg/app"
 	genericapiserver "k8s.io/apiserver/pkg/server"
 
 	"github.com/onexstack/onex/cmd/onex-toyblc/app/options"
-	"github.com/onexstack/onex/internal/toyblc"
-	"github.com/onexstack/onex/pkg/app"
 )
 
 // Define the description of the command.
@@ -19,8 +20,10 @@ const commandDesc = `The toy blc is used to start a naive and simple blockchain 
 
 // NewApp creates and returns a new App object with default parameters.
 func NewApp() *app.App {
-	opts := options.NewOptions()
-	application := app.NewApp("onex-toyblc", "Launch a onex toy blockchain node",
+	opts := options.NewServerOptions()
+	application := app.NewApp(
+		"onex-toyblc",
+		"Launch a onex toy blockchain node",
 		app.WithDescription(commandDesc),
 		app.WithOptions(opts),
 		app.WithDefaultValidArgs(),
@@ -30,24 +33,24 @@ func NewApp() *app.App {
 	return application
 }
 
-// Returns the function to run the application.
-func run(opts *options.Options) app.RunFunc {
+// run contains the main logic for initializing and running the server.
+func run(opts *options.ServerOptions) app.RunFunc {
 	return func() error {
+		// Load the configuration options
 		cfg, err := opts.Config()
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to load configuration: %w", err)
 		}
 
-		return Run(cfg, genericapiserver.SetupSignalHandler())
-	}
-}
+		ctx := genericapiserver.SetupSignalContext()
 
-// Run runs the specified APIServer. This should never exit.
-func Run(c *toyblc.Config, stopCh <-chan struct{}) error {
-	server, err := c.Complete().New()
-	if err != nil {
-		return err
-	}
+		// Build the server using the configuration
+		server, err := cfg.NewServer(ctx)
+		if err != nil {
+			return fmt.Errorf("failed to create server: %w", err)
+		}
 
-	return server.Run(stopCh)
+		// Run the server with signal context for graceful shutdown
+		return server.Run(ctx)
+	}
 }

@@ -18,7 +18,7 @@ import (
 
 	cmdutil "github.com/onexstack/onex/internal/onexctl/cmd/util"
 	"github.com/onexstack/onex/internal/onexctl/util/templates"
-	jwtauthn "github.com/onexstack/onex/pkg/authn/jwt"
+	jwtauthn "github.com/onexstack/onexstack/pkg/authn/jwt"
 )
 
 const (

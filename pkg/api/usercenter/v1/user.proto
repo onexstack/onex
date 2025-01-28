@@ -1,0 +1,120 @@
+// This file defines the Protobuf messages for managing Users.
+//
+syntax = "proto3"; // Specifies the syntax version used in this file.
+
+package usercenter.v1;
+
+import "google/protobuf/timestamp.proto"; // Importing Google's timestamp type for date/time fields.
+
+// Specifies the Go package for generated code.
+option go_package = "github.com/onexstack/onex/pkg/api/usercenter/v1;v1";
+
+message LoginReply {
+  string refresh_token = 1;
+  string access_token = 2;
+  string type = 3;
+  int64 expiresAt = 4;
+}
+
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message LogoutRequest {}
+
+message LogoutResponse {}
+
+message RefreshTokenRequest {}
+
+// User represents a user with its metadata.
+message User {
+    string userID = 1;
+    string username = 2;
+    string nickname = 3;
+    string password = 4;
+    string email = 5;
+    string phone = 6;
+    int64 secrets = 7;
+    google.protobuf.Timestamp createdAt = 8;
+    google.protobuf.Timestamp updatedAt = 9;
+}
+
+// CreateUserRequest represents the request message for creating a new user.
+message CreateUserRequest {
+    string username = 1;
+    string nickname = 2;
+    string password = 3;
+    string email = 4;
+    string phone = 5;
+}
+
+// CreateUserResponse represents the response message for a successful user creation.
+message CreateUserResponse {
+    // UserID is the unique identifier of the newly created user.
+    string userID = 1;
+}
+
+// UpdateUserRequest represents the request message for updating an existing user.
+message UpdateUserRequest {
+  string userID = 1;
+
+  optional string username = 2; // 一年只能修改一次
+  optional string nickname = 3;
+  optional string email = 4;
+  optional string phone = 5;
+}
+
+// UpdateUserResponse represents the response message for a successful user update.
+message UpdateUserResponse {
+}
+
+// DeleteUserRequest represents the request message for deleting one or more users.
+message DeleteUserRequest {
+    // @gotags: uri:"userID"
+    string userID = 1;
+}
+
+// DeleteUserResponse represents the response message for a successful user deletion.
+message DeleteUserResponse {
+}
+
+// GetUserRequest represents the request message for retrieving a specific user.
+message GetUserRequest {
+    // @gotags: uri:"userID"
+    string userID = 1;
+}
+
+// GetUserResponse represents the response message for a successful retrieval of a user.
+message GetUserResponse {
+    // User is the retrieved user object.
+    User user = 1;
+}
+
+// ListUserRequest represents the request message for listing users
+// with pagination and optional filters.
+message ListUserRequest {
+    // Offset is the starting point of the list for pagination.
+    // @gotags: form:"offset"
+    int64 offset = 1;
+    // Limit is the maximum number of users to return.
+    // @gotags: form:"limit"
+    int64 limit = 2;
+}
+
+// ListUserResponse represents the response message for listing users.
+message ListUserResponse {
+    // TotalCount is the total number of users matching the query.
+    int64 total = 1;
+    // User is the list of users in the current page.
+    repeated User users = 2;
+}
+
+message UpdatePasswordRequest {
+  string userID = 1;
+  string username = 2;
+  string oldPassword = 3;
+  string newPassword = 4;
+}
+
+message UpdatePasswordResponse {}

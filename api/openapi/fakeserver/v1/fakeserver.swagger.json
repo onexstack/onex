@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "fakeserver/v1/fakeserver.proto",
+    "title": "告诉编译器此文件使用什么版本的语法",
     "version": "version not set"
   },
   "tags": [
@@ -35,14 +35,16 @@
         },
         "parameters": [
           {
-            "name": "limit",
+            "name": "offset",
+            "description": "Offset is the starting point of the list for pagination.\n@gotags: form:\"offset\"",
             "in": "query",
             "required": false,
             "type": "string",
             "format": "int64"
           },
           {
-            "name": "offset",
+            "name": "limit",
+            "description": "Limit is the maximum number of orders to return.\n@gotags: form:\"limit\"\n\nTODO: Add additional query fields if needed.",
             "in": "query",
             "required": false,
             "type": "string",
@@ -53,7 +55,39 @@
           "FakeServer"
         ]
       },
+      "delete": {
+        "operationId": "FakeServer_DeleteOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteOrderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "DeleteOrderRequest represents the request message for deleting one or more orders.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1DeleteOrderRequest"
+            }
+          }
+        ],
+        "tags": [
+          "FakeServer"
+        ]
+      },
       "post": {
+        "summary": "Order-related APIs",
         "operationId": "FakeServer_CreateOrder",
         "responses": {
           "200": {
@@ -72,6 +106,7 @@
         "parameters": [
           {
             "name": "body",
+            "description": "CreateOrderRequest represents the request message for creating a new order.",
             "in": "body",
             "required": true,
             "schema": {
@@ -104,34 +139,7 @@
         "parameters": [
           {
             "name": "orderID",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "FakeServer"
-        ]
-      },
-      "delete": {
-        "operationId": "FakeServer_DeleteOrder",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1DeleteOrderResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "orderID",
+            "description": "OrderID is the unique identifier of the order to retrieve.\n@gotags: uri:\"orderID\"",
             "in": "path",
             "required": true,
             "type": "string"
@@ -160,6 +168,7 @@
         "parameters": [
           {
             "name": "orderID",
+            "description": "OrderID is the unique identifier of the order to update.",
             "in": "path",
             "required": true,
             "type": "string"
@@ -169,19 +178,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "customer": {
-                  "type": "string"
-                },
-                "product": {
-                  "type": "string"
-                },
-                "quantity": {
-                  "type": "string",
-                  "format": "int64"
-                }
-              }
+              "$ref": "#/definitions/FakeServerUpdateOrderBody"
             }
           }
         ],
@@ -192,6 +189,22 @@
     }
   },
   "definitions": {
+    "FakeServerUpdateOrderBody": {
+      "type": "object",
+      "properties": {
+        "customer": {
+          "type": "string"
+        },
+        "product": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "string",
+          "format": "int64"
+        }
+      },
+      "description": "UpdateOrderRequest represents the request message for updating an existing order."
+    },
     "googlerpcStatus": {
       "type": "object",
       "properties": {
@@ -205,6 +218,7 @@
         "details": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
         }
@@ -234,70 +248,101 @@
           "type": "string",
           "format": "int64"
         }
-      }
+      },
+      "description": "CreateOrderRequest represents the request message for creating a new order."
     },
     "v1CreateOrderResponse": {
       "type": "object",
       "properties": {
         "orderID": {
-          "type": "string"
+          "type": "string",
+          "description": "OrderID is the unique identifier of the newly created order.\n\nTODO: Add additional fields to return if needed."
         }
-      }
+      },
+      "description": "CreateOrderResponse represents the response message for a successful order creation."
+    },
+    "v1DeleteOrderRequest": {
+      "type": "object",
+      "properties": {
+        "orderIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "OrderIDs is the list of unique identifiers for the orders to delete.\n\nTODO: Add additional fields if needed."
+        }
+      },
+      "description": "DeleteOrderRequest represents the request message for deleting one or more orders."
     },
     "v1DeleteOrderResponse": {
-      "type": "object"
+      "type": "object",
+      "description": "DeleteOrderResponse represents the response message for a successful order deletion.\n\nTODO: Add additional fields to return if needed."
     },
     "v1GetOrderResponse": {
       "type": "object",
       "properties": {
         "order": {
-          "$ref": "#/definitions/v1Order"
+          "$ref": "#/definitions/v1Order",
+          "description": "Order is the retrieved order object."
         }
-      }
+      },
+      "description": "GetOrderResponse represents the response message for a successful retrieval of a order."
     },
     "v1ListOrderResponse": {
       "type": "object",
       "properties": {
-        "totalCount": {
+        "total": {
           "type": "string",
-          "format": "int64"
+          "format": "int64",
+          "description": "TotalCount is the total number of orders matching the query."
         },
-        "Orders": {
+        "orders": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1Order"
-          }
+          },
+          "description": "Orders is the list of orders in the current page."
         }
-      }
+      },
+      "description": "ListOrderResponse represents the response message for listing orders."
     },
     "v1Order": {
       "type": "object",
       "properties": {
         "orderID": {
-          "type": "string"
-        },
-        "customer": {
-          "type": "string"
-        },
-        "product": {
-          "type": "string"
-        },
-        "quantity": {
           "type": "string",
-          "format": "int64"
+          "description": "OrderID is the unique identifier for the order."
         },
         "createdAt": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "description": "CreatedAt is the timestamp when the order was created."
         },
         "updatedAt": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "description": "UpdatedAt is the timestamp when the order was last updated."
+        },
+        "customer": {
+          "type": "string",
+          "title": "顾客姓名"
+        },
+        "product": {
+          "type": "string",
+          "title": "产品名称"
+        },
+        "quantity": {
+          "type": "string",
+          "format": "int64",
+          "title": "购买数量"
         }
-      }
+      },
+      "description": "Orders represents a order with its metadata."
     },
     "v1UpdateOrderResponse": {
-      "type": "object"
+      "type": "object",
+      "description": "UpdateOrderResponse represents the response message for a successful order update.\n\nTODO: Add additional fields to return if needed."
     }
   }
 }

@@ -18,7 +18,7 @@ import (
 
 	cmdutil "github.com/onexstack/onex/internal/onexctl/cmd/util"
 	"github.com/onexstack/onex/internal/onexctl/util/templates"
-	stringsutil "github.com/onexstack/onex/pkg/util/strings"
+	stringsutil "github.com/onexstack/onexstack/pkg/util/strings"
 )
 
 // ColorOptions is an options struct to support color subcommands.

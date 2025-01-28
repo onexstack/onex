@@ -14,49 +14,48 @@ package gateway
 //go:generate go run github.com/google/wire/cmd/wire
 
 import (
-	"github.com/go-kratos/kratos/v2"
 	"github.com/google/wire"
+	clientset "github.com/onexstack/onex/pkg/generated/clientset/versioned"
+	"github.com/onexstack/onexstack/pkg/db"
+	"github.com/onexstack/onexstack/pkg/server"
+	genericvalidation "github.com/onexstack/onexstack/pkg/validation"
 
 	"github.com/onexstack/onex/internal/gateway/biz"
-	"github.com/onexstack/onex/internal/gateway/server"
-	"github.com/onexstack/onex/internal/gateway/service"
+	"github.com/onexstack/onex/internal/gateway/handler"
+	"github.com/onexstack/onex/internal/gateway/pkg/validation"
 	"github.com/onexstack/onex/internal/gateway/store"
-	customvalidation "github.com/onexstack/onex/internal/gateway/validation"
-	"github.com/onexstack/onex/internal/pkg/bootstrap"
 	"github.com/onexstack/onex/internal/pkg/client/usercenter"
 	"github.com/onexstack/onex/internal/pkg/idempotent"
-	"github.com/onexstack/onex/internal/pkg/validation"
-	"github.com/onexstack/onex/pkg/db"
-	clientset "github.com/onexstack/onex/pkg/generated/clientset/versioned"
-	genericoptions "github.com/onexstack/onex/pkg/options"
+	"github.com/onexstack/onex/internal/pkg/middleware/validate"
 )
 
-// wireApp init kratos application.
-func wireApp(
+func InitializeWebServer(
 	<-chan struct{},
-	bootstrap.AppInfo,
-	*server.Config,
+	*Config,
 	clientset.Interface,
 	*db.MySQLOptions,
 	*db.RedisOptions,
-	*usercenter.UserCenterOptions,
-	*genericoptions.RedisOptions,
-	*genericoptions.EtcdOptions,
-) (*kratos.App, func(), error) {
+) (server.Server, error) {
 	wire.Build(
-		bootstrap.ProviderSet,
-		bootstrap.NewEtcdRegistrar,
-		server.ProviderSet,
+		NewWebServer,
+		NewMiddlewares,
+		ProvideKratosAppConfig,
+		wire.NewSet(server.NewEtcdRegistrar, wire.FieldsOf(new(*Config), "EtcdOptions")),
+		ProvideKratosLogger,
+		handler.ProviderSet,
 		store.ProviderSet,
-		usercenter.ProviderSet,
-		db.ProviderSet,
 		biz.ProviderSet,
-		service.ProviderSet,
-		validation.ProviderSet,
+		wire.NewSet(usercenter.ProviderSet, wire.FieldsOf(new(*Config), "UserCenterOptions")),
+		db.ProviderSet,
 		idempotent.ProviderSet,
-		customvalidation.ProviderSet,
+		wire.NewSet(
+			validation.ProviderSet,
+			genericvalidation.NewValidator,
+			wire.Bind(new(validate.RequestValidator), new(*genericvalidation.Validator)),
+		),
 		createInformers,
+		wire.Struct(new(ServerConfig), "*"), // * 表示注入全部字段
 	)
 
-	return nil, nil, nil
+	return nil, nil
 }

@@ -193,22 +193,22 @@ function onex::util::host_platform() {
 }
 
 # looks for $1 in well-known output locations for the platform ($2)
-# $ONEX_ROOT must be set
+# $PROJ_ROOT_DIR must be set
 function onex::util::find-binary-for-platform() {
   local -r lookfor="$1"
   local -r platform="$2"
   local locations=(
-    "${ONEX_ROOT}/_output/bin/${lookfor}"
-    "${ONEX_ROOT}/_output/dockerized/bin/${platform}/${lookfor}"
-    "${ONEX_ROOT}/_output/local/bin/${platform}/${lookfor}"
-    "${ONEX_ROOT}/platforms/${platform}/${lookfor}"
+    "${PROJ_ROOT_DIR}/_output/bin/${lookfor}"
+    "${PROJ_ROOT_DIR}/_output/dockerized/bin/${platform}/${lookfor}"
+    "${PROJ_ROOT_DIR}/_output/local/bin/${platform}/${lookfor}"
+    "${PROJ_ROOT_DIR}/platforms/${platform}/${lookfor}"
   )
 
   # if we're looking for the host platform, add local non-platform-qualified search paths
   if [[ "${platform}" = "$(onex::util::host_platform)" ]]; then
     locations+=(
-      "${ONEX_ROOT}/_output/local/go/bin/${lookfor}"
-      "${ONEX_ROOT}/_output/dockerized/go/bin/${lookfor}"
+      "${PROJ_ROOT_DIR}/_output/local/go/bin/${lookfor}"
+      "${PROJ_ROOT_DIR}/_output/dockerized/go/bin/${lookfor}"
     );
   fi
 
@@ -230,7 +230,7 @@ function onex::util::find-binary-for-platform() {
 }
 
 # looks for $1 in well-known output locations for the host platform
-# $ONEX_ROOT must be set
+# $PROJ_ROOT_DIR must be set
 function onex::util::find-binary() {
   onex::util::find-binary-for-platform "$1" "$(onex::util::host_platform)"
 }
@@ -243,7 +243,7 @@ function onex::util::find-binary() {
 # * Special handling for groups suffixed with ".k8s.io": foo.k8s.io/v1 -> apis/foo/v1
 # * Very special handling for when both group and version are "": / -> api
 #
-# $ONEX_ROOT must be set.
+# $PROJ_ROOT_DIR must be set.
 # UPDATEME: When add new api group.
 function onex::util::group-version-to-pkg-path() {
   local group_version="$1"
@@ -257,16 +257,16 @@ function onex::util::group-version-to-pkg-path() {
       echo "pkg/apis/core"
       ;;
     #core/v1)
-      #echo "${ONEX_ROOT}/pkg/apis/core/v1"
+      #echo "${PROJ_ROOT_DIR}/pkg/apis/core/v1"
       #;;
     apps/v1beta1)
-      echo "${ONEX_ROOT}/pkg/apis/apps/v1beta1"
+      echo "${PROJ_ROOT_DIR}/pkg/apis/apps/v1beta1"
       ;;
     #coordination/v1)
-      #echo "${ONEX_ROOT}/pkg/apis/coordination/v1"
+      #echo "${PROJ_ROOT_DIR}/pkg/apis/coordination/v1"
       #;;
     #apiextensions/v1)
-      #echo "${ONEX_ROOT}/pkg/apis/apiextensions/v1"
+      #echo "${PROJ_ROOT_DIR}/pkg/apis/apiextensions/v1"
       #;;
     *)
       echo "pkg/apis/${group_version%__internal}"

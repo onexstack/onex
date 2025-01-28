@@ -4,4 +4,4 @@
 // this file is https://github.com/onexstack/onex.
 //
 
-package i18n // import "github.com/onexstack/onex/pkg/i18n"
+package i18n // import "github.com/onexstack/onexstack/pkg/i18n"

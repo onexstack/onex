@@ -4,7 +4,9 @@ import (
 	"context"
 
 	"github.com/gammazero/workerpool"
-	"github.com/google/uuid"
+	"github.com/onexstack/onexstack/pkg/log"
+	"github.com/onexstack/onexstack/pkg/store/where"
+	"github.com/onexstack/onexstack/pkg/watch/registry"
 	"go.uber.org/ratelimit"
 
 	"github.com/onexstack/onex/internal/nightwatch/store"
@@ -12,9 +14,6 @@ import (
 	"github.com/onexstack/onex/internal/pkg/client/minio"
 	"github.com/onexstack/onex/internal/pkg/client/train"
 	known "github.com/onexstack/onex/internal/pkg/known/nightwatch"
-	"github.com/onexstack/onex/pkg/log"
-	"github.com/onexstack/onex/pkg/store/where"
-	"github.com/onexstack/onex/pkg/watch/registry"
 )
 
 // Ensure Watcher implements the registry.Watcher interface.
@@ -52,7 +51,7 @@ func (w *Watcher) Run() {
 		known.LLMTrainTrained,
 	}
 
-	_, jobs, err := w.Store.Jobs().List(context.Background(), where.F(
+	_, jobs, err := w.Store.Job().List(context.Background(), where.F(
 		"scope", known.LLMJobScope,
 		"watcher", known.LLMTrainWatcher,
 		"status", runablePhase,
@@ -65,8 +64,9 @@ func (w *Watcher) Run() {
 
 	wp := workerpool.New(int(w.MaxWorkers))
 	for _, job := range jobs {
-		ctx := log.WithContext(context.Background(), "run_id", uuid.New().String(), "watcher", job.Watcher, "job_id", job.JobID)
-		log.C(ctx).Infow("Start to train llm model")
+		//ctx := log.WithContext(context.Background(), "run_id", uuid.New().String(), "watcher", job.Watcher, "job_id", job.JobID)
+		ctx := context.Background()
+		log.W(ctx).Infow("Start to train llm model")
 
 		wp.Submit(func() {
 			sm := NewStateMachine(job.Status, w, job)

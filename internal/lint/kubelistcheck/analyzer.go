@@ -17,7 +17,7 @@ import (
 	"golang.org/x/tools/go/analysis/passes/inspect"
 	"golang.org/x/tools/go/ast/inspector"
 
-	passutil "github.com/onexstack/onex/pkg/util/lint/pass"
+	passutil "github.com/onexstack/onexstack/pkg/util/lint/pass"
 )
 
 var (

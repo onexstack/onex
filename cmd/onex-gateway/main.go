@@ -4,15 +4,20 @@
 // this file is https://github.com/onexstack/onex.
 //
 
-// gateway is the backend portal of onex.
 package main
 
 import (
+	// Import the automaxprocs package, which automatically configures the GOMAXPROCS
+	// value at program startup to match the Linux container's CPU quota.
+	// This avoids performance issues caused by an inappropriate default GOMAXPROCS
+	// value when running in containers, ensuring that the Go program can fully utilize
+	// available CPU resources and avoid CPU waste.
 	_ "go.uber.org/automaxprocs/maxprocs"
 
 	"github.com/onexstack/onex/cmd/onex-gateway/app"
 )
 
 func main() {
+	// Creating a new instance of the gateway application and running it.
 	app.NewApp().Run()
 }

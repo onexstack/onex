@@ -1,48 +1,57 @@
+// nolint: dupl
 package store
 
 import (
 	"context"
 
-	"github.com/onexstack/onex/internal/nightwatch/dao/model"
-	genericstore "github.com/onexstack/onex/pkg/store"
-	"github.com/onexstack/onex/pkg/store/logger/onex"
-	"github.com/onexstack/onex/pkg/store/where"
+	storelogger "github.com/onexstack/onexstack/pkg/log/logger/store"
+	genericstore "github.com/onexstack/onexstack/pkg/store"
+	"github.com/onexstack/onexstack/pkg/store/where"
+
+	"github.com/onexstack/onex/internal/nightwatch/model"
 )
 
-// CronJobStore defines the interface for managing cron jobs in the database.
+// CronJobStore defines the interface for managing cronjob-related data operations.
 type CronJobStore interface {
-	// Create inserts a new cron job into the database.
-	Create(ctx context.Context, cronJob *model.CronJobM) error
+	// Create inserts a new CronJob record into the store.
+	Create(ctx context.Context, obj *model.CronJobM) error
 
-	// Update modifies an existing cron job in the database.
-	Update(ctx context.Context, cronJob *model.CronJobM) error
+	// Update modifies an existing CronJob record in the store based on the given model.
+	Update(ctx context.Context, obj *model.CronJobM) error
 
-	// Delete removes cron jobs with the specified options.
+	// Delete removes CronJob records that satisfy the given query options.
 	Delete(ctx context.Context, opts *where.Options) error
 
-	// Get retrieves a cron job with the specified options.
+	// Get retrieves a single CronJob record that satisfies the given query options.
 	Get(ctx context.Context, opts *where.Options) (*model.CronJobM, error)
 
-	// List returns a list of cron jobs with the specified options.
+	// List retrieves a list of CronJob records and their total count based on the given query options.
 	List(ctx context.Context, opts *where.Options) (int64, []*model.CronJobM, error)
 
+	// CronJobExpansion is a placeholder for extension methods for cronjobs,
+	// to be implemented by additional interfaces if needed.
 	CronJobExpansion
 }
 
-// CronJobExpansion defines additional methods for cronjob operations.
+// CronJobExpansion is an empty interface provided for extending
+// the CronJobStore interface.
+// Developers can define cronjob-specific additional methods
+// in this interface for future expansion.
 type CronJobExpansion interface{}
 
-// cronJobStore implements the CronJobStore interface.
+// cronJobStore implements the CronJobStore interface and provides
+// default implementations of the methods.
 type cronJobStore struct {
 	*genericstore.Store[model.CronJobM]
 }
 
-// Ensure cronJobStore implements the CronJobStore interface.
+// Ensure that cronJobStore satisfies the CronJobStore interface at compile time.
 var _ CronJobStore = (*cronJobStore)(nil)
 
-// newCronJobStore creates a new instance of cronJobStore with the provided database connection.
-func newCronJobStore(ds *datastore) *cronJobStore {
+// newCronJobStore creates a new cronJobStore instance with the provided
+// datastore and logger.
+func newCronJobStore(store *datastore) *cronJobStore {
 	return &cronJobStore{
-		Store: genericstore.NewStore[model.CronJobM](ds, onex.NewLogger()),
+		Store: genericstore.NewStore[model.CronJobM](store, storelogger.NewLogger()),
 	}
 }

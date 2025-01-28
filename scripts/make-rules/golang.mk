@@ -9,12 +9,12 @@ GO_MINIMUM_VERSION ?= 1.22
 ifeq ($(PRJ_SRC_PATH),)
 	$(error the variable PRJ_SRC_PATH must be set prior to including golang.mk)
 endif
-ifeq ($(ONEX_ROOT),)
-	$(error the variable ONEX_ROOT must be set prior to including golang.mk)
+ifeq ($(PROJ_ROOT_DIR),)
+	$(error the variable PROJ_ROOT_DIR must be set prior to including golang.mk)
 endif
 
 
-VERSION_PACKAGE := github.com/onexstack/onex/pkg/version
+VERSION_PACKAGE := github.com/onexstack/onexstack/pkg/version
 # Check if the tree is dirty.  default to dirty
 GIT_TREE_STATE:="dirty"
 ifeq (, $(shell git status --porcelain 2>/dev/null))
@@ -36,7 +36,7 @@ else
 endif
 
 # Available cpus for compiling, please refer to https://github.com/caicloud/engineering/issues/8186#issuecomment-518656946 for more info
-CPUS := $(shell /bin/bash $(ONEX_ROOT)/scripts/read_cpus_available.sh)
+CPUS := $(shell /bin/bash $(PROJ_ROOT_DIR)/scripts/read_cpus_available.sh)
 
 # Default golang flags used in build and test
 # -p: the number of programs that can be run in parallel
@@ -52,19 +52,19 @@ ifeq ($(origin GOBIN), undefined)
 	GOBIN := $(GOPATH)/bin
 endif
 
-CMD_DIRS := $(wildcard $(ONEX_ROOT)/cmd/*)
+CMD_DIRS := $(wildcard $(PROJ_ROOT_DIR)/cmd/*)
 # Filter out directories without Go files, as these directories cannot be compiled.
 COMMANDS := $(filter-out $(wildcard %.md), $(foreach dir, $(CMD_DIRS), $(if $(wildcard $(dir)/*.go), $(dir),)))
 BINS ?= $(foreach cmd,${COMMANDS},$(notdir ${cmd}))
 
 ifeq (${COMMANDS},)
-  $(error Could not determine COMMANDS, set ONEX_ROOT or run in source dir)
+  $(error Could not determine COMMANDS, set PROJ_ROOT_DIR or run in source dir)
 endif
 ifeq (${BINS},)
-  $(error Could not determine BINS, set ONEX_ROOT or run in source dir)
+  $(error Could not determine BINS, set PROJ_ROOT_DIR or run in source dir)
 endif
 
-EXCLUDE_TESTS=github.com/onexstack/onex/pkg/db,manifests
+EXCLUDE_TESTS=github.com/onexstack/onexstack/pkg/db,manifests
 
 .PHONY: go.build.verify
 go.build.verify: ## Verify supported go versions.
@@ -79,7 +79,7 @@ go.build.%: ## Build specified applications with platform, os and arch.
 	$(eval OS := $(word 1,$(subst _, ,$(PLATFORM))))
 	$(eval ARCH := $(word 2,$(subst _, ,$(PLATFORM))))
 	#@ONEX_GIT_VERSION=$(VERSION) $(SCRIPTS_DIR)/build.sh $(COMMAND) $(PLATFORM)
-	@if grep -q "func main()" $(ONEX_ROOT)/cmd/$(COMMAND)/*.go &>/dev/null; then \
+	@if grep -q "func main()" $(PROJ_ROOT_DIR)/cmd/$(COMMAND)/*.go &>/dev/null; then \
 		echo "===========> Building binary $(COMMAND) $(VERSION) for $(OS) $(ARCH)" ; \
 		CGO_ENABLED=0 GOOS=$(OS) GOARCH=$(ARCH) $(GO) build $(GO_BUILD_FLAGS) \
 		-o $(OUTPUT_DIR)/platforms/$(OS)/$(ARCH)/$(COMMAND)$(GO_OUT_EXT) $(PRJ_SRC_PATH)/cmd/$(COMMAND) ; \

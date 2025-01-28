@@ -8,10 +8,10 @@
 package v1beta1
 
 import (
-	"context"
+	context "context"
 
-	v1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
-	appsv1beta1 "github.com/onexstack/onex/pkg/generated/applyconfigurations/apps/v1beta1"
+	appsv1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
+	applyconfigurationsappsv1beta1 "github.com/onexstack/onex/pkg/generated/applyconfigurations/apps/v1beta1"
 	scheme "github.com/onexstack/onex/pkg/generated/clientset/versioned/scheme"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	types "k8s.io/apimachinery/pkg/types"
@@ -27,36 +27,38 @@ type ChainsGetter interface {
 
 // ChainInterface has methods to work with Chain resources.
 type ChainInterface interface {
-	Create(ctx context.Context, chain *v1beta1.Chain, opts v1.CreateOptions) (*v1beta1.Chain, error)
-	Update(ctx context.Context, chain *v1beta1.Chain, opts v1.UpdateOptions) (*v1beta1.Chain, error)
+	Create(ctx context.Context, chain *appsv1beta1.Chain, opts v1.CreateOptions) (*appsv1beta1.Chain, error)
+	Update(ctx context.Context, chain *appsv1beta1.Chain, opts v1.UpdateOptions) (*appsv1beta1.Chain, error)
 	// Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-	UpdateStatus(ctx context.Context, chain *v1beta1.Chain, opts v1.UpdateOptions) (*v1beta1.Chain, error)
+	UpdateStatus(ctx context.Context, chain *appsv1beta1.Chain, opts v1.UpdateOptions) (*appsv1beta1.Chain, error)
 	Delete(ctx context.Context, name string, opts v1.DeleteOptions) error
 	DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error
-	Get(ctx context.Context, name string, opts v1.GetOptions) (*v1beta1.Chain, error)
-	List(ctx context.Context, opts v1.ListOptions) (*v1beta1.ChainList, error)
+	Get(ctx context.Context, name string, opts v1.GetOptions) (*appsv1beta1.Chain, error)
+	List(ctx context.Context, opts v1.ListOptions) (*appsv1beta1.ChainList, error)
 	Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error)
-	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.Chain, err error)
-	Apply(ctx context.Context, chain *appsv1beta1.ChainApplyConfiguration, opts v1.ApplyOptions) (result *v1beta1.Chain, err error)
+	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *appsv1beta1.Chain, err error)
+	Apply(ctx context.Context, chain *applyconfigurationsappsv1beta1.ChainApplyConfiguration, opts v1.ApplyOptions) (result *appsv1beta1.Chain, err error)
 	// Add a +genclient:noStatus comment above the type to avoid generating ApplyStatus().
-	ApplyStatus(ctx context.Context, chain *appsv1beta1.ChainApplyConfiguration, opts v1.ApplyOptions) (result *v1beta1.Chain, err error)
+	ApplyStatus(ctx context.Context, chain *applyconfigurationsappsv1beta1.ChainApplyConfiguration, opts v1.ApplyOptions) (result *appsv1beta1.Chain, err error)
 	ChainExpansion
 }
 
 // chains implements ChainInterface
 type chains struct {
-	*gentype.ClientWithListAndApply[*v1beta1.Chain, *v1beta1.ChainList, *appsv1beta1.ChainApplyConfiguration]
+	*gentype.ClientWithListAndApply[*appsv1beta1.Chain, *appsv1beta1.ChainList, *applyconfigurationsappsv1beta1.ChainApplyConfiguration]
 }
 
 // newChains returns a Chains
 func newChains(c *AppsV1beta1Client, namespace string) *chains {
 	return &chains{
-		gentype.NewClientWithListAndApply[*v1beta1.Chain, *v1beta1.ChainList, *appsv1beta1.ChainApplyConfiguration](
+		gentype.NewClientWithListAndApply[*appsv1beta1.Chain, *appsv1beta1.ChainList, *applyconfigurationsappsv1beta1.ChainApplyConfiguration](
 			"chains",
 			c.RESTClient(),
 			scheme.ParameterCodec,
 			namespace,
-			func() *v1beta1.Chain { return &v1beta1.Chain{} },
-			func() *v1beta1.ChainList { return &v1beta1.ChainList{} }),
+			func() *appsv1beta1.Chain { return &appsv1beta1.Chain{} },
+			func() *appsv1beta1.ChainList { return &appsv1beta1.ChainList{} },
+			gentype.PrefersProtobuf[*appsv1beta1.Chain](),
+		),
 	}
 }

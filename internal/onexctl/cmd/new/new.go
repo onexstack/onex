@@ -23,7 +23,7 @@ import (
 
 	cmdutil "github.com/onexstack/onex/internal/onexctl/cmd/util"
 	"github.com/onexstack/onex/internal/onexctl/util/templates"
-	fileutil "github.com/onexstack/onex/pkg/util/file"
+	fileutil "github.com/onexstack/onexstack/pkg/util/file"
 )
 
 const (

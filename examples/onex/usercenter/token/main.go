@@ -13,7 +13,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 
-	jwtauthn "github.com/onexstack/onex/pkg/authn/jwt"
+	jwtauthn "github.com/onexstack/onexstack/pkg/authn/jwt"
 )
 
 func main() {

@@ -8,8 +8,8 @@
 package versioned
 
 import (
-	"fmt"
-	"net/http"
+	fmt "fmt"
+	http "net/http"
 
 	apiextensionsv1 "github.com/onexstack/onex/pkg/generated/clientset/versioned/typed/apiextensions/v1"
 	appsv1beta1 "github.com/onexstack/onex/pkg/generated/clientset/versioned/typed/apps/v1beta1"

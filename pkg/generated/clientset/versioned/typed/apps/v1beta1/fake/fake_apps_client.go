@@ -18,19 +18,19 @@ type FakeAppsV1beta1 struct {
 }
 
 func (c *FakeAppsV1beta1) Chains(namespace string) v1beta1.ChainInterface {
-	return &FakeChains{c, namespace}
+	return newFakeChains(c, namespace)
 }
 
 func (c *FakeAppsV1beta1) ChargeRequests(namespace string) v1beta1.ChargeRequestInterface {
-	return &FakeChargeRequests{c, namespace}
+	return newFakeChargeRequests(c, namespace)
 }
 
 func (c *FakeAppsV1beta1) Miners(namespace string) v1beta1.MinerInterface {
-	return &FakeMiners{c, namespace}
+	return newFakeMiners(c, namespace)
 }
 
 func (c *FakeAppsV1beta1) MinerSets(namespace string) v1beta1.MinerSetInterface {
-	return &FakeMinerSets{c, namespace}
+	return newFakeMinerSets(c, namespace)
 }
 
 // RESTClient returns a RESTClient that is used to communicate

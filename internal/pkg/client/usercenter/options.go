@@ -11,7 +11,7 @@ import (
 
 	"github.com/spf13/pflag"
 
-	genericoptions "github.com/onexstack/onex/pkg/options"
+	genericoptions "github.com/onexstack/onexstack/pkg/options"
 )
 
 var _ genericoptions.IOptions = (*UserCenterOptions)(nil)

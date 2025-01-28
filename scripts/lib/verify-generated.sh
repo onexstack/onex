@@ -17,7 +17,7 @@
 # Short-circuit if verify-generated.sh has already been sourced.
 [[ $(type -t onex::verify::generated::loaded) == function ]] && return 0
 
-source "${ONEX_ROOT}/scripts/lib/init.sh"
+source "${PROJ_ROOT_DIR}/scripts/lib/init.sh"
 
 # This function verifies whether generated files are up-to-date. The first two
 # parameters are messages that get printed to stderr when changes are found,

@@ -9,8 +9,8 @@
 
 set -o errexit
 
-ONEX_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
-source "${ONEX_ROOT}/scripts/common.sh"
+PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/..
+source "${PROJ_ROOT_DIR}/scripts/common.sh"
 
 OVERSION=${OVERSION:-$(uplift tag --current --silent)+$(date +'%Y%m%d%H%M%S')}
 COMPONENTS=()
@@ -53,7 +53,7 @@ build_image() {
 
   for comp in "${COMPONENTS[@]}"
   do
-    make -C ${ONEX_ROOT} ${cmd} IMAGES=${comp} VERSION=${OVERSION} MULTISTAGE=0
+    make -C ${PROJ_ROOT_DIR} ${cmd} IMAGES=${comp} VERSION=${OVERSION} MULTISTAGE=0
     [[ "$LOAD" == true ]] && load_docker_image ${comp}
   done
 }
@@ -62,7 +62,7 @@ build_image() {
 build() {
   for comp in "${COMPONENTS[@]}"
   do
-    make -C ${ONEX_ROOT} build BINS=${comp} VERSION=${OVERSION}
+    make -C ${PROJ_ROOT_DIR} build BINS=${comp} VERSION=${OVERSION}
   done
 }
 
@@ -70,7 +70,7 @@ build() {
 deploy() {
   for comp in "${COMPONENTS[@]}"
   do
-    make -C ${ONEX_ROOT} deploy DEPLOYS=${comp} VERSION=${OVERSION}
+    make -C ${PROJ_ROOT_DIR} deploy DEPLOYS=${comp} VERSION=${OVERSION}
     load_docker_image ${comp}
     kubectl rollout restart deployment ${comp}
   done

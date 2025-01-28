@@ -12,7 +12,6 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/google/wire"
 	"k8s.io/klog/v2"
 )
 
@@ -22,7 +21,7 @@ type Validator struct {
 }
 
 // ProviderSet is the validator providers.
-var ProviderSet = wire.NewSet(NewValidator)
+//var ProviderSet = wire.NewSet(NewValidator)
 
 // NewValidator creates and initializes a custom validator.
 func NewValidator(customValidator any) *Validator {

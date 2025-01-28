@@ -22,12 +22,12 @@ if [[ "${TRACE-0}" == "1" ]]; then
     set -o xtrace
 fi
 
-ONEX_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
+PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/..
 
 YQ_BIN=yq
 YQ_PATH=hack/tools/bin/${YQ_BIN}
 
-cd "${ONEX_ROOT}" && make tools.verify.yq
+cd "${PROJ_ROOT_DIR}" && make tools.verify.yq
 
 KEYS=()
 while IFS='' read -r line; do KEYS+=("$line"); done < <(yq e '.aliases["onex-admins"][]' OWNERS_ALIASES)

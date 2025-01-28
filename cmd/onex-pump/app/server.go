@@ -7,14 +7,15 @@
 package app
 
 import (
+	"fmt"
+
+	"github.com/onexstack/onexstack/pkg/app"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	genericapiserver "k8s.io/apiserver/pkg/server"
 	logsapi "k8s.io/component-base/logs/api/v1"
 
 	"github.com/onexstack/onex/cmd/onex-pump/app/options"
 	"github.com/onexstack/onex/internal/pkg/feature"
-	"github.com/onexstack/onex/internal/pump"
-	"github.com/onexstack/onex/pkg/app"
 )
 
 func init() {
@@ -26,10 +27,12 @@ const commandDesc = `Pump is a pluggable analytics purger to move Analytics gene
 Find more onex-pump information at:
     https://github.com/onexstack/onex/blob/master/docs/guide/en-US/cmd/onex-pump.md`
 
-// NewApp creates an App object with default parameters.
+// NewApp creates and returns a new App object with default parameters.
 func NewApp() *app.App {
-	opts := options.NewOptions()
-	application := app.NewApp("onex-pump", "Launch a onex pump server",
+	opts := options.NewServerOptions()
+	application := app.NewApp(
+		"onex-pump",
+		"Launch a onex pump server",
 		app.WithDescription(commandDesc),
 		app.WithOptions(opts),
 		app.WithDefaultValidArgs(),
@@ -43,23 +46,24 @@ func NewApp() *app.App {
 	return application
 }
 
-func run(opts *options.Options) app.RunFunc {
+// run contains the main logic for initializing and running the server.
+func run(opts *options.ServerOptions) app.RunFunc {
 	return func() error {
+		// Load the configuration options
 		cfg, err := opts.Config()
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to load configuration: %w", err)
 		}
 
-		return Run(cfg, genericapiserver.SetupSignalHandler())
-	}
-}
+		ctx := genericapiserver.SetupSignalContext()
 
-// Run runs the specified APIServer. This should never exit.
-func Run(c *pump.Config, stopCh <-chan struct{}) error {
-	server, err := c.Complete().New()
-	if err != nil {
-		return err
-	}
+		// Build the server using the configuration
+		server, err := cfg.NewServer(ctx)
+		if err != nil {
+			return fmt.Errorf("failed to create server: %w", err)
+		}
 
-	return server.PrepareRun().Run(stopCh)
+		// Run the server with signal context for graceful shutdown
+		return server.Run(ctx)
+	}
 }

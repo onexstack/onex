@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/onexstack/onex/internal/pkg/meta"
-	"github.com/onexstack/onex/pkg/db"
+	"github.com/onexstack/onexstack/pkg/db"
 	"gorm.io/gorm"
 )
 
