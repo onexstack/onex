@@ -1,54 +1,57 @@
-// Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
-// Use of this source code is governed by a MIT style
-// license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/onexstack/onex.
-//
-
+// nolint: dupl
 package store
 
 import (
 	"context"
 
+	storelogger "github.com/onexstack/onexstack/pkg/log/logger/store"
+	genericstore "github.com/onexstack/onexstack/pkg/store"
+	"github.com/onexstack/onexstack/pkg/store/where"
+
 	"github.com/onexstack/onex/internal/usercenter/model"
-	genericstore "github.com/onexstack/onex/pkg/store"
-	"github.com/onexstack/onex/pkg/store/logger/onex"
-	"github.com/onexstack/onex/pkg/store/where"
 )
 
-// UserStore defines the interface for managing users in the database.
+// UserStore defines the interface for managing user-related data operations.
 type UserStore interface {
-	// Create inserts a new user into the database.
-	Create(ctx context.Context, user *model.UserM) error
+	// Create inserts a new User record into the store.
+	Create(ctx context.Context, obj *model.UserM) error
 
-	// Update modifies an existing user in the database.
-	Update(ctx context.Context, user *model.UserM) error
+	// Update modifies an existing User record in the store based on the given model.
+	Update(ctx context.Context, obj *model.UserM) error
 
-	// Delete removes users with the specified options.
+	// Delete removes User records that satisfy the given query options.
 	Delete(ctx context.Context, opts *where.Options) error
 
-	// Get retrieves a user with the specified options.
+	// Get retrieves a single User record that satisfies the given query options.
 	Get(ctx context.Context, opts *where.Options) (*model.UserM, error)
 
-	// List returns a list of users with the specified options.
+	// List retrieves a list of User records and their total count based on the given query options.
 	List(ctx context.Context, opts *where.Options) (int64, []*model.UserM, error)
 
+	// UserExpansion is a placeholder for extension methods for users,
+	// to be implemented by additional interfaces if needed.
 	UserExpansion
 }
 
-// UserExpansion defines additional methods for user operations.
+// UserExpansion is an empty interface provided for extending
+// the UserStore interface.
+// Developers can define user-specific additional methods
+// in this interface for future expansion.
 type UserExpansion interface{}
 
-// userStore implements the UserStore interface.
+// userStore implements the UserStore interface and provides
+// default implementations of the methods.
 type userStore struct {
 	*genericstore.Store[model.UserM]
 }
 
-// Ensure userStore implements the UserStore interface.
+// Ensure that userStore satisfies the UserStore interface at compile time.
 var _ UserStore = (*userStore)(nil)
 
-// newUserStore creates a new userStore instance with provided datastore.
-func newUserStore(ds *datastore) *userStore {
+// newUserStore creates a new userStore instance with the provided
+// datastore and logger.
+func newUserStore(store *datastore) *userStore {
 	return &userStore{
-		Store: genericstore.NewStore[model.UserM](ds, onex.NewLogger()),
+		Store: genericstore.NewStore[model.UserM](store, storelogger.NewLogger()),
 	}
 }

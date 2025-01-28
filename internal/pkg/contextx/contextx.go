@@ -25,52 +25,68 @@ type (
 )
 
 type (
-	authKey        struct{}
+	claimsKey      struct{}
 	userKey        struct{}
 	userMKey       struct{}
 	accessTokenKey struct{}
+	traceIDKey     struct{}
 )
 
-// NewContext put auth info into context.
-func NewContext(ctx context.Context, info *jwt.RegisteredClaims) context.Context {
-	return context.WithValue(ctx, authKey{}, info)
+// WithClaims put claims info into context.
+func WithClaims(ctx context.Context, claims *jwt.RegisteredClaims) context.Context {
+	return context.WithValue(ctx, claimsKey{}, claims)
 }
 
-// FromContext extract auth info from context.
-func FromContext(ctx context.Context) (token *jwt.RegisteredClaims, ok bool) {
-	token, ok = ctx.Value(authKey{}).(*jwt.RegisteredClaims)
-	return
+// Claims extract claims info from context.
+func Claims(ctx context.Context) *jwt.RegisteredClaims {
+	claims, _ := ctx.Value(claimsKey{}).(*jwt.RegisteredClaims)
+	return claims
 }
 
-// NewUserID put userID into context.
-func NewUserID(ctx context.Context, userID string) context.Context {
+// WithUserID put userID into context.
+func WithUserID(ctx context.Context, userID string) context.Context {
 	return context.WithValue(ctx, userKey{}, userID)
 }
 
-// FromUserID extract userID from context.
-func FromUserID(ctx context.Context) string {
+// UserID extract userID from context.
+func UserID(ctx context.Context) string {
 	userID, _ := ctx.Value(userKey{}).(string)
 	return userID
 }
 
-// NewAccessToken put accessToken into context.
-func NewAccessToken(ctx context.Context, accessToken string) context.Context {
+// Namespace is an alias for UserID.
+func Namespace(ctx context.Context) string {
+	userID, _ := ctx.Value(userKey{}).(string)
+	return userID
+}
+
+// WithAccessToken put accessToken into context.
+func WithAccessToken(ctx context.Context, accessToken string) context.Context {
 	return context.WithValue(ctx, accessTokenKey{}, accessToken)
 }
 
-// FromAccessToken extract accessToken from context.
-func FromAccessToken(ctx context.Context) string {
+// AccessToken extract accessToken from context.
+func AccessToken(ctx context.Context) string {
 	accessToken, _ := ctx.Value(accessTokenKey{}).(string)
 	return accessToken
 }
 
-// NewUserM put *UserM into context.
-func NewUserM(ctx context.Context, user *model.UserM) context.Context {
+// WithUserM put *UserM into context.
+func WithUserM(ctx context.Context, user *model.UserM) context.Context {
 	return context.WithValue(ctx, userMKey{}, user)
 }
 
-// FromUserM extract *UserM from extract.
-func FromUserM(ctx context.Context) *model.UserM {
+// UserM extract *UserM from extract.
+func UserM(ctx context.Context) *model.UserM {
 	user, _ := ctx.Value(userMKey{}).(*model.UserM)
 	return user
+}
+
+func WithTraceID(ctx context.Context, traceID string) context.Context {
+	return context.WithValue(ctx, traceIDKey{}, traceID)
+}
+
+func TraceID(ctx context.Context) string {
+	traceID, _ := ctx.Value(traceIDKey{}).(string)
+	return traceID
 }

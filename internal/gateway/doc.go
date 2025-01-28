@@ -4,4 +4,4 @@
 // this file is https://github.com/onexstack/onex.
 //
 
-package gateway // import "github.com/onexstack/onex/pkg/gateway"
+package gateway // import "github.com/onexstack/onex/internal/gateway"

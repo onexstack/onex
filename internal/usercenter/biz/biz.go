@@ -1,56 +1,60 @@
-// Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
-// Use of this source code is governed by a MIT style
-// license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/onexstack/onex.
-//
-
 package biz
 
-//go:generate mockgen -self_package github.com/onexstack/onex/internal/usercenter/biz -destination mock_biz.go -package biz github.com/onexstack/onex/internal/usercenter/biz IBiz
+//go:generate mockgen -destination mock_biz.go -package biz onex/internal/usercenter/biz IBiz
 
 import (
 	"github.com/google/wire"
+	"github.com/onexstack/onexstack/pkg/authn"
 
-	"github.com/onexstack/onex/internal/usercenter/auth"
-	authbiz "github.com/onexstack/onex/internal/usercenter/biz/auth"
-	"github.com/onexstack/onex/internal/usercenter/biz/secret"
-	"github.com/onexstack/onex/internal/usercenter/biz/user"
+	authv1 "github.com/onexstack/onex/internal/usercenter/biz/v1/auth"
+	secretv1 "github.com/onexstack/onex/internal/usercenter/biz/v1/secret"
+	userv1 "github.com/onexstack/onex/internal/usercenter/biz/v1/user"
+	"github.com/onexstack/onex/internal/usercenter/pkg/auth"
 	"github.com/onexstack/onex/internal/usercenter/store"
-	"github.com/onexstack/onex/pkg/authn"
 )
 
-// ProviderSet contains providers for creating instances of the biz struct.
+// ProviderSet is a Wire provider set used to declare dependency injection rules.
+// Includes the NewBiz constructor to create a biz instance.
+// wire.Bind binds the IBiz interface to the concrete implementation *biz,
+// so places that depend on IBiz will automatically inject a *biz instance.
 var ProviderSet = wire.NewSet(NewBiz, wire.Bind(new(IBiz), new(*biz)))
 
-// IBiz defines a set of methods for returning interfaces that the biz struct implements.
+// IBiz defines the methods that must be implemented by the business layer.
 type IBiz interface {
-	Secrets() secret.SecretBiz
-	Users() user.UserBiz
-	Auths() authbiz.AuthBiz
+	// UserV1 returns the UserBiz business interface.
+	UserV1() userv1.UserBiz
+	// SecretV1 returns the SecretBiz business interface.
+	SecretV1() secretv1.SecretBiz
+	// AuthV1 returns the AuthBiz business interface.
+	AuthV1() authv1.AuthBiz
 }
 
+// biz is a concrete implementation of IBiz.
 type biz struct {
-	ds    store.IStore
+	store store.IStore
 	authn authn.Authenticator
 	auth  auth.AuthProvider
 }
 
-// NewBiz returns a pointer to a new instance of the biz struct.
-func NewBiz(ds store.IStore, authn authn.Authenticator, auth auth.AuthProvider) *biz {
-	return &biz{ds: ds, authn: authn, auth: auth}
+// Ensure that biz implements the IBiz.
+var _ IBiz = (*biz)(nil)
+
+// NewBiz creates an instance of IBiz.
+func NewBiz(store store.IStore, authn authn.Authenticator, auth auth.AuthProvider) *biz {
+	return &biz{store: store, authn: authn, auth: auth}
 }
 
-// Auths returns a new instance of the AuthBiz interface.
-func (b *biz) Auths() authbiz.AuthBiz {
-	return authbiz.New(b.ds, b.authn, b.auth)
+// UserV1 returns an instance that implements the UserBiz.
+func (b *biz) UserV1() userv1.UserBiz {
+	return userv1.New(b.store)
 }
 
-// Users returns a new instance of the UserBiz interface.
-func (b *biz) Users() user.UserBiz {
-	return user.New(b.ds)
+// SecretV1 returns an instance that implements the SecretBiz.
+func (b *biz) SecretV1() secretv1.SecretBiz {
+	return secretv1.New(b.store)
 }
 
-// Secrets returns a new instance of the SecretBiz interface.
-func (b *biz) Secrets() secret.SecretBiz {
-	return secret.New(b.ds)
+// AuthV1 returns an instance that implements the AuthBiz.
+func (b *biz) AuthV1() authv1.AuthBiz {
+	return authv1.New(b.store, b.authn, b.auth)
 }

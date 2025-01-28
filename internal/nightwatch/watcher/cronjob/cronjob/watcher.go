@@ -6,13 +6,14 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/onexstack/onex/internal/nightwatch/dao/model"
+	"github.com/onexstack/onexstack/pkg/log"
+	"github.com/onexstack/onexstack/pkg/store/where"
+	"github.com/onexstack/onexstack/pkg/watch/manager"
+	"github.com/onexstack/onexstack/pkg/watch/registry"
+
+	"github.com/onexstack/onex/internal/nightwatch/model"
 	"github.com/onexstack/onex/internal/nightwatch/store"
 	known "github.com/onexstack/onex/internal/pkg/known/nightwatch"
-	"github.com/onexstack/onex/pkg/log"
-	"github.com/onexstack/onex/pkg/store/where"
-	"github.com/onexstack/onex/pkg/watch/manager"
-	"github.com/onexstack/onex/pkg/watch/registry"
 )
 
 var _ registry.Watcher = (*Watcher)(nil)
@@ -32,7 +33,7 @@ type saveJob struct {
 }
 
 func (j saveJob) Run() {
-	count, _, err := j.store.Jobs().List(j.ctx, where.F("cronjob_id", j.cronJob.CronJobID))
+	count, _, err := j.store.Job().List(j.ctx, where.F("cronjob_id", j.cronJob.CronJobID))
 	if err != nil {
 		return
 	}
@@ -47,7 +48,7 @@ func (j saveJob) Run() {
 	job.UserID = j.cronJob.UserID
 	job.Scope = j.cronJob.Scope
 	job.Name = fmt.Sprintf("job-for-%s", j.cronJob.Name)
-	if err := j.store.Jobs().Create(j.ctx, job); err != nil {
+	if err := j.store.Job().Create(j.ctx, job); err != nil {
 		log.Errorw(err, "Failed to create job")
 		return
 	}
@@ -56,7 +57,7 @@ func (j saveJob) Run() {
 // Run runs the watcher.
 func (w *Watcher) Run() {
 	ctx := context.Background()
-	_, cronjobs, err := w.store.CronJobs().List(ctx, where.F("suspend", known.JobNonSuspended))
+	_, cronjobs, err := w.store.CronJob().List(ctx, where.F("suspend", known.JobNonSuspended))
 	if err != nil {
 		return
 	}
@@ -65,8 +66,7 @@ func (w *Watcher) Run() {
 
 	for _, cronjob := range cronjobs {
 		jobName := cronJobName(cronjob.CronJobID)
-		ctx = log.WithContext(ctx, "cronjob_id", cronjob.CronJobID)
-
+		//ctx = log.WithContext(ctx, "cronjob_id", cronjob.CronJobID)
 		if cronjob.JobTemplate == nil {
 			continue
 		}

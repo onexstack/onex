@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/onexstack/onex/pkg/log"
+	"github.com/onexstack/onexstack/pkg/log"
 )
 
 func main() {

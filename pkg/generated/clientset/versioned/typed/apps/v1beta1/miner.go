@@ -8,10 +8,10 @@
 package v1beta1
 
 import (
-	"context"
+	context "context"
 
-	v1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
-	appsv1beta1 "github.com/onexstack/onex/pkg/generated/applyconfigurations/apps/v1beta1"
+	appsv1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
+	applyconfigurationsappsv1beta1 "github.com/onexstack/onex/pkg/generated/applyconfigurations/apps/v1beta1"
 	scheme "github.com/onexstack/onex/pkg/generated/clientset/versioned/scheme"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	types "k8s.io/apimachinery/pkg/types"
@@ -27,36 +27,38 @@ type MinersGetter interface {
 
 // MinerInterface has methods to work with Miner resources.
 type MinerInterface interface {
-	Create(ctx context.Context, miner *v1beta1.Miner, opts v1.CreateOptions) (*v1beta1.Miner, error)
-	Update(ctx context.Context, miner *v1beta1.Miner, opts v1.UpdateOptions) (*v1beta1.Miner, error)
+	Create(ctx context.Context, miner *appsv1beta1.Miner, opts v1.CreateOptions) (*appsv1beta1.Miner, error)
+	Update(ctx context.Context, miner *appsv1beta1.Miner, opts v1.UpdateOptions) (*appsv1beta1.Miner, error)
 	// Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-	UpdateStatus(ctx context.Context, miner *v1beta1.Miner, opts v1.UpdateOptions) (*v1beta1.Miner, error)
+	UpdateStatus(ctx context.Context, miner *appsv1beta1.Miner, opts v1.UpdateOptions) (*appsv1beta1.Miner, error)
 	Delete(ctx context.Context, name string, opts v1.DeleteOptions) error
 	DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error
-	Get(ctx context.Context, name string, opts v1.GetOptions) (*v1beta1.Miner, error)
-	List(ctx context.Context, opts v1.ListOptions) (*v1beta1.MinerList, error)
+	Get(ctx context.Context, name string, opts v1.GetOptions) (*appsv1beta1.Miner, error)
+	List(ctx context.Context, opts v1.ListOptions) (*appsv1beta1.MinerList, error)
 	Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error)
-	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.Miner, err error)
-	Apply(ctx context.Context, miner *appsv1beta1.MinerApplyConfiguration, opts v1.ApplyOptions) (result *v1beta1.Miner, err error)
+	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *appsv1beta1.Miner, err error)
+	Apply(ctx context.Context, miner *applyconfigurationsappsv1beta1.MinerApplyConfiguration, opts v1.ApplyOptions) (result *appsv1beta1.Miner, err error)
 	// Add a +genclient:noStatus comment above the type to avoid generating ApplyStatus().
-	ApplyStatus(ctx context.Context, miner *appsv1beta1.MinerApplyConfiguration, opts v1.ApplyOptions) (result *v1beta1.Miner, err error)
+	ApplyStatus(ctx context.Context, miner *applyconfigurationsappsv1beta1.MinerApplyConfiguration, opts v1.ApplyOptions) (result *appsv1beta1.Miner, err error)
 	MinerExpansion
 }
 
 // miners implements MinerInterface
 type miners struct {
-	*gentype.ClientWithListAndApply[*v1beta1.Miner, *v1beta1.MinerList, *appsv1beta1.MinerApplyConfiguration]
+	*gentype.ClientWithListAndApply[*appsv1beta1.Miner, *appsv1beta1.MinerList, *applyconfigurationsappsv1beta1.MinerApplyConfiguration]
 }
 
 // newMiners returns a Miners
 func newMiners(c *AppsV1beta1Client, namespace string) *miners {
 	return &miners{
-		gentype.NewClientWithListAndApply[*v1beta1.Miner, *v1beta1.MinerList, *appsv1beta1.MinerApplyConfiguration](
+		gentype.NewClientWithListAndApply[*appsv1beta1.Miner, *appsv1beta1.MinerList, *applyconfigurationsappsv1beta1.MinerApplyConfiguration](
 			"miners",
 			c.RESTClient(),
 			scheme.ParameterCodec,
 			namespace,
-			func() *v1beta1.Miner { return &v1beta1.Miner{} },
-			func() *v1beta1.MinerList { return &v1beta1.MinerList{} }),
+			func() *appsv1beta1.Miner { return &appsv1beta1.Miner{} },
+			func() *appsv1beta1.MinerList { return &appsv1beta1.MinerList{} },
+			gentype.PrefersProtobuf[*appsv1beta1.Miner](),
+		),
 	}
 }

@@ -1,0 +1,92 @@
+// This file defines the Protobuf messages for managing MinerSets.
+//
+syntax = "proto3"; // Specifies the syntax version used in this file.
+
+package gateway.v1;
+
+import "google/protobuf/timestamp.proto"; // Importing Google's timestamp type for date/time fields.
+
+// Specifies the Go package for generated code.
+option go_package = "github.com/onexstack/onex/pkg/api/gateway/v1;v1";
+
+message MinerTemplate {
+    string minerType = 1;
+    string chainName = 2;
+    string dataDir = 3;
+}
+
+// MinerSet represents a minerset with its metadata.
+message MinerSet {
+    string name = 1;
+    int32 replicas = 2;
+    string displayName  = 3;
+    string deletePolicy = 4;
+    MinerTemplate MinerTemplate = 5;
+    google.protobuf.Timestamp createdAt = 6;
+    google.protobuf.Timestamp updatedAt = 7;
+}
+
+// CreateMinerSetRequest represents the request message for creating a new minerset.
+message CreateMinerSetRequest {
+    int32 replicas = 1;
+    string displayName  = 2;
+    string deletePolicy = 3;
+    MinerTemplate MinerTemplate = 4;
+}
+
+// UpdateMinerSetRequest represents the request message for updating an existing minerset.
+message UpdateMinerSetRequest {
+    string name = 1;
+    optional string displayName  = 2;
+    optional string deletePolicy = 3;
+}
+
+// DeleteMinerSetRequest represents the request message for deleting one or more minersets.
+message DeleteMinerSetRequest {
+    string name = 1;
+}
+
+// DeleteMinerSetResponse represents the response message for a successful minerset deletion.
+message DeleteMinerSetResponse {
+}
+
+// GetMinerSetRequest represents the request message for retrieving a specific minerset.
+message GetMinerSetRequest {
+    // name is the unique identifier of the minerset to retrieve.
+    // @gotags: uri:"name"
+    string name = 1;
+}
+
+// GetMinerSetResponse represents the response message for a successful retrieval of a minerset.
+message GetMinerSetResponse {
+    // MinerSet is the retrieved minerset object.
+    MinerSet minerSet = 1;
+}
+
+// ListMinerSetRequest represents the request message for listing minersets
+// with pagination and optional filters.
+message ListMinerSetRequest {
+    // Offset is the starting point of the list for pagination.
+    // @gotags: form:"offset"
+    int64 offset = 1;
+    // Limit is the maximum number of minersets to return.
+    // @gotags: form:"limit"
+    int64 limit = 2;
+}
+
+// ListMinerSetResponse represents the response message for listing minersets.
+message ListMinerSetResponse {
+    // TotalCount is the total number of minersets matching the query.
+    int64 total = 1;
+    // MinerSet is the list of minersets in the current page.
+    repeated MinerSet minerSets = 2;
+}
+
+message ScaleMinerSetRequest {
+  string name = 1;
+  int32 replicas = 2;
+}
+
+message ScaleMinerSetResponse {
+}
+

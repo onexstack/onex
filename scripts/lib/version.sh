@@ -53,7 +53,7 @@ onex::version::get_version_vars() {
     fi
   fi
 
-  local git=(git --work-tree "${ONEX_ROOT}")
+  local git=(git --work-tree "${PROJ_ROOT_DIR}")
 
   if [[ -n ${ONEX_GIT_COMMIT-} ]] || ONEX_GIT_COMMIT=$("${git[@]}" rev-parse "HEAD^{commit}" 2>/dev/null); then
     if [[ -z ${ONEX_GIT_TREE_STATE-} ]]; then

@@ -24,7 +24,7 @@ import (
 	"github.com/onexstack/onex/internal/gateway/store"
 	"github.com/onexstack/onex/internal/pkg/known"
 	"github.com/onexstack/onex/pkg/apis/apps/v1beta1"
-	"github.com/onexstack/onex/pkg/store/where"
+	"github.com/onexstack/onexstack/pkg/store/where"
 )
 
 const minerControllerName = "controller-manager.minerSync"

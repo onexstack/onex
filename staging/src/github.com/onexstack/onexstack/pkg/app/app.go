@@ -7,7 +7,7 @@
 package app
 
 import (
-	"fmt"
+	"context"
 	"os"
 	"runtime"
 	"strings"
@@ -49,6 +49,8 @@ type App struct {
 	// watching and re-reading config files
 	// +optional
 	watch bool
+
+	contextExtractors map[string]func(context.Context) string
 }
 
 // RunFunc defines the application's startup callback function.
@@ -130,15 +132,7 @@ func WithValidArgs(args cobra.PositionalArgs) Option {
 // WithDefaultValidArgs set default validation function to valid non-flag arguments.
 func WithDefaultValidArgs() Option {
 	return func(app *App) {
-		app.args = func(cmd *cobra.Command, args []string) error {
-			for _, arg := range args {
-				if len(arg) > 0 {
-					return fmt.Errorf("%q does not take any arguments, got %q", cmd.CommandPath(), args)
-				}
-			}
-
-			return nil
-		}
+		app.args = cobra.NoArgs
 	}
 }
 
@@ -146,6 +140,12 @@ func WithDefaultValidArgs() Option {
 func WithWatchConfig() Option {
 	return func(app *App) {
 		app.watch = true
+	}
+}
+
+func WithLoggerContextExtractor(contextExtractors map[string]func(context.Context) string) Option {
+	return func(app *App) {
+		app.contextExtractors = contextExtractors
 	}
 }
 
@@ -235,7 +235,7 @@ func (app *App) Run() {
 
 func (app *App) runCommand(cmd *cobra.Command, args []string) error {
 	// display application version information
-	version.PrintAndExitIfRequested(app.name)
+	version.PrintAndExitIfRequested()
 
 	if err := viper.BindPFlags(cmd.Flags()); err != nil {
 		return err
@@ -246,9 +246,10 @@ func (app *App) runCommand(cmd *cobra.Command, args []string) error {
 			return err
 		}
 
-		// set default options
-		if err := app.options.Complete(); err != nil {
-			return err
+		if complete, ok := app.options.(interface{ Complete() error }); ok {
+			if err := complete.Complete(); err != nil {
+				return err
+			}
 		}
 
 		// validate options
@@ -257,9 +258,7 @@ func (app *App) runCommand(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	// 初始化日志
-	log.Init(logOptions())
-	defer log.Sync() // Sync 将缓存中的日志刷新到磁盘文件中
+	app.initializeLogger()
 
 	if !app.silence {
 		log.Infow("Starting application", "name", app.name, "version", version.Get().ToJSON())
@@ -297,21 +296,27 @@ func formatBaseName(name string) string {
 	return name
 }
 
-// logOptions 从 viper 中读取日志配置，构建 `*log.Options` 并返回.
-// 注意：`viper.Get<Type>()` 中 key 的名字需要使用 `.` 分割，以跟 YAML 中保持相同的缩进.
-func logOptions() *log.Options {
-	return &log.Options{
-		DisableCaller:     viper.GetBool("log.disable-caller"),
-		DisableStacktrace: viper.GetBool("log.disable-stacktrace"),
-		Level:             viper.GetString("log.level"),
-		Format:            viper.GetString("log.format"),
-		EnableColor:       viper.GetBool("log.enable-color"),
-		OutputPaths:       viper.GetStringSlice("log.output-paths"),
-	}
-}
+// initializeLogger sets up the logging system based on the configuration.
+func (app *App) initializeLogger() {
+	logOptions := log.NewOptions()
 
-func init() {
-	viper.SetDefault("log.level", "info")
-	viper.SetDefault("log.format", "console")
-	viper.SetDefault("log.output-paths", []string{"stdout"})
+	// Configure logging options from viper
+	if viper.IsSet("log.disable-caller") {
+		logOptions.DisableCaller = viper.GetBool("log.disable-caller")
+	}
+	if viper.IsSet("log.disable-stacktrace") {
+		logOptions.DisableStacktrace = viper.GetBool("log.disable-stacktrace")
+	}
+	if viper.IsSet("log.level") {
+		logOptions.Level = viper.GetString("log.level")
+	}
+	if viper.IsSet("log.format") {
+		logOptions.Format = viper.GetString("log.format")
+	}
+	if viper.IsSet("log.output-paths") {
+		logOptions.OutputPaths = viper.GetStringSlice("log.output-paths")
+	}
+
+	// Initialize logging with custom context extractors
+	log.Init(logOptions, log.WithContextExtractor(app.contextExtractors))
 }

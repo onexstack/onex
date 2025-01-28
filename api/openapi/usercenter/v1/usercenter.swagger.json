@@ -156,8 +156,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/definitions/v1LogoutResponse"
             }
           },
           "default": {
@@ -235,14 +234,16 @@
         },
         "parameters": [
           {
-            "name": "limit",
+            "name": "offset",
+            "description": "Offset is the starting point of the list for pagination.\n@gotags: form:\"offset\"",
             "in": "query",
             "required": false,
             "type": "string",
             "format": "int64"
           },
           {
-            "name": "offset",
+            "name": "limit",
+            "description": "Limit is the maximum number of secrets to return.\n@gotags: form:\"limit\"\n\nTODO: Add additional query fields if needed.",
             "in": "query",
             "required": false,
             "type": "string",
@@ -260,7 +261,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1SecretReply"
+              "$ref": "#/definitions/v1CreateSecretResponse"
             }
           },
           "default": {
@@ -273,6 +274,7 @@
         "parameters": [
           {
             "name": "body",
+            "description": "CreateSecretRequest represents the request message for creating a new secret.",
             "in": "body",
             "required": true,
             "schema": {
@@ -293,7 +295,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1SecretReply"
+              "$ref": "#/definitions/usercenterv1GetSecretResponse"
             }
           },
           "default": {
@@ -306,6 +308,7 @@
         "parameters": [
           {
             "name": "name",
+            "description": "SecretID is the unique identifier of the secret to retrieve.\n@gotags: uri:\"name\"",
             "in": "path",
             "required": true,
             "type": "string"
@@ -322,8 +325,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/definitions/v1DeleteSecretResponse"
             }
           },
           "default": {
@@ -336,6 +338,7 @@
         "parameters": [
           {
             "name": "name",
+            "description": "@gotags: uri:\"name\"",
             "in": "path",
             "required": true,
             "type": "string"
@@ -352,8 +355,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/definitions/v1UpdateSecretResponse"
             }
           },
           "default": {
@@ -366,6 +368,7 @@
         "parameters": [
           {
             "name": "name",
+            "description": "@gotags: uri:\"name\"",
             "in": "path",
             "required": true,
             "type": "string"
@@ -375,20 +378,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "expires": {
-                  "type": "string",
-                  "format": "int64"
-                },
-                "status": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "description": {
-                  "type": "string"
-                }
-              }
+              "$ref": "#/definitions/UserCenterUpdateSecretBody"
             }
           }
         ],
@@ -417,14 +407,16 @@
         },
         "parameters": [
           {
-            "name": "limit",
+            "name": "offset",
+            "description": "Offset is the starting point of the list for pagination.\n@gotags: form:\"offset\"",
             "in": "query",
             "required": false,
             "type": "string",
             "format": "int64"
           },
           {
-            "name": "offset",
+            "name": "limit",
+            "description": "Limit is the maximum number of users to return.\n@gotags: form:\"limit\"",
             "in": "query",
             "required": false,
             "type": "string",
@@ -436,13 +428,12 @@
         ]
       },
       "post": {
-        "summary": "CreateUser",
         "operationId": "UserCenter_CreateUser",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1UserReply"
+              "$ref": "#/definitions/v1CreateUserResponse"
             }
           },
           "default": {
@@ -455,6 +446,7 @@
         "parameters": [
           {
             "name": "body",
+            "description": "CreateUserRequest represents the request message for creating a new user.",
             "in": "body",
             "required": true,
             "schema": {
@@ -467,15 +459,14 @@
         ]
       }
     },
-    "/v1/users/{username}": {
+    "/v1/users/{userID}": {
       "get": {
-        "summary": "GetUser",
         "operationId": "UserCenter_GetUser",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1UserReply"
+              "$ref": "#/definitions/v1GetUserResponse"
             }
           },
           "default": {
@@ -487,7 +478,8 @@
         },
         "parameters": [
           {
-            "name": "username",
+            "name": "userID",
+            "description": "@gotags: uri:\"userID\"",
             "in": "path",
             "required": true,
             "type": "string"
@@ -504,8 +496,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/definitions/v1DeleteUserResponse"
             }
           },
           "default": {
@@ -517,7 +508,8 @@
         },
         "parameters": [
           {
-            "name": "username",
+            "name": "userID",
+            "description": "@gotags: uri:\"userID\"",
             "in": "path",
             "required": true,
             "type": "string"
@@ -528,14 +520,12 @@
         ]
       },
       "put": {
-        "summary": "UpdateUser",
         "operationId": "UserCenter_UpdateUser",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/definitions/v1UpdateUserResponse"
             }
           },
           "default": {
@@ -547,7 +537,7 @@
         },
         "parameters": [
           {
-            "name": "username",
+            "name": "userID",
             "in": "path",
             "required": true,
             "type": "string"
@@ -557,18 +547,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "nickname": {
-                  "type": "string"
-                },
-                "email": {
-                  "type": "string"
-                },
-                "phone": {
-                  "type": "string"
-                }
-              }
+              "$ref": "#/definitions/UserCenterUpdateUserBody"
             }
           }
         ],
@@ -577,7 +556,7 @@
         ]
       }
     },
-    "/v1/users/{username}/update-password": {
+    "/v1/users/{userID}/update-password": {
       "put": {
         "summary": "UpdatePassword",
         "operationId": "UserCenter_UpdatePassword",
@@ -585,8 +564,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/definitions/v1UpdatePasswordResponse"
             }
           },
           "default": {
@@ -598,7 +576,7 @@
         },
         "parameters": [
           {
-            "name": "username",
+            "name": "userID",
             "in": "path",
             "required": true,
             "type": "string"
@@ -608,15 +586,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "oldPassword": {
-                  "type": "string"
-                },
-                "newPassword": {
-                  "type": "string"
-                }
-              }
+              "$ref": "#/definitions/UserCenterUpdatePasswordBody"
             }
           }
         ],
@@ -627,6 +597,56 @@
     }
   },
   "definitions": {
+    "UserCenterUpdatePasswordBody": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "oldPassword": {
+          "type": "string"
+        },
+        "newPassword": {
+          "type": "string"
+        }
+      }
+    },
+    "UserCenterUpdateSecretBody": {
+      "type": "object",
+      "properties": {
+        "expires": {
+          "type": "string",
+          "format": "int64"
+        },
+        "status": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "description": "UpdateSecretRequest represents the request message for updating an existing secret."
+    },
+    "UserCenterUpdateUserBody": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "title": "一年只能修改一次"
+        },
+        "nickname": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        }
+      },
+      "description": "UpdateUserRequest represents the request message for updating an existing user."
+    },
     "googlerpcStatus": {
       "type": "object",
       "properties": {
@@ -640,6 +660,7 @@
         "details": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
         }
@@ -655,6 +676,53 @@
       },
       "additionalProperties": {},
       "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(\u0026foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n\nExample 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\nExample 4: Pack and unpack a message in Go\n\n     foo := \u0026pb.Foo{...}\n     any, err := anypb.New(foo)\n     if err != nil {\n       ...\n     }\n     ...\n     foo := \u0026pb.Foo{}\n     if err := any.UnmarshalTo(foo); err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\n\nJSON\n\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": \u003cstring\u003e,\n      \"lastName\": \u003cstring\u003e\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }"
+    },
+    "usercenterv1GetSecretResponse": {
+      "type": "object",
+      "properties": {
+        "secret": {
+          "$ref": "#/definitions/usercenterv1Secret",
+          "description": "Secret is the retrieved secret object."
+        }
+      },
+      "description": "GetSecretResponse represents the response message for a successful retrieval of a secret."
+    },
+    "usercenterv1Secret": {
+      "type": "object",
+      "properties": {
+        "userID": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "secretID": {
+          "type": "string"
+        },
+        "secretKey": {
+          "type": "string"
+        },
+        "expires": {
+          "type": "string",
+          "format": "int64"
+        },
+        "status": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "description": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "description": "Secret represents a secret with its metadata."
     },
     "v1AuthRequest": {
       "type": "object",
@@ -732,7 +800,18 @@
         "description": {
           "type": "string"
         }
-      }
+      },
+      "description": "CreateSecretRequest represents the request message for creating a new secret."
+    },
+    "v1CreateSecretResponse": {
+      "type": "object",
+      "properties": {
+        "secretID": {
+          "type": "string",
+          "description": "SecretID is the unique identifier of the newly created secret.\n\nTODO: Add additional fields to return if needed."
+        }
+      },
+      "description": "CreateSecretResponse represents the response message for a successful secret creation."
     },
     "v1CreateUserRequest": {
       "type": "object",
@@ -752,37 +831,74 @@
         "phone": {
           "type": "string"
         }
-      }
+      },
+      "description": "CreateUserRequest represents the request message for creating a new user."
+    },
+    "v1CreateUserResponse": {
+      "type": "object",
+      "properties": {
+        "userID": {
+          "type": "string",
+          "description": "UserID is the unique identifier of the newly created user."
+        }
+      },
+      "description": "CreateUserResponse represents the response message for a successful user creation."
+    },
+    "v1DeleteSecretResponse": {
+      "type": "object",
+      "description": "DeleteSecretResponse represents the response message for a successful secret deletion.\n\nTODO: Add additional fields to return if needed."
+    },
+    "v1DeleteUserResponse": {
+      "type": "object",
+      "description": "DeleteUserResponse represents the response message for a successful user deletion."
+    },
+    "v1GetUserResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/v1User",
+          "description": "User is the retrieved user object."
+        }
+      },
+      "description": "GetUserResponse represents the response message for a successful retrieval of a user."
     },
     "v1ListSecretResponse": {
       "type": "object",
       "properties": {
-        "totalCount": {
+        "total": {
           "type": "string",
-          "format": "int64"
+          "format": "int64",
+          "description": "TotalCount is the total number of secrets matching the query."
         },
-        "Secrets": {
+        "secrets": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/v1SecretReply"
-          }
+            "type": "object",
+            "$ref": "#/definitions/usercenterv1Secret"
+          },
+          "description": "Secret is the list of secrets in the current page."
         }
-      }
+      },
+      "description": "ListSecretResponse represents the response message for listing secrets."
     },
     "v1ListUserResponse": {
       "type": "object",
       "properties": {
-        "totalCount": {
+        "total": {
           "type": "string",
-          "format": "int64"
+          "format": "int64",
+          "description": "TotalCount is the total number of users matching the query."
         },
-        "Users": {
+        "users": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/v1UserReply"
-          }
+            "type": "object",
+            "$ref": "#/definitions/v1User"
+          },
+          "description": "User is the list of users in the current page."
         }
-      }
+      },
+      "description": "ListUserResponse represents the response message for listing users."
     },
     "v1LoginReply": {
       "type": "object",
@@ -816,46 +932,24 @@
     "v1LogoutRequest": {
       "type": "object"
     },
+    "v1LogoutResponse": {
+      "type": "object"
+    },
     "v1RefreshTokenRequest": {
       "type": "object"
     },
-    "v1SecretReply": {
-      "type": "object",
-      "properties": {
-        "userID": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "secretID": {
-          "type": "string"
-        },
-        "secretKey": {
-          "type": "string"
-        },
-        "expires": {
-          "type": "string",
-          "format": "int64"
-        },
-        "status": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "description": {
-          "type": "string"
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
+    "v1UpdatePasswordResponse": {
+      "type": "object"
     },
-    "v1UserReply": {
+    "v1UpdateSecretResponse": {
+      "type": "object",
+      "description": "UpdateSecretResponse represents the response message for a successful secret update."
+    },
+    "v1UpdateUserResponse": {
+      "type": "object",
+      "description": "UpdateUserResponse represents the response message for a successful user update."
+    },
+    "v1User": {
       "type": "object",
       "properties": {
         "userID": {
@@ -888,7 +982,8 @@
           "type": "string",
           "format": "date-time"
         }
-      }
+      },
+      "description": "User represents a user with its metadata."
     }
   }
 }

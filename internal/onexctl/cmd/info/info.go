@@ -18,7 +18,7 @@ import (
 
 	cmdutil "github.com/onexstack/onex/internal/onexctl/cmd/util"
 	"github.com/onexstack/onex/internal/onexctl/util/templates"
-	iputil "github.com/onexstack/onex/pkg/util/ip"
+	iputil "github.com/onexstack/onexstack/pkg/util/ip"
 )
 
 // Info defines the host information struct.

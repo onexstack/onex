@@ -22,10 +22,11 @@ set -o pipefail
 [[ $(type -t onex::protoc::loaded) == function ]] && return 0
 
 # The root of the build/dist directory
-ONEX_ROOT=$(dirname "${BASH_SOURCE[0]}")/../..
-source "${ONEX_ROOT}/scripts/lib/init.sh"
+PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/../..
+source "${PROJ_ROOT_DIR}/scripts/lib/init.sh"
 
-PROTOC_VERSION=23.4
+#PROTOC_VERSION=23.4
+PROTOC_VERSION=29.3
 
 # Generates $1/api.pb.go from the protobuf file $1/api.proto
 # and formats it correctly
@@ -68,8 +69,8 @@ function onex::protoc::protoc() {
     # this works best for all inputs.
     PATH="${gogopath}:${PATH}" protoc \
       --proto_path="$(pwd -P)" \
-      --proto_path="${ONEX_ROOT}/vendor" \
-      --proto_path="${ONEX_ROOT}/third_party/protobuf" \
+      --proto_path="${PROJ_ROOT_DIR}/vendor" \
+      --proto_path="${PROJ_ROOT_DIR}/third_party/protobuf" \
       --gogo_out=paths=source_relative,plugins=grpc:. \
       api.proto
   )

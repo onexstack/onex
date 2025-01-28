@@ -5,13 +5,13 @@ import (
 	"time"
 
 	"github.com/looplab/fsm"
+	"github.com/onexstack/onexstack/pkg/log"
+	"github.com/onexstack/onexstack/pkg/store/where"
 
 	"github.com/onexstack/onex/internal/pkg/client/store"
-	known "github.com/onexstack/onex/internal/pkg/known/usercenter"
 	"github.com/onexstack/onex/internal/pkg/contextx"
+	known "github.com/onexstack/onex/internal/pkg/known/usercenter"
 	"github.com/onexstack/onex/internal/usercenter/model"
-	"github.com/onexstack/onex/pkg/log"
-	"github.com/onexstack/onex/pkg/store/where"
 )
 
 const (
@@ -21,7 +21,7 @@ const (
 // NewActiveUserCallback creates a callback function for the "active user" event in a finite state machine (FSM).
 func NewActiveUserCallback(store store.Interface) fsm.Callback {
 	return func(ctx context.Context, event *fsm.Event) {
-		userM := contextx.FromUserM(ctx)
+		userM := contextx.UserM(ctx)
 		log.Infow("Now active user", "event", event.Event, "username", userM.Username)
 
 		// Active secrets if needed.
@@ -37,7 +37,7 @@ func NewActiveUserCallback(store store.Interface) fsm.Callback {
 // NewDisableUserCallback creates a callback function for the "disable user" event in a finite state machine (FSM).
 func NewDisableUserCallback(store store.Interface) fsm.Callback {
 	return func(ctx context.Context, event *fsm.Event) {
-		userM := contextx.FromUserM(ctx)
+		userM := contextx.UserM(ctx)
 		log.Infow("Now disable user", "event", event.Event, "username", userM.Username)
 
 		// Disable secrets if needed.
@@ -53,7 +53,7 @@ func NewDisableUserCallback(store store.Interface) fsm.Callback {
 // NewDeleteUserCallback creates a callback function for the "delete user" event in a finite state machine (FSM).
 func NewDeleteUserCallback(store store.Interface) fsm.Callback {
 	return func(ctx context.Context, event *fsm.Event) {
-		userM := contextx.FromUserM(ctx)
+		userM := contextx.UserM(ctx)
 		log.Infow("Now delete user if needed", "event", event.Event, "username", userM.Username)
 
 		// If a user remains in an disalbed state for more than 5 years,
@@ -79,7 +79,7 @@ func NewDeleteUserCallback(store store.Interface) fsm.Callback {
 func NewUserEventAfterEvent(store store.Interface) fsm.Callback {
 	return func(ctx context.Context, event *fsm.Event) {
 		alarmStatus := "success"
-		userM := contextx.FromUserM(ctx)
+		userM := contextx.UserM(ctx)
 
 		defer func() {
 			log.Infow("This is a fake alarm message", "status", alarmStatus, "username", userM.Username)
@@ -92,9 +92,9 @@ func NewUserEventAfterEvent(store store.Interface) fsm.Callback {
 			return
 		}
 
-		user := contextx.FromUserM(ctx)
+		user := contextx.UserM(ctx)
 		user.Status = event.FSM.Current()
-		if err := store.UserCenter().Users().Update(ctx, user); err != nil {
+		if err := store.UserCenter().User().Update(ctx, user); err != nil {
 			log.Errorw(err, "Failed to update status into database", "event", event.Event)
 			event.Err = err
 			return
@@ -111,7 +111,7 @@ func activeSecret(ctx context.Context, store store.Interface, secret *model.Secr
 		return nil
 	}
 	secret.Status = known.SecretStatusNormal
-	return store.UserCenter().Secrets().Update(ctx, secret)
+	return store.UserCenter().Secret().Update(ctx, secret)
 }
 
 // disableSecret used to disable user secret.
@@ -123,13 +123,13 @@ func disableSecret(ctx context.Context, store store.Interface, secret *model.Sec
 		return nil
 	}
 	secret.Status = known.SecretStatusDisabled
-	return store.UserCenter().Secrets().Update(ctx, secret)
+	return store.UserCenter().Secret().Update(ctx, secret)
 }
 
 // deleteSecret used to delete user secret.
 func deleteSecret(ctx context.Context, store store.Interface, secret *model.SecretM) error {
 	log.Infow("Now delete user secret", "userID", secret.UserID, "secretID", secret.SecretID)
-	return store.UserCenter().Secrets().Delete(ctx, where.F("user_id", secret.UserID, "name", secret.Name))
+	return store.UserCenter().Secret().Delete(ctx, where.F("user_id", secret.UserID, "name", secret.Name))
 }
 
 // iterateSecrets iterates through the secrets of a user specified by userID
@@ -141,7 +141,7 @@ func iterateSecrets(
 	action func(ctx context.Context, store store.Interface, secret *model.SecretM) error,
 ) error {
 	// Retrieve the list of secrets for the specified user.
-	_, secrets, err := store.UserCenter().Secrets().List(ctx, where.F("user_id", userID))
+	_, secrets, err := store.UserCenter().Secret().List(ctx, where.F("user_id", userID))
 	if err != nil {
 		return err
 	}

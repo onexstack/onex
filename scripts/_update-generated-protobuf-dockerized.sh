@@ -23,9 +23,9 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-ONEX_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
-source "${ONEX_ROOT}/scripts/lib/init.sh"
-source "${ONEX_ROOT}/scripts/lib/protoc.sh"
+PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/..
+source "${PROJ_ROOT_DIR}/scripts/lib/init.sh"
+source "${PROJ_ROOT_DIR}/scripts/lib/protoc.sh"
 
 onex::protoc::check_protoc
 onex::golang::setup_env
@@ -42,11 +42,11 @@ fi
 # searches for the protoc-gen-gogo extension in the output directory
 # satisfies import of github.com/gogo/protobuf/gogoproto/gogo.proto and the
 # core Google protobuf types
-PATH="${ONEX_ROOT}/_output/bin:${PATH}" \
+PATH="${PROJ_ROOT_DIR}/_output/bin:${PATH}" \
   go-to-protobuf \
   -v "${KUBE_VERBOSE}" \
-  --go-header-file "${ONEX_ROOT}/scripts/boilerplate/boilerplate.generatego.txt" \
-  --proto-import="${ONEX_ROOT}/third_party/protobuf" \
+  --go-header-file "${PROJ_ROOT_DIR}/scripts/boilerplate/boilerplate.generatego.txt" \
+  --proto-import="${PROJ_ROOT_DIR}/third_party/protobuf" \
   --proto-import="${GOPATH}/src" \
   --output-dir="${GOPATH}/src" \
   --apimachinery-packages '-k8s.io/apimachinery/pkg/util/intstr,-k8s.io/apimachinery/pkg/api/resource,-k8s.io/apimachinery/pkg/runtime/schema,-k8s.io/apimachinery/pkg/runtime,-k8s.io/apimachinery/pkg/apis/meta/v1,-k8s.io/apimachinery/pkg/apis/meta/v1beta1,-k8s.io/apimachinery/pkg/apis/testapigroup/v1' \

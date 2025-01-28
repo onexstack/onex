@@ -240,6 +240,14 @@ _install.grpcurl:
 _install.logcheck:
 	@$(GO) install sigs.k8s.io/logtools/logcheck@$(LOGCHECK_VERSION)
 
-.PHONY: _install.protoc-go-inject-tag
-_install.protoc-go-inject-tag:
-	@$(GO) install github.com/favadi/protoc-go-inject-tag@latest
+.PHONY: _install.protoc-gen-deepcopy
+_install.protoc-gen-deepcopy:
+	@$(GO) install github.com/protobuf-tools/protoc-gen-deepcopy@latest
+
+.PHONY: _install.protoc-gen-go-json
+_install.protoc-gen-go-json:
+	@$(GO) install github.com/mfridman/protoc-gen-go-json@latest
+
+.PHONY: _install.go-mod-upgrade
+_install.go-mod-upgrade:
+	@$(GO) install github.com/oligot/go-mod-upgrade@latest

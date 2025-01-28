@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-ONEX_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
-fixDir="${ONEX_ROOT}/pkg/generated/clientset/versioned/typed/core/v1"
+PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/..
+fixDir="${PROJ_ROOT_DIR}/pkg/generated/clientset/versioned/typed/core/v1"
 
 function replace_generated_expansion() {
   cat << 'EOF' > $1

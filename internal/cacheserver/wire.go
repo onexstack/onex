@@ -14,27 +14,23 @@ package cacheserver
 import (
 	"github.com/golang/protobuf/ptypes/any"
 	"github.com/google/wire"
+	"github.com/onexstack/onexstack/pkg/db"
+	"github.com/onexstack/onexstack/pkg/server"
 
 	"github.com/onexstack/onex/internal/cacheserver/biz"
-	"github.com/onexstack/onex/internal/cacheserver/service"
+	"github.com/onexstack/onex/internal/cacheserver/handler"
 	"github.com/onexstack/onex/internal/cacheserver/store"
-	v1 "github.com/onexstack/onex/pkg/api/cacheserver/v1"
 	"github.com/onexstack/onex/pkg/cache"
-	"github.com/onexstack/onex/pkg/db"
-	// genericoptions "github.com/onexstack/onex/pkg/options"
 )
 
-func wireServer(
-	*db.MySQLOptions,
-	cache.Cache[*any.Any],
-	bool,
-) (v1.CacheServerServer, error) {
+func InitializeWebServer(*Config, *db.MySQLOptions, cache.Cache[*any.Any], bool) (server.Server, error) {
 	wire.Build(
+		NewWebServer,
 		db.ProviderSet,
 		store.ProviderSet,
 		biz.ProviderSet,
-		service.ProviderSet,
+		handler.ProviderSet,
+		wire.Struct(new(ServerConfig), "*"),
 	)
-
 	return nil, nil
 }

@@ -65,8 +65,8 @@ EOF
 前置操作：                                    
 
 ``bash
-$ export ONEX_ROOT=$GOPATH/src/github.com/onexstack/onex
-$ cd ${ONEX_ROOT}
+$ export PROJ_ROOT_DIR=$GOPATH/src/github.com/onexstack/onex
+$ cd ${PROJ_ROOT_DIR}
 `
 
 组件安装：

@@ -51,13 +51,13 @@ func HandleRequest[T any, R any](c *gin.Context, binder Binder, handler Handler[
 
 	// 绑定和验证请求数据
 	if err := ReadRequest(c, &request, binder, validators...); err != nil {
-		WriteResponse(c, nil, err)
+		WriteResponse(c, err, nil)
 		return
 	}
 
 	// 调用实际的业务逻辑处理函数
 	response, err := handler(c.Request.Context(), &request)
-	WriteResponse(c, response, err)
+	WriteResponse(c, err, response)
 }
 
 // ShouldBindJSON 使用 JSON 格式的绑定函数绑定请求参数并执行验证。
@@ -105,7 +105,7 @@ func ReadRequest[T any](c *gin.Context, rq *T, binder Binder, validators ...Vali
 
 // WriteResponse 是通用的响应函数.
 // 它会根据是否发生错误，生成成功响应或标准化的错误响应.
-func WriteResponse(c *gin.Context, data any, err error) {
+func WriteResponse(c *gin.Context, err error, data any) {
 	if err != nil {
 		// 如果发生错误，生成错误响应
 		errx := errorsx.FromError(err) // 提取错误详细信息

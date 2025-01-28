@@ -6,7 +6,7 @@ import (
 	"sync"
 
 	"github.com/gammazero/workerpool"
-	"github.com/onexstack/onex/pkg/log"
+	"github.com/onexstack/onexstack/pkg/log"
 	"go.uber.org/ratelimit"
 )
 
@@ -68,7 +68,7 @@ func NewEmbedder(typed Embedder, opts ...Option) *onexEmbedder {
 // Embedding performs embedding on a slice of inputs and returns a slice of results.
 func (emb *onexEmbedder) Embedding(ctx context.Context, inputs []any) ([]string, error) {
 	if len(inputs) == 0 {
-		log.C(ctx).Errorw(nil, "Failed to embedding empty inputs")
+		log.W(ctx).Errorw(nil, "Failed to embedding empty inputs")
 		return nil, fmt.Errorf("failed to embedding empty inputs")
 	}
 
@@ -81,7 +81,7 @@ func (emb *onexEmbedder) Embedding(ctx context.Context, inputs []any) ([]string,
 		wp.Submit(func() {
 			ret := emb.embedder.Embedding(ctx, inputs[i])
 			if ret == "" {
-				log.C(ctx).Warnw("Received empty embedding data, ignoring")
+				log.W(ctx).Warnw("Received empty embedding data, ignoring")
 				return
 			}
 
@@ -93,6 +93,6 @@ func (emb *onexEmbedder) Embedding(ctx context.Context, inputs []any) ([]string,
 
 	wp.StopWait() // Wait for all workers to finish
 
-	log.C(ctx).Infow("Successfully completed embedding", "count", len(retList))
+	log.W(ctx).Infow("Successfully completed embedding", "count", len(retList))
 	return retList, nil
 }

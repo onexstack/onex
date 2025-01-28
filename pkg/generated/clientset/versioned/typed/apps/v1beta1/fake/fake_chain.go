@@ -8,179 +8,31 @@
 package fake
 
 import (
-	"context"
-	json "encoding/json"
-	"fmt"
-
 	v1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
 	appsv1beta1 "github.com/onexstack/onex/pkg/generated/applyconfigurations/apps/v1beta1"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	labels "k8s.io/apimachinery/pkg/labels"
-	types "k8s.io/apimachinery/pkg/types"
-	watch "k8s.io/apimachinery/pkg/watch"
-	testing "k8s.io/client-go/testing"
+	typedappsv1beta1 "github.com/onexstack/onex/pkg/generated/clientset/versioned/typed/apps/v1beta1"
+	gentype "k8s.io/client-go/gentype"
 )
 
-// FakeChains implements ChainInterface
-type FakeChains struct {
+// fakeChains implements ChainInterface
+type fakeChains struct {
+	*gentype.FakeClientWithListAndApply[*v1beta1.Chain, *v1beta1.ChainList, *appsv1beta1.ChainApplyConfiguration]
 	Fake *FakeAppsV1beta1
-	ns   string
 }
 
-var chainsResource = v1beta1.SchemeGroupVersion.WithResource("chains")
-
-var chainsKind = v1beta1.SchemeGroupVersion.WithKind("Chain")
-
-// Get takes name of the chain, and returns the corresponding chain object, and an error if there is any.
-func (c *FakeChains) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1beta1.Chain, err error) {
-	emptyResult := &v1beta1.Chain{}
-	obj, err := c.Fake.
-		Invokes(testing.NewGetActionWithOptions(chainsResource, c.ns, name, options), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
+func newFakeChains(fake *FakeAppsV1beta1, namespace string) typedappsv1beta1.ChainInterface {
+	return &fakeChains{
+		gentype.NewFakeClientWithListAndApply[*v1beta1.Chain, *v1beta1.ChainList, *appsv1beta1.ChainApplyConfiguration](
+			fake.Fake,
+			namespace,
+			v1beta1.SchemeGroupVersion.WithResource("chains"),
+			v1beta1.SchemeGroupVersion.WithKind("Chain"),
+			func() *v1beta1.Chain { return &v1beta1.Chain{} },
+			func() *v1beta1.ChainList { return &v1beta1.ChainList{} },
+			func(dst, src *v1beta1.ChainList) { dst.ListMeta = src.ListMeta },
+			func(list *v1beta1.ChainList) []*v1beta1.Chain { return gentype.ToPointerSlice(list.Items) },
+			func(list *v1beta1.ChainList, items []*v1beta1.Chain) { list.Items = gentype.FromPointerSlice(items) },
+		),
+		fake,
 	}
-	return obj.(*v1beta1.Chain), err
-}
-
-// List takes label and field selectors, and returns the list of Chains that match those selectors.
-func (c *FakeChains) List(ctx context.Context, opts v1.ListOptions) (result *v1beta1.ChainList, err error) {
-	emptyResult := &v1beta1.ChainList{}
-	obj, err := c.Fake.
-		Invokes(testing.NewListActionWithOptions(chainsResource, chainsKind, c.ns, opts), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
-	}
-
-	label, _, _ := testing.ExtractFromListOptions(opts)
-	if label == nil {
-		label = labels.Everything()
-	}
-	list := &v1beta1.ChainList{ListMeta: obj.(*v1beta1.ChainList).ListMeta}
-	for _, item := range obj.(*v1beta1.ChainList).Items {
-		if label.Matches(labels.Set(item.Labels)) {
-			list.Items = append(list.Items, item)
-		}
-	}
-	return list, err
-}
-
-// Watch returns a watch.Interface that watches the requested chains.
-func (c *FakeChains) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
-	return c.Fake.
-		InvokesWatch(testing.NewWatchActionWithOptions(chainsResource, c.ns, opts))
-
-}
-
-// Create takes the representation of a chain and creates it.  Returns the server's representation of the chain, and an error, if there is any.
-func (c *FakeChains) Create(ctx context.Context, chain *v1beta1.Chain, opts v1.CreateOptions) (result *v1beta1.Chain, err error) {
-	emptyResult := &v1beta1.Chain{}
-	obj, err := c.Fake.
-		Invokes(testing.NewCreateActionWithOptions(chainsResource, c.ns, chain, opts), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
-	}
-	return obj.(*v1beta1.Chain), err
-}
-
-// Update takes the representation of a chain and updates it. Returns the server's representation of the chain, and an error, if there is any.
-func (c *FakeChains) Update(ctx context.Context, chain *v1beta1.Chain, opts v1.UpdateOptions) (result *v1beta1.Chain, err error) {
-	emptyResult := &v1beta1.Chain{}
-	obj, err := c.Fake.
-		Invokes(testing.NewUpdateActionWithOptions(chainsResource, c.ns, chain, opts), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
-	}
-	return obj.(*v1beta1.Chain), err
-}
-
-// UpdateStatus was generated because the type contains a Status member.
-// Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-func (c *FakeChains) UpdateStatus(ctx context.Context, chain *v1beta1.Chain, opts v1.UpdateOptions) (result *v1beta1.Chain, err error) {
-	emptyResult := &v1beta1.Chain{}
-	obj, err := c.Fake.
-		Invokes(testing.NewUpdateSubresourceActionWithOptions(chainsResource, "status", c.ns, chain, opts), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
-	}
-	return obj.(*v1beta1.Chain), err
-}
-
-// Delete takes name of the chain and deletes it. Returns an error if one occurs.
-func (c *FakeChains) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
-	_, err := c.Fake.
-		Invokes(testing.NewDeleteActionWithOptions(chainsResource, c.ns, name, opts), &v1beta1.Chain{})
-
-	return err
-}
-
-// DeleteCollection deletes a collection of objects.
-func (c *FakeChains) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewDeleteCollectionActionWithOptions(chainsResource, c.ns, opts, listOpts)
-
-	_, err := c.Fake.Invokes(action, &v1beta1.ChainList{})
-	return err
-}
-
-// Patch applies the patch and returns the patched chain.
-func (c *FakeChains) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.Chain, err error) {
-	emptyResult := &v1beta1.Chain{}
-	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceActionWithOptions(chainsResource, c.ns, name, pt, data, opts, subresources...), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
-	}
-	return obj.(*v1beta1.Chain), err
-}
-
-// Apply takes the given apply declarative configuration, applies it and returns the applied chain.
-func (c *FakeChains) Apply(ctx context.Context, chain *appsv1beta1.ChainApplyConfiguration, opts v1.ApplyOptions) (result *v1beta1.Chain, err error) {
-	if chain == nil {
-		return nil, fmt.Errorf("chain provided to Apply must not be nil")
-	}
-	data, err := json.Marshal(chain)
-	if err != nil {
-		return nil, err
-	}
-	name := chain.Name
-	if name == nil {
-		return nil, fmt.Errorf("chain.Name must be provided to Apply")
-	}
-	emptyResult := &v1beta1.Chain{}
-	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceActionWithOptions(chainsResource, c.ns, *name, types.ApplyPatchType, data, opts.ToPatchOptions()), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
-	}
-	return obj.(*v1beta1.Chain), err
-}
-
-// ApplyStatus was generated because the type contains a Status member.
-// Add a +genclient:noStatus comment above the type to avoid generating ApplyStatus().
-func (c *FakeChains) ApplyStatus(ctx context.Context, chain *appsv1beta1.ChainApplyConfiguration, opts v1.ApplyOptions) (result *v1beta1.Chain, err error) {
-	if chain == nil {
-		return nil, fmt.Errorf("chain provided to Apply must not be nil")
-	}
-	data, err := json.Marshal(chain)
-	if err != nil {
-		return nil, err
-	}
-	name := chain.Name
-	if name == nil {
-		return nil, fmt.Errorf("chain.Name must be provided to Apply")
-	}
-	emptyResult := &v1beta1.Chain{}
-	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceActionWithOptions(chainsResource, c.ns, *name, types.ApplyPatchType, data, opts.ToPatchOptions(), "status"), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
-	}
-	return obj.(*v1beta1.Chain), err
 }

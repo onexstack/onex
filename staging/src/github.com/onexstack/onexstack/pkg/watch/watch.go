@@ -1,42 +1,38 @@
 package watch
 
 import (
-	"database/sql"
 	"errors"
 	"fmt"
 	"net/http"
-	//"os"
 	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/robfig/cron/v3"
+	"gorm.io/gorm"
+	"k8s.io/apimachinery/pkg/util/wait"
 
-	"code.byted.org/ies/hiagents/pkg/distlock"
-	stringsutil "code.byted.org/ies/hiagents/pkg/util/strings"
-	"code.byted.org/ies/hiagents/pkg/watch/initializer"
-	"code.byted.org/ies/hiagents/pkg/watch/logger/empty"
-	"code.byted.org/ies/hiagents/pkg/watch/manager"
-	"code.byted.org/ies/hiagents/pkg/watch/registry"
+	"github.com/onexstack/onexstack/pkg/distlock"
+	stringsutil "github.com/onexstack/onexstack/pkg/util/strings"
+	"github.com/onexstack/onexstack/pkg/watch/initializer"
+	"github.com/onexstack/onexstack/pkg/watch/logger/empty"
+	"github.com/onexstack/onexstack/pkg/watch/manager"
+	"github.com/onexstack/onexstack/pkg/watch/registry"
 )
 
 var (
-	// Default name for the distributed lock.
-	defaultLockName = "watch-lock"
 	// Timeout duration for stopping jobs.
 	jobStopTimeout = 3 * time.Minute
-	// Time extension for lock expiration.
-	//extendExpiration = 5 * time.Second
 	// Default expiration time for locks.
-	//defaultExpiration = 10 * extendExpiration
+	defaultExpiration = 10 * time.Second
 )
 
 // Option configures a Watch instance with customizable settings.
-type Option func(nw *Watch)
+type Option func(w *Watch)
 
 // Watch represents a monitoring system that schedules and runs tasks at specified intervals.
 type Watch struct {
 	// Used to implement dist lock.
-	db *sql.DB
+	db *gorm.DB
 	// Job manager to handle scheduling and execution of jobs.
 	jm *manager.JobManager
 	// Maximum number of concurrent workers for each watcher.
@@ -46,7 +42,7 @@ type Watch struct {
 	// Distributed lock name to be used across instances.
 	lockName string
 	// Distributed lock instance.
-	locker *distlock.Lock
+	locker distlock.Locker
 	// healthzPort is the port number for the health check endpoint.
 	healthzPort int
 	// List of watcher names that should be disabled.
@@ -60,39 +56,26 @@ type Watch struct {
 // WithInitialize returns an Option function that sets the provided WatcherInitializer
 // function to initialize the Watch during its creation.
 func WithInitialize(initialize initializer.WatcherInitializer) Option {
-	return func(nw *Watch) {
-		nw.externalInitializer = initialize
-	}
-}
-
-// WithHealthz is an option function that sets the health check port for the Watch instance.
-func WithHealthz(port int) Option {
-	return func(nw *Watch) {
-		nw.healthzPort = port
+	return func(w *Watch) {
+		w.externalInitializer = initialize
 	}
 }
 
 // WithLogger returns an Option function that sets the provided Logger to the Watch for logging purposes.
 func WithLogger(logger Logger) Option {
-	return func(nw *Watch) {
-		nw.logger = logger
-	}
-}
-
-// WithLockName returns an Option function that sets the provided lockName to the Watch.
-func WithLockName(lockName string) Option {
-	return func(nw *Watch) {
-		nw.lockName = lockName
+	return func(w *Watch) {
+		w.logger = logger
 	}
 }
 
 // NewWatch creates a new Watch monitoring system with the provided options.
-func NewWatch(opts *Options, db *sql.DB, withOptions ...Option) (*Watch, error) {
+func NewWatch(opts *Options, db *gorm.DB, withOptions ...Option) (*Watch, error) {
 	logger := empty.NewLogger()
 
 	// Create a new Watch with default settings.
-	nw := &Watch{
-		lockName:        defaultLockName,
+	w := &Watch{
+		lockName:        opts.LockName,
+		healthzPort:     opts.HealthzPort,
 		logger:          logger,
 		disableWatchers: opts.DisableWatchers,
 		db:              db,
@@ -101,37 +84,37 @@ func NewWatch(opts *Options, db *sql.DB, withOptions ...Option) (*Watch, error) 
 
 	// Apply user-defined options to the Watch.
 	for _, opt := range withOptions {
-		opt(nw)
+		opt(w)
 	}
 
 	runner := cron.New(
 		cron.WithSeconds(),
-		cron.WithLogger(nw.logger),
-		cron.WithChain(cron.DelayIfStillRunning(nw.logger), cron.Recover(nw.logger)),
+		cron.WithLogger(w.logger),
+		cron.WithChain(cron.DelayIfStillRunning(w.logger), cron.Recover(w.logger)),
 	)
 
 	// Initialize the job manager and the watcher initializer.
-	nw.jm = manager.NewJobManager(manager.WithCron(runner))
-	nw.initializer = initializer.NewInitializer(nw.jm, nw.maxWorkers)
+	w.jm = manager.NewJobManager(manager.WithCron(runner))
+	w.initializer = initializer.NewInitializer(w.jm, w.maxWorkers)
 
-	if err := nw.addWatchers(); err != nil {
+	if err := w.addWatchers(); err != nil {
 		return nil, err
 	}
 
-	return nw, nil
+	return w, nil
 }
 
 // addWatchers initializes all registered watchers and adds them as Cron jobs.
 // It skips the watchers that are specified in the disableWatchers slice.
-func (nw *Watch) addWatchers() error {
+func (w *Watch) addWatchers() error {
 	for jobName, watcher := range registry.ListWatchers() {
-		if stringsutil.StringIn(jobName, nw.disableWatchers) {
+		if stringsutil.StringIn(jobName, w.disableWatchers) {
 			continue
 		}
 
-		nw.initializer.Initialize(watcher)
-		if nw.externalInitializer != nil {
-			nw.externalInitializer.Initialize(watcher)
+		w.initializer.Initialize(watcher)
+		if w.externalInitializer != nil {
+			w.externalInitializer.Initialize(watcher)
 		}
 
 		spec := registry.Every3Seconds
@@ -139,8 +122,8 @@ func (nw *Watch) addWatchers() error {
 			spec = obj.Spec()
 		}
 
-		if _, err := nw.jm.AddJob(jobName, spec, watcher); err != nil {
-			nw.logger.Error(err, "Failed to add job to the cron", "watcher", jobName)
+		if _, err := w.jm.AddJob(jobName, spec, watcher); err != nil {
+			w.logger.Error(err, "Failed to add job to the cron", "watcher", jobName)
 			return err
 		}
 	}
@@ -150,61 +133,64 @@ func (nw *Watch) addWatchers() error {
 
 // Start attempts to acquire a distributed lock and starts the Cron job scheduler.
 // It retries acquiring the lock until successful.
-func (nw *Watch) Start(stopCh <-chan struct{}) {
-	if nw.healthzPort != 0 {
-		go nw.serveHealthz()
+func (w *Watch) Start(stopCh <-chan struct{}) {
+	if w.healthzPort != 0 {
+		go w.serveHealthz()
 	}
 
-	/*
-		locker := distlock.NewMySQLLocker(nw.db, distlock.WithRefreshInterval(extendExpiration))
-		ticker := time.NewTicker(defaultExpiration + (5 * time.Second))
-		var err error
-		for {
-			// Obtain a lock for our given mutex. After this is successful, no one else
-			// can obtain the same lock (the same mutex name) until we unlock it.
-			nw.locker, err = locker.ObtainTimeout(nw.lockName, 5)
-			if err == nil {
-				nw.logger.Debug("Successfully acquired lock", "lockName", nw.lockName)
-				break
-			}
-			nw.logger.Debug("Failed to acquire lock.", "lockName", nw.lockName, "err", err)
-			<-ticker.C
+	opts := []distlock.Option{
+		distlock.WithLockTimeout(defaultExpiration),
+		distlock.WithLockName(w.lockName),
+	}
+	w.locker, _ = distlock.NewGORMLocker(w.db, opts...)
+	ticker := time.NewTicker(defaultExpiration + (5 * time.Second))
+	ctx := wait.ContextForChannel(stopCh)
+	var err error
+	for {
+		// Obtain a lock for our given mutex. After this is successful, no one else
+		// can obtain the same lock (the same mutex name) until we unlock it.
+		if err := w.locker.Lock(ctx); err == nil {
+			w.logger.Debug("Successfully acquired lock", "lockName", w.lockName)
+			break
 		}
-	*/
 
-	nw.jm.Start()
+		w.logger.Debug("Failed to acquire lock.", "lockName", w.lockName, "err", err)
+		<-ticker.C
+	}
 
-	nw.logger.Info("Successfully started watch server")
+	w.jm.Start()
+
+	w.logger.Info("Successfully started watch server")
 }
 
 // Stop blocks until all jobs are completed and releases the distributed lock.
-func (nw *Watch) Stop() {
-	ctx := nw.jm.Stop()
+func (w *Watch) Stop() {
+	ctx := w.jm.Stop()
 	select {
 	case <-ctx.Done():
 	case <-time.After(jobStopTimeout):
-		nw.logger.Error(errors.New("context was not done immediately"), "timeout", jobStopTimeout.String())
+		w.logger.Error(errors.New("context was not done immediately"), "timeout", jobStopTimeout.String())
 	}
 
-	if err := nw.locker.Release(); err != nil {
-		nw.logger.Debug("Failed to release lock", "err", err)
+	if err := w.locker.Unlock(ctx); err != nil {
+		w.logger.Debug("Failed to release lock", "err", err)
 	}
 
-	nw.logger.Info("Successfully stopped watch server")
+	w.logger.Info("Successfully stopped watch server")
 }
 
 // serveHealthz starts the health check server for the Watch instance.
-func (nw *Watch) serveHealthz() {
+func (w *Watch) serveHealthz() {
 	r := mux.NewRouter()
 	r.HandleFunc("/healthz", healthzHandler).Methods(http.MethodGet)
 
-	address := fmt.Sprintf("0.0.0.0:%d", nw.healthzPort)
+	address := fmt.Sprintf("0.0.0.0:%d", w.healthzPort)
 
 	if err := http.ListenAndServe(address, r); err != nil {
-		nw.logger.Error(err, "Error serving health check endpoint")
+		w.logger.Error(err, "Error serving health check endpoint")
 	}
 
-	nw.logger.Info("Successfully started health check server", "address", address)
+	w.logger.Info("Successfully started health check server", "address", address)
 }
 
 // healthzHandler handles the health check requests for the service.

@@ -3,7 +3,7 @@ package llmtrain
 import (
 	"github.com/looplab/fsm"
 
-	"github.com/onexstack/onex/internal/nightwatch/dao/model"
+	"github.com/onexstack/onex/internal/nightwatch/model"
 	known "github.com/onexstack/onex/internal/pkg/known/nightwatch"
 	fsmutil "github.com/onexstack/onex/internal/pkg/util/fsm"
 )

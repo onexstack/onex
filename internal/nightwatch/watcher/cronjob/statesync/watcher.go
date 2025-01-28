@@ -5,13 +5,12 @@ import (
 	"context"
 
 	"github.com/gammazero/workerpool"
+	"github.com/onexstack/onexstack/pkg/store/where"
+	"github.com/onexstack/onexstack/pkg/watch/registry"
 
-	"github.com/onexstack/onex/internal/nightwatch/dao/model"
+	"github.com/onexstack/onex/internal/nightwatch/model"
 	"github.com/onexstack/onex/internal/nightwatch/store"
 	known "github.com/onexstack/onex/internal/pkg/known/nightwatch"
-	"github.com/onexstack/onex/pkg/log"
-	"github.com/onexstack/onex/pkg/store/where"
-	"github.com/onexstack/onex/pkg/watch/registry"
 )
 
 var _ registry.Watcher = (*Watcher)(nil)
@@ -27,7 +26,7 @@ func (w *Watcher) Run() {
 	ctx := context.Background()
 
 	// Query active cron jobs that are not suspended
-	_, cronjobs, err := w.store.CronJobs().List(ctx, where.F("suspend", 0))
+	_, cronjobs, err := w.store.CronJob().List(ctx, where.F("suspend", 0))
 	if err != nil {
 		return
 	}
@@ -35,8 +34,8 @@ func (w *Watcher) Run() {
 	wp := workerpool.New(int(w.maxWorkers))
 	for _, cronjob := range cronjobs {
 		wp.Submit(func() {
-			ctx = log.WithContext(ctx, "cronjob_id", cronjob.CronJobID)
-			_, jobs, err := w.store.Jobs().List(ctx, where.F("cronjob_id", cronjob.CronJobID))
+			//ctx = log.WithContext(ctx, "cronjob_id", cronjob.CronJobID)
+			_, jobs, err := w.store.Job().List(ctx, where.F("cronjob_id", cronjob.CronJobID))
 			if err != nil || len(jobs) == 0 {
 				return
 			}
@@ -71,7 +70,7 @@ func (w *Watcher) Run() {
 				cronjob.Status.LastScheduleTime = lastSuccessJob.StartedAt.Unix()
 			}
 
-			_ = w.store.CronJobs().Update(ctx, cronjob)
+			_ = w.store.CronJob().Update(ctx, cronjob)
 		})
 	}
 

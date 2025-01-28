@@ -154,7 +154,7 @@ func createAggregatorServer(aggregatorConfig aggregatorapiserver.CompletedConfig
 	}
 
 	err = aggregatorServer.GenericAPIServer.AddPostStartHook("onex-apiserver-autoregistration", func(context genericapiserver.PostStartHookContext) error {
-		go crdRegistrationController.Run(5, context.StopCh)
+		go crdRegistrationController.Run(5, context.Done())
 		go func() {
 			// let the CRD controller process the initial set of CRDs before starting the autoregistration controller.
 			// this prevents the autoregistration controller's initial sync from deleting APIServices for CRDs that still exist.
@@ -166,7 +166,7 @@ func createAggregatorServer(aggregatorConfig aggregatorapiserver.CompletedConfig
 			} else {
 				klog.Infof("CRD API not enabled, starting APIService registration without waiting for initial CRD sync")
 			}
-			autoRegistrationController.Run(5, context.StopCh)
+			autoRegistrationController.Run(5, context.Done())
 		}()
 		return nil
 	})

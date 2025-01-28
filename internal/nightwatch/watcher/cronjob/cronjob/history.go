@@ -4,12 +4,13 @@ package cronjob
 import (
 	"context"
 
-	"github.com/onexstack/onex/internal/nightwatch/dao/model"
+	"github.com/onexstack/onexstack/pkg/log"
+	"github.com/onexstack/onexstack/pkg/store/where"
+	"github.com/onexstack/onexstack/pkg/watch/registry"
+
+	"github.com/onexstack/onex/internal/nightwatch/model"
 	"github.com/onexstack/onex/internal/nightwatch/store"
 	known "github.com/onexstack/onex/internal/pkg/known/nightwatch"
-	"github.com/onexstack/onex/pkg/log"
-	"github.com/onexstack/onex/pkg/store/where"
-	"github.com/onexstack/onex/pkg/watch/registry"
 )
 
 var _ registry.Watcher = (*Watcher)(nil)
@@ -22,7 +23,7 @@ type History struct {
 // Run runs the watcher.
 func (h *History) Run() {
 	ctx := context.Background()
-	_, cronjobs, err := h.store.CronJobs().List(ctx, where.F("suspend", known.JobNonSuspended))
+	_, cronjobs, err := h.store.CronJob().List(ctx, where.F("suspend", known.JobNonSuspended))
 	if err != nil {
 		return
 	}
@@ -44,14 +45,14 @@ func (h *History) SetStore(store store.IStore) {
 }
 
 func (h *History) retainRecords(ctx context.Context, status string, maxRecords int32) {
-	_, jobs, err := h.store.Jobs().List(ctx, where.F("status", status))
+	_, jobs, err := h.store.Job().List(ctx, where.F("status", status))
 	if err != nil {
-		log.C(ctx).Errorw(err, "Failed to list jobs")
+		log.W(ctx).Errorw(err, "Failed to list jobs")
 		return
 	}
 	removedIDs := retainMaxElements(jobs, maxRecords)
-	if err := h.store.Jobs().Delete(ctx, where.F("job_id", removedIDs)); err != nil {
-		log.C(ctx).Errorw(err, "Failed to delete jobs")
+	if err := h.store.Job().Delete(ctx, where.F("job_id", removedIDs)); err != nil {
+		log.W(ctx).Errorw(err, "Failed to delete jobs")
 	}
 }
 

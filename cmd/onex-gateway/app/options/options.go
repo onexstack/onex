@@ -8,6 +8,9 @@
 package options
 
 import (
+	"github.com/onexstack/onexstack/pkg/app"
+	"github.com/onexstack/onexstack/pkg/log"
+	genericoptions "github.com/onexstack/onexstack/pkg/options"
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	"k8s.io/client-go/tools/clientcmd"
 	cliflag "k8s.io/component-base/cli/flag"
@@ -17,9 +20,6 @@ import (
 	"github.com/onexstack/onex/internal/pkg/client/usercenter"
 	"github.com/onexstack/onex/internal/pkg/feature"
 	kubeutil "github.com/onexstack/onex/internal/pkg/util/kube"
-	"github.com/onexstack/onex/pkg/app"
-	"github.com/onexstack/onex/pkg/log"
-	genericoptions "github.com/onexstack/onex/pkg/options"
 )
 
 const (
@@ -27,10 +27,8 @@ const (
 	UserAgent = "onex-gateway"
 )
 
-var _ app.CliOptions = (*Options)(nil)
-
-// Options contains state for master/api server.
-type Options struct {
+// ServerOptions contains the configuration options for the server.
+type ServerOptions struct {
 	// GenericOptions *genericoptions.Options       `json:"server"   mapstructure:"server"`
 	GRPCOptions       *genericoptions.GRPCOptions    `json:"grpc" mapstructure:"grpc"`
 	HTTPOptions       *genericoptions.HTTPOptions    `json:"http" mapstructure:"http"`
@@ -41,7 +39,7 @@ type Options struct {
 	JaegerOptions     *genericoptions.JaegerOptions  `json:"jaeger" mapstructure:"jaeger"`
 	ConsulOptions     *genericoptions.ConsulOptions  `json:"consul" mapstructure:"consul"`
 	UserCenterOptions *usercenter.UserCenterOptions  `json:"usercenter" mapstructure:"usercenter"`
-	Metrics           *genericoptions.MetricsOptions `json:"metrics" mapstructure:"metrics"`
+	MetricsOptions    *genericoptions.MetricsOptions `json:"metrics" mapstructure:"metrics"`
 	EnableTLS         bool                           `json:"enable-tls" mapstructure:"enable-tls"`
 	// Path to kubeconfig file with authorization and master location information.
 	Kubeconfig   string          `json:"kubeconfig" mapstructure:"kubeconfig"`
@@ -50,9 +48,12 @@ type Options struct {
 	Log *log.Options `json:"log" mapstructure:"log"`
 }
 
-// NewOptions returns initialized Options.
-func NewOptions() *Options {
-	o := &Options{
+// Ensure ServerOptions implements the app.CliOptions interface.
+var _ app.CliOptions = (*ServerOptions)(nil)
+
+// NewServerOptions creates a ServerOptions instance with default values.
+func NewServerOptions() *ServerOptions {
+	o := &ServerOptions{
 		// GenericOptions: genericoptions.NewOptions(),
 		GRPCOptions:       genericoptions.NewGRPCOptions(),
 		HTTPOptions:       genericoptions.NewHTTPOptions(),
@@ -63,7 +64,7 @@ func NewOptions() *Options {
 		JaegerOptions:     genericoptions.NewJaegerOptions(),
 		ConsulOptions:     genericoptions.NewConsulOptions(),
 		UserCenterOptions: usercenter.NewUserCenterOptions(),
-		Metrics:           genericoptions.NewMetricsOptions(),
+		MetricsOptions:    genericoptions.NewMetricsOptions(),
 		Log:               log.NewOptions(),
 	}
 
@@ -71,7 +72,7 @@ func NewOptions() *Options {
 }
 
 // Flags returns flags for a specific server by section name.
-func (o *Options) Flags() (fss cliflag.NamedFlagSets) {
+func (o *ServerOptions) Flags() (fss cliflag.NamedFlagSets) {
 	o.GRPCOptions.AddFlags(fss.FlagSet("grpc"))
 	o.HTTPOptions.AddFlags(fss.FlagSet("http"))
 	o.TLSOptions.AddFlags(fss.FlagSet("tls"))
@@ -81,7 +82,7 @@ func (o *Options) Flags() (fss cliflag.NamedFlagSets) {
 	o.JaegerOptions.AddFlags(fss.FlagSet("jaeger"))
 	o.ConsulOptions.AddFlags(fss.FlagSet("consul"))
 	o.UserCenterOptions.AddFlags(fss.FlagSet("usercenter"))
-	o.Metrics.AddFlags(fss.FlagSet("metrics"))
+	o.MetricsOptions.AddFlags(fss.FlagSet("metrics"))
 	o.Log.AddFlags(fss.FlagSet("log"))
 
 	// Note: the weird ""+ in below lines seems to be the only way to get gofmt to
@@ -95,7 +96,7 @@ func (o *Options) Flags() (fss cliflag.NamedFlagSets) {
 }
 
 // Complete completes all the required options.
-func (o *Options) Complete() error {
+func (o *ServerOptions) Complete() error {
 	if o.JaegerOptions.ServiceName == "" {
 		o.JaegerOptions.ServiceName = UserAgent
 	}
@@ -103,8 +104,8 @@ func (o *Options) Complete() error {
 	return nil
 }
 
-// Validate validates all the required options.
-func (o *Options) Validate() error {
+// Validate checks whether the options in ServerOptions are valid.
+func (o *ServerOptions) Validate() error {
 	errs := []error{}
 
 	errs = append(errs, o.GRPCOptions.Validate()...)
@@ -116,41 +117,32 @@ func (o *Options) Validate() error {
 	errs = append(errs, o.JaegerOptions.Validate()...)
 	errs = append(errs, o.ConsulOptions.Validate()...)
 	errs = append(errs, o.UserCenterOptions.Validate()...)
-	errs = append(errs, o.Metrics.Validate()...)
+	errs = append(errs, o.MetricsOptions.Validate()...)
 	errs = append(errs, o.Log.Validate()...)
 
 	return utilerrors.NewAggregate(errs)
 }
 
-// ApplyTo fills up onex-gateway config with options.
-func (o *Options) ApplyTo(c *gateway.Config) error {
-	c.GRPCOptions = o.GRPCOptions
-	c.HTTPOptions = o.HTTPOptions
-	c.TLSOptions = o.TLSOptions
-	c.UserCenterOptions = o.UserCenterOptions
-	c.MySQLOptions = o.MySQLOptions
-	c.RedisOptions = o.RedisOptions
-	c.EtcdOptions = o.EtcdOptions
-	c.JaegerOptions = o.JaegerOptions
-	c.ConsulOptions = o.ConsulOptions
-	return nil
-}
-
-// Config return an onex-gateway config object.
-func (o *Options) Config() (*gateway.Config, error) {
+// Config builds an gateway.Config based on ServerOptions.
+func (o *ServerOptions) Config() (*gateway.Config, error) {
 	kubeconfig, err := clientcmd.BuildConfigFromFlags("", o.Kubeconfig)
 	if err != nil {
 		return nil, err
 	}
 	kubeconfig = kubeutil.SetDefaultClientOptions(kubeutil.AddUserAgent(kubeconfig, UserAgent))
 
-	c := &gateway.Config{
-		Kubeconfig: kubeconfig,
+	cfg := &gateway.Config{
+		GRPCOptions:       o.GRPCOptions,
+		HTTPOptions:       o.HTTPOptions,
+		TLSOptions:        o.TLSOptions,
+		UserCenterOptions: o.UserCenterOptions,
+		MySQLOptions:      o.MySQLOptions,
+		RedisOptions:      o.RedisOptions,
+		EtcdOptions:       o.EtcdOptions,
+		JaegerOptions:     o.JaegerOptions,
+		ConsulOptions:     o.ConsulOptions,
+		Kubeconfig:        kubeconfig,
 	}
 
-	if err := o.ApplyTo(c); err != nil {
-		return nil, err
-	}
-
-	return c, nil
+	return cfg, nil
 }

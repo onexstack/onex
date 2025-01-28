@@ -8,11 +8,11 @@ package model
 
 import (
 	"github.com/google/uuid"
+	"github.com/onexstack/onexstack/pkg/authn"
 	"gorm.io/gorm"
 
 	known "github.com/onexstack/onex/internal/pkg/known/usercenter"
-	"github.com/onexstack/onex/internal/pkg/zid"
-	"github.com/onexstack/onex/pkg/authn"
+	"github.com/onexstack/onex/internal/pkg/rid"
 )
 
 // BeforeCreate runs before creating a SecretM database record and initializes various fields.
@@ -35,7 +35,7 @@ func (m *SecretM) BeforeCreate(tx *gorm.DB) (err error) {
 
 // AfterCreate runs after creating a UserM database record and updates the UserID field.
 func (m *UserM) AfterCreate(tx *gorm.DB) (err error) {
-	m.UserID = zid.User.New(uint64(m.ID)) // Generate and set a new user ID.
+	m.UserID = rid.User.New(uint64(m.ID)) // Generate and set a new user ID.
 
 	return tx.Save(m).Error // Save the updated user record to the database.
 }

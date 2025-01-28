@@ -20,12 +20,12 @@ _DOCKER_BUILD_EXTRA_ARGS += $(EXTRA_ARGS)
 endif
 
 # Determine image files by looking into cmd/*
-CMD_DIRS ?= $(wildcard ${ONEX_ROOT}/cmd/*)
+CMD_DIRS ?= $(wildcard ${PROJ_ROOT_DIR}/cmd/*)
 # Determine images names by stripping out the dir names.
 # Filter out directories without Go files, as these directories cannot be compiled to build a docker image.
 IMAGES ?= $(filter-out tools, $(foreach dir, $(CMD_DIRS), $(notdir $(if $(wildcard $(dir)/*.go), $(dir),))))
 ifeq (${IMAGES},)
-  $(error Could not determine IMAGES, set ONEX_ROOT or run in source dir)
+  $(error Could not determine IMAGES, set PROJ_ROOT_DIR or run in source dir)
 endif
 
 .PHONY: image.verify
@@ -90,14 +90,14 @@ image.build.%: image.dockerfile.% ## Build specified docker image in multistage 
 	$(eval OS := $(word 1,$(subst _, ,$(PLATFORM))))
 	$(eval ARCH := $(word 2,$(subst _, ,$(PLATFORM))))
 	$(eval DOCKERFILE := Dockerfile.multistage)
-	$(eval DST_DIR := $(ONEX_ROOT))
+	$(eval DST_DIR := $(PROJ_ROOT_DIR))
 	$(eval IMAGE_TAG := $(subst +,-,$(VERSION)))
 	@echo "===========> Building docker image $(IMAGE) $(IMAGE_TAG) for $(IMAGE_PLAT)"
 endif
 	@export OUTPUT_DIR=$(OUTPUT_DIR)
-	@if [ -f  $(ONEX_ROOT)/build/docker/$(IMAGE)/build.sh ] ; then \
+	@if [ -f  $(PROJ_ROOT_DIR)/build/docker/$(IMAGE)/build.sh ] ; then \
 		DST_DIR=$(DST_DIR) OUTPUT_DIR=$(OUTPUT_DIR) IMAGE_PLAT=${IMAGE_PLAT} \
-		$(ONEX_ROOT)/build/docker/$(IMAGE)/build.sh ; \
+		$(PROJ_ROOT_DIR)/build/docker/$(IMAGE)/build.sh ; \
 	fi
 	$(eval BUILD_SUFFIX := $(_DOCKER_BUILD_EXTRA_ARGS) --pull \
 		-f $(GENERATED_DOCKERFILE_DIR)/$(IMAGE)/$(DOCKERFILE) \
@@ -156,4 +156,4 @@ image.manifest.push.multiarch: image.push.multiarch $(addprefix image.manifest.p
 image.manifest.push.multiarch.%:
 	@echo "===========> Pushing manifest $* $(IMAGE_TAG) to $(REGISTRY_PREFIX) and then remove the local manifest list"
 	REGISTRY_PREFIX=$(REGISTRY_PREFIX) PLATFROMS="$(PLATFORMS)" IMAGE=$* VERSION=$(IMAGE_TAG) DOCKER_CLI_EXPERIMENTAL=enabled \
-	  $(ONEX_ROOT)/build/lib/create-manifest.sh
+	  $(PROJ_ROOT_DIR)/build/lib/create-manifest.sh

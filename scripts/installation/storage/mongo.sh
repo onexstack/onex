@@ -8,9 +8,9 @@
 
 
 # The root of the build/dist directory.
-ONEX_ROOT=$(dirname "${BASH_SOURCE[0]}")/../..
+PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/../..
 # If common.sh has already been sourced, it will not be sourced again here.
-[[ -z ${COMMON_SOURCED} ]] && source ${ONEX_ROOT}/scripts/installation/common.sh
+[[ -z ${COMMON_SOURCED} ]] && source ${PROJ_ROOT_DIR}/scripts/installation/common.sh
 # Set some environment variables.
 ONEX_MONGO_HOST=${ONEX_MONGO_HOST:-127.0.0.1}
 ONEX_MONGO_PORT=${ONEX_MONGO_PORT:-27017}

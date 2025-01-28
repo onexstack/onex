@@ -7,8 +7,8 @@
 #
 
 
-ONEX_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
-source "${ONEX_ROOT}/scripts/common.sh"
+PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/..
+source "${PROJ_ROOT_DIR}/scripts/common.sh"
 
 if [ $# -ne 4 ];then
     onex::log::error "Usage: gen-service-config.sh SERVICE_NAME ENV_FILE TEMPLATE_FILE OUTPUT_DIR"
@@ -71,7 +71,7 @@ case ${TEMPLATE_FILE} in
 esac
 
 suffix=$(echo $TEMPLATE_FILE | awk -F'.' '{print $NF}')
-${ONEX_ROOT}/scripts/gen-config.sh ${ENV_FILE} ${TEMPLATE_FILE} > ${OUTPUT_DIR}/${SERVICE_NAME}.${suffix}
+${PROJ_ROOT_DIR}/scripts/gen-config.sh ${ENV_FILE} ${TEMPLATE_FILE} > ${OUTPUT_DIR}/${SERVICE_NAME}.${suffix}
 
 # Fix
 if [[ "${TEMPLATE_FILE}" =~ .*onex.systemd.tmpl.service ]] && [[ "${SERVICE_NAME}" =~ onex.*controller ]];then

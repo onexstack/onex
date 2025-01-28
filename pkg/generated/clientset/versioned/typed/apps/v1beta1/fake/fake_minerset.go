@@ -8,190 +8,51 @@
 package fake
 
 import (
-	"context"
+	context "context"
 	json "encoding/json"
-	"fmt"
+	fmt "fmt"
 
 	v1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
 	appsv1beta1 "github.com/onexstack/onex/pkg/generated/applyconfigurations/apps/v1beta1"
 	applyconfigurationsautoscalingv1 "github.com/onexstack/onex/pkg/generated/applyconfigurations/autoscaling/v1"
+	typedappsv1beta1 "github.com/onexstack/onex/pkg/generated/clientset/versioned/typed/apps/v1beta1"
 	autoscalingv1 "k8s.io/api/autoscaling/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	labels "k8s.io/apimachinery/pkg/labels"
 	types "k8s.io/apimachinery/pkg/types"
-	watch "k8s.io/apimachinery/pkg/watch"
+	gentype "k8s.io/client-go/gentype"
 	testing "k8s.io/client-go/testing"
 )
 
-// FakeMinerSets implements MinerSetInterface
-type FakeMinerSets struct {
+// fakeMinerSets implements MinerSetInterface
+type fakeMinerSets struct {
+	*gentype.FakeClientWithListAndApply[*v1beta1.MinerSet, *v1beta1.MinerSetList, *appsv1beta1.MinerSetApplyConfiguration]
 	Fake *FakeAppsV1beta1
-	ns   string
 }
 
-var minersetsResource = v1beta1.SchemeGroupVersion.WithResource("minersets")
-
-var minersetsKind = v1beta1.SchemeGroupVersion.WithKind("MinerSet")
-
-// Get takes name of the minerSet, and returns the corresponding minerSet object, and an error if there is any.
-func (c *FakeMinerSets) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1beta1.MinerSet, err error) {
-	emptyResult := &v1beta1.MinerSet{}
-	obj, err := c.Fake.
-		Invokes(testing.NewGetActionWithOptions(minersetsResource, c.ns, name, options), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
+func newFakeMinerSets(fake *FakeAppsV1beta1, namespace string) typedappsv1beta1.MinerSetInterface {
+	return &fakeMinerSets{
+		gentype.NewFakeClientWithListAndApply[*v1beta1.MinerSet, *v1beta1.MinerSetList, *appsv1beta1.MinerSetApplyConfiguration](
+			fake.Fake,
+			namespace,
+			v1beta1.SchemeGroupVersion.WithResource("minersets"),
+			v1beta1.SchemeGroupVersion.WithKind("MinerSet"),
+			func() *v1beta1.MinerSet { return &v1beta1.MinerSet{} },
+			func() *v1beta1.MinerSetList { return &v1beta1.MinerSetList{} },
+			func(dst, src *v1beta1.MinerSetList) { dst.ListMeta = src.ListMeta },
+			func(list *v1beta1.MinerSetList) []*v1beta1.MinerSet { return gentype.ToPointerSlice(list.Items) },
+			func(list *v1beta1.MinerSetList, items []*v1beta1.MinerSet) {
+				list.Items = gentype.FromPointerSlice(items)
+			},
+		),
+		fake,
 	}
-	return obj.(*v1beta1.MinerSet), err
-}
-
-// List takes label and field selectors, and returns the list of MinerSets that match those selectors.
-func (c *FakeMinerSets) List(ctx context.Context, opts v1.ListOptions) (result *v1beta1.MinerSetList, err error) {
-	emptyResult := &v1beta1.MinerSetList{}
-	obj, err := c.Fake.
-		Invokes(testing.NewListActionWithOptions(minersetsResource, minersetsKind, c.ns, opts), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
-	}
-
-	label, _, _ := testing.ExtractFromListOptions(opts)
-	if label == nil {
-		label = labels.Everything()
-	}
-	list := &v1beta1.MinerSetList{ListMeta: obj.(*v1beta1.MinerSetList).ListMeta}
-	for _, item := range obj.(*v1beta1.MinerSetList).Items {
-		if label.Matches(labels.Set(item.Labels)) {
-			list.Items = append(list.Items, item)
-		}
-	}
-	return list, err
-}
-
-// Watch returns a watch.Interface that watches the requested minerSets.
-func (c *FakeMinerSets) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
-	return c.Fake.
-		InvokesWatch(testing.NewWatchActionWithOptions(minersetsResource, c.ns, opts))
-
-}
-
-// Create takes the representation of a minerSet and creates it.  Returns the server's representation of the minerSet, and an error, if there is any.
-func (c *FakeMinerSets) Create(ctx context.Context, minerSet *v1beta1.MinerSet, opts v1.CreateOptions) (result *v1beta1.MinerSet, err error) {
-	emptyResult := &v1beta1.MinerSet{}
-	obj, err := c.Fake.
-		Invokes(testing.NewCreateActionWithOptions(minersetsResource, c.ns, minerSet, opts), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
-	}
-	return obj.(*v1beta1.MinerSet), err
-}
-
-// Update takes the representation of a minerSet and updates it. Returns the server's representation of the minerSet, and an error, if there is any.
-func (c *FakeMinerSets) Update(ctx context.Context, minerSet *v1beta1.MinerSet, opts v1.UpdateOptions) (result *v1beta1.MinerSet, err error) {
-	emptyResult := &v1beta1.MinerSet{}
-	obj, err := c.Fake.
-		Invokes(testing.NewUpdateActionWithOptions(minersetsResource, c.ns, minerSet, opts), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
-	}
-	return obj.(*v1beta1.MinerSet), err
-}
-
-// UpdateStatus was generated because the type contains a Status member.
-// Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-func (c *FakeMinerSets) UpdateStatus(ctx context.Context, minerSet *v1beta1.MinerSet, opts v1.UpdateOptions) (result *v1beta1.MinerSet, err error) {
-	emptyResult := &v1beta1.MinerSet{}
-	obj, err := c.Fake.
-		Invokes(testing.NewUpdateSubresourceActionWithOptions(minersetsResource, "status", c.ns, minerSet, opts), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
-	}
-	return obj.(*v1beta1.MinerSet), err
-}
-
-// Delete takes name of the minerSet and deletes it. Returns an error if one occurs.
-func (c *FakeMinerSets) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
-	_, err := c.Fake.
-		Invokes(testing.NewDeleteActionWithOptions(minersetsResource, c.ns, name, opts), &v1beta1.MinerSet{})
-
-	return err
-}
-
-// DeleteCollection deletes a collection of objects.
-func (c *FakeMinerSets) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewDeleteCollectionActionWithOptions(minersetsResource, c.ns, opts, listOpts)
-
-	_, err := c.Fake.Invokes(action, &v1beta1.MinerSetList{})
-	return err
-}
-
-// Patch applies the patch and returns the patched minerSet.
-func (c *FakeMinerSets) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.MinerSet, err error) {
-	emptyResult := &v1beta1.MinerSet{}
-	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceActionWithOptions(minersetsResource, c.ns, name, pt, data, opts, subresources...), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
-	}
-	return obj.(*v1beta1.MinerSet), err
-}
-
-// Apply takes the given apply declarative configuration, applies it and returns the applied minerSet.
-func (c *FakeMinerSets) Apply(ctx context.Context, minerSet *appsv1beta1.MinerSetApplyConfiguration, opts v1.ApplyOptions) (result *v1beta1.MinerSet, err error) {
-	if minerSet == nil {
-		return nil, fmt.Errorf("minerSet provided to Apply must not be nil")
-	}
-	data, err := json.Marshal(minerSet)
-	if err != nil {
-		return nil, err
-	}
-	name := minerSet.Name
-	if name == nil {
-		return nil, fmt.Errorf("minerSet.Name must be provided to Apply")
-	}
-	emptyResult := &v1beta1.MinerSet{}
-	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceActionWithOptions(minersetsResource, c.ns, *name, types.ApplyPatchType, data, opts.ToPatchOptions()), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
-	}
-	return obj.(*v1beta1.MinerSet), err
-}
-
-// ApplyStatus was generated because the type contains a Status member.
-// Add a +genclient:noStatus comment above the type to avoid generating ApplyStatus().
-func (c *FakeMinerSets) ApplyStatus(ctx context.Context, minerSet *appsv1beta1.MinerSetApplyConfiguration, opts v1.ApplyOptions) (result *v1beta1.MinerSet, err error) {
-	if minerSet == nil {
-		return nil, fmt.Errorf("minerSet provided to Apply must not be nil")
-	}
-	data, err := json.Marshal(minerSet)
-	if err != nil {
-		return nil, err
-	}
-	name := minerSet.Name
-	if name == nil {
-		return nil, fmt.Errorf("minerSet.Name must be provided to Apply")
-	}
-	emptyResult := &v1beta1.MinerSet{}
-	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceActionWithOptions(minersetsResource, c.ns, *name, types.ApplyPatchType, data, opts.ToPatchOptions(), "status"), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
-	}
-	return obj.(*v1beta1.MinerSet), err
 }
 
 // GetScale takes name of the minerSet, and returns the corresponding scale object, and an error if there is any.
-func (c *FakeMinerSets) GetScale(ctx context.Context, minerSetName string, options v1.GetOptions) (result *autoscalingv1.Scale, err error) {
+func (c *fakeMinerSets) GetScale(ctx context.Context, minerSetName string, options v1.GetOptions) (result *autoscalingv1.Scale, err error) {
 	emptyResult := &autoscalingv1.Scale{}
 	obj, err := c.Fake.
-		Invokes(testing.NewGetSubresourceActionWithOptions(minersetsResource, c.ns, "scale", minerSetName, options), emptyResult)
+		Invokes(testing.NewGetSubresourceActionWithOptions(c.Resource(), c.Namespace(), "scale", minerSetName, options), emptyResult)
 
 	if obj == nil {
 		return emptyResult, err
@@ -200,10 +61,10 @@ func (c *FakeMinerSets) GetScale(ctx context.Context, minerSetName string, optio
 }
 
 // UpdateScale takes the representation of a scale and updates it. Returns the server's representation of the scale, and an error, if there is any.
-func (c *FakeMinerSets) UpdateScale(ctx context.Context, minerSetName string, scale *autoscalingv1.Scale, opts v1.UpdateOptions) (result *autoscalingv1.Scale, err error) {
+func (c *fakeMinerSets) UpdateScale(ctx context.Context, minerSetName string, scale *autoscalingv1.Scale, opts v1.UpdateOptions) (result *autoscalingv1.Scale, err error) {
 	emptyResult := &autoscalingv1.Scale{}
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateSubresourceActionWithOptions(minersetsResource, "scale", c.ns, scale, opts), &autoscalingv1.Scale{})
+		Invokes(testing.NewUpdateSubresourceActionWithOptions(c.Resource(), "scale", c.Namespace(), scale, opts), &autoscalingv1.Scale{})
 
 	if obj == nil {
 		return emptyResult, err
@@ -213,7 +74,7 @@ func (c *FakeMinerSets) UpdateScale(ctx context.Context, minerSetName string, sc
 
 // ApplyScale takes top resource name and the apply declarative configuration for scale,
 // applies it and returns the applied scale, and an error, if there is any.
-func (c *FakeMinerSets) ApplyScale(ctx context.Context, minerSetName string, scale *applyconfigurationsautoscalingv1.ScaleApplyConfiguration, opts v1.ApplyOptions) (result *autoscalingv1.Scale, err error) {
+func (c *fakeMinerSets) ApplyScale(ctx context.Context, minerSetName string, scale *applyconfigurationsautoscalingv1.ScaleApplyConfiguration, opts v1.ApplyOptions) (result *autoscalingv1.Scale, err error) {
 	if scale == nil {
 		return nil, fmt.Errorf("scale provided to ApplyScale must not be nil")
 	}
@@ -223,7 +84,7 @@ func (c *FakeMinerSets) ApplyScale(ctx context.Context, minerSetName string, sca
 	}
 	emptyResult := &autoscalingv1.Scale{}
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceActionWithOptions(minersetsResource, c.ns, minerSetName, types.ApplyPatchType, data, opts.ToPatchOptions(), "scale"), emptyResult)
+		Invokes(testing.NewPatchSubresourceActionWithOptions(c.Resource(), c.Namespace(), minerSetName, types.ApplyPatchType, data, opts.ToPatchOptions(), "scale"), emptyResult)
 
 	if obj == nil {
 		return emptyResult, err

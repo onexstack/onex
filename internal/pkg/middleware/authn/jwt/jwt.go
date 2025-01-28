@@ -16,8 +16,7 @@ import (
 	"github.com/go-kratos/kratos/v2/transport"
 
 	"github.com/onexstack/onex/internal/pkg/contextx"
-	"github.com/onexstack/onex/pkg/authn"
-	"github.com/onexstack/onex/pkg/log"
+	"github.com/onexstack/onexstack/pkg/authn"
 )
 
 const (
@@ -55,10 +54,9 @@ func Server(a authn.Authenticator) middleware.Middleware {
 					return nil, err
 				}
 
-				ctx = contextx.NewContext(ctx, claims)
-				ctx = contextx.NewUserID(ctx, claims.Subject)
-				ctx = contextx.NewAccessToken(ctx, accessToken)
-				ctx = log.WithContext(ctx, "user.id", claims.Subject)
+				ctx = contextx.WithClaims(ctx, claims)
+				ctx = contextx.WithUserID(ctx, claims.Subject)
+				ctx = contextx.WithAccessToken(ctx, accessToken)
 				return handler(ctx, rq)
 			}
 			return nil, ErrWrongContext

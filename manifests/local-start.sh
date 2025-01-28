@@ -2,8 +2,8 @@
 
 set -euo pipefail  # 安全设置以捕获错误
 
-ONEX_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
-BIN_DIR="${ONEX_ROOT}/_output/platforms/linux/amd64"
+PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/..
+BIN_DIR="${PROJ_ROOT_DIR}/_output/platforms/linux/amd64"
 CONFIG_DIR="${HOME}/.onex"
 
 # 检查二进制文件是否存在

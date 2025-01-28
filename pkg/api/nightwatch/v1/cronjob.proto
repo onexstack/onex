@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package cronjob;
+package nightwatch.v1;
 
 import "google/protobuf/timestamp.proto";
 import "nightwatch/v1/job.proto";
@@ -41,7 +41,7 @@ message CronJob {
     // 是否挂起（1 挂起，0 不挂起, 默认 0）
     int32 suspend = 9;
     // Job 模版
-    job.Job jobTemplate = 10;
+    Job jobTemplate = 10;
     // 要保留的成功完成作业的数量。值必须是非负整数。默认值为 10。
     int32 successHistoryLimit  = 11;
     // 要保留的失败完成作业的数量。值必须是非负整数。  默认值为 5。
@@ -80,7 +80,15 @@ message UpdateCronJobRequest{
 
 message UpdateCronJobResponse{ }
 
+message DeleteCronJobRequest{
+    repeated string cronJobIDs = 1;
+}
+
+message DeleteCronJobResponse{
+}
+
 message GetCronJobRequest{
+  // @gotags: uri:"cronJobID"
     string cronJobID = 1;
 }
 
@@ -89,18 +97,14 @@ message GetCronJobResponse{
 }
 
 message ListCronJobRequest{
+  // @gotags: form:"offset"
   int32 offset = 1;
+  // @gotags: form:"limit"
   int32 limit = 2;
 }
 
 message ListCronJobResponse{
-    int64 totalCount = 1;
+    int64 total = 1;
     repeated CronJob cronJobs = 2;
 }
 
-message DeleteCronJobRequest{
-    repeated string cronJobIDs = 1;
-}
-
-message DeleteCronJobResponse{
-}

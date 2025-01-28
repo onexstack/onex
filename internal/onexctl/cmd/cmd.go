@@ -38,7 +38,7 @@ import (
 	//"github.com/onexstack/onex/internal/onexctl/util/templates"
 	"k8s.io/kubectl/pkg/util/templates"
 	//"github.com/onexstack/onex/internal/onexctl/util/term"
-	"github.com/onexstack/onex/pkg/cli/genericclioptions"
+	"github.com/onexstack/onexstack/pkg/cli/genericclioptions"
 )
 
 const onexCmdHeaders = "ONEX_COMMAND_HEADERS"

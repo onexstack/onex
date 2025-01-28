@@ -9,7 +9,7 @@ package bootstrap
 import (
 	krtlog "github.com/go-kratos/kratos/v2/log"
 
-	"github.com/onexstack/onex/pkg/log"
+	"github.com/onexstack/onexstack/pkg/log"
 )
 
 func NewLogger(info AppInfo) krtlog.Logger {

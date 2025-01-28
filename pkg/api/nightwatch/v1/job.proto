@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package job;
+package nightwatch.v1;
 
 import "google/protobuf/timestamp.proto";
 
@@ -90,7 +90,15 @@ message UpdateJobRequest{
 message UpdateJobResponse{
 }
 
+message DeleteJobRequest{
+  repeated string jobIDs = 1;
+}
+
+message DeleteJobResponse{
+}
+
 message GetJobRequest{
+  // @gotags: uri:"jobID"
   string jobID = 1;
 }
 
@@ -99,18 +107,14 @@ message GetJobResponse{
 }
 
 message ListJobRequest{
+  // @gotags: form:"offset"
   int32 offset = 1;
+  // @gotags: form:"limit"
   int32 limit = 2;
 }
 
 message ListJobResponse{
-  int64 totalCount = 1;
+  int64 total = 1;
   repeated Job jobs = 2;
 }
 
-message DeleteJobRequest{
-  repeated string jobIDs = 1;
-}
-
-message DeleteJobResponse{
-}

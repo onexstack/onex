@@ -52,7 +52,7 @@ import (
 	"github.com/onexstack/onex/internal/controlplane"
 	controlplaneapiserver "github.com/onexstack/onex/internal/controlplane/apiserver"
 	"github.com/onexstack/onex/pkg/apiserver/storage"
-	"github.com/onexstack/onex/pkg/version"
+	"github.com/onexstack/onexstack/pkg/version"
 )
 
 const appName = "onex-apiserver"
@@ -159,7 +159,7 @@ onex's shared state through which all other components interact.`,
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			version.PrintAndExitIfRequested(appName)
+			version.PrintAndExitIfRequested()
 			fs := cmd.Flags()
 
 			// Activate logging as soon as possible, after that

@@ -7,13 +7,13 @@
 # build-allinone-image.sh 在 build/docker/onex-allinone 目录中以 build.sh 软连接
 # 的形式存在，是为了防止误删 build/docker 目录
 # Copy of scripts/build-allinone-image.sh
-ONEX_ROOT=$(dirname "${BASH_SOURCE[0]}")/../../..
+PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/../../..
 
-source "${ONEX_ROOT}/scripts/installation/onex.sh"
+source "${PROJ_ROOT_DIR}/scripts/installation/onex.sh"
 # ONEX_ENV_FILE 变量来自 onex.sh
 source ${ONEX_ENV_FILE}
 
-cd ${ONEX_ROOT}
+cd ${PROJ_ROOT_DIR}
 
 # 生成一个管理onex服务的管理脚本
 function cat_onex_admin()
