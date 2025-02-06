@@ -22,16 +22,16 @@ import (
 type Miner struct {
 	mu     sync.Mutex
 	client client.Client
-	ds     store.IStore
+	store  store.IStore
 }
 
 func (c *Miner) Name() string {
 	return "miner"
 }
 
-func (c *Miner) Initialize(client client.Client, ds store.IStore) {
+func (c *Miner) Initialize(client client.Client, store store.IStore) {
 	c.client = client
-	c.ds = ds
+	c.store = store
 }
 
 func (c *Miner) Delete(ctx context.Context) error {
@@ -39,7 +39,7 @@ func (c *Miner) Delete(ctx context.Context) error {
 	defer c.mu.Unlock()
 
 	klog.V(4).InfoS("Cleanup miners from miner table")
-	_, miners, err := c.ds.Miners().List(ctx, nil)
+	_, miners, err := c.store.Miner().List(ctx, nil)
 	if err != nil {
 		klog.ErrorS(err, "Failed to list miners")
 		return err
@@ -51,7 +51,7 @@ func (c *Miner) Delete(ctx context.Context) error {
 		key := client.ObjectKey{Namespace: miner.Namespace, Name: miner.Name}
 		if err := c.client.Get(ctx, key, &m); err != nil {
 			if apierrors.IsNotFound(err) {
-				if derr := c.ds.Miners().Delete(ctx, where.F("namespace", miner.Namespace, "name", miner.Name)); derr != nil {
+				if derr := c.store.Miner().Delete(ctx, where.F("namespace", miner.Namespace, "name", miner.Name)); derr != nil {
 					klog.V(1).InfoS("Failed to delete miner", "miner", klog.KRef(miner.Namespace, miner.Name), "err", derr)
 					continue
 				}

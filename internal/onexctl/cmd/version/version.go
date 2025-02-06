@@ -15,7 +15,6 @@ import (
 
 	"github.com/ghodss/yaml"
 	"github.com/spf13/cobra"
-	"google.golang.org/protobuf/types/known/emptypb"
 	"k8s.io/cli-runtime/pkg/genericiooptions"
 
 	cmdutil "github.com/onexstack/onex/internal/onexctl/cmd/util"
@@ -106,7 +105,7 @@ func (o *Options) Run() error {
 
 	if !o.ClientOnly && o.client != nil {
 		// Always request fresh data from the server
-		vinfo, err := o.client.GetVersion(context.Background(), &emptypb.Empty{})
+		vinfo, err := o.client.GetVersion(context.Background(), &v1.GetVersionRequest{})
 		if err != nil {
 			return err
 		}

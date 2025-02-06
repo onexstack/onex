@@ -76,7 +76,7 @@ func InstallGenericAPI(engine *gin.Engine) {
 
 	// 注册 404 路由处理
 	engine.NoRoute(func(c *gin.Context) {
-		core.WriteResponse(c, errno.ErrorPageNotFound, nil)
+		core.WriteResponse(c, errno.ErrorPageNotFound("Page Not Found"), nil)
 	})
 }
 

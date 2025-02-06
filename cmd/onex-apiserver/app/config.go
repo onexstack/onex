@@ -20,7 +20,7 @@ type Config struct {
 	Options options.CompletedOptions
 
 	Aggregator    *aggregatorapiserver.Config
-	ControlPlane  *controlplane.Config
+	KubeAPIs      *controlplane.Config
 	ApiExtensions *apiextensionsapiserver.Config
 
 	ExtraConfig
@@ -32,7 +32,7 @@ type completedConfig struct {
 	Options options.CompletedOptions
 
 	Aggregator    aggregatorapiserver.CompletedConfig
-	ControlPlane  controlplane.CompletedConfig
+	KubeAPIs      controlplane.CompletedConfig
 	ApiExtensions apiextensionsapiserver.CompletedConfig
 
 	ExtraConfig
@@ -48,7 +48,7 @@ func (c *Config) Complete() (CompletedConfig, error) {
 		Options: c.Options,
 
 		Aggregator:    c.Aggregator.Complete(),
-		ControlPlane:  c.ControlPlane.Complete(),
+		KubeAPIs:      c.KubeAPIs.Complete(),
 		ApiExtensions: c.ApiExtensions.Complete(),
 
 		ExtraConfig: c.ExtraConfig,
@@ -65,7 +65,7 @@ func NewConfig(opts options.CompletedOptions) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	c.ControlPlane = controlPlane
+	c.KubeAPIs = controlPlane
 
 	apiExtensions, err := apiserver.CreateAPIExtensionsConfig(
 		controlPlane.GenericConfig.Config,

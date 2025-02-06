@@ -9,6 +9,11 @@
 <a href="https://konglingfei.com/"><img align="right" src="./docs/images/onex-orange.svg" alt="onex" title="onex" width="150"></a>
 
 <div align="left">一个专为 Go + 云原生学习而生的企业级 Go 项目</div>
+
+<br/>
+
+> OneX 技术栈项目之一，更多精彩项目见：[OneX 技术栈全景介绍](https://github.com/onexstack/community)
+
 <br/>
 
 [![GoDoc](https://godoc.org/github.com/onexstack/onex?status.svg)](https://godoc.org/github.com/onexstack/onex)

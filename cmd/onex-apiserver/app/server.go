@@ -55,8 +55,6 @@ import (
 	"github.com/onexstack/onexstack/pkg/version"
 )
 
-const appName = "onex-apiserver"
-
 func init() {
 	utilruntime.Must(logsapi.AddFeatureGates(utilfeature.DefaultMutableFeatureGate))
 }
@@ -143,7 +141,7 @@ func NewAPIServerCommand(serverRunOptions ...Option) *cobra.Command {
 	}
 
 	cmd := &cobra.Command{
-		Use:   appName,
+		Use:   "onex-apiserver",
 		Short: "Launch a onex API server",
 		Long: `The OneX API server validates and configures data
 for the api objects which include miners, minersets, configmaps, and
@@ -240,14 +238,14 @@ func Run(ctx context.Context, opts options.CompletedOptions) error {
 
 // CreateServerChain creates the apiservers connected via delegation.
 func CreateServerChain(config CompletedConfig) (*aggregatorapiserver.APIAggregator, error) {
-	notFoundHandler := notfoundhandler.New(config.ControlPlane.GenericConfig.Serializer, genericapifilters.NoMuxAndDiscoveryIncompleteKey)
+	notFoundHandler := notfoundhandler.New(config.KubeAPIs.GenericConfig.Serializer, genericapifilters.NoMuxAndDiscoveryIncompleteKey)
 	apiExtensionsServer, err := config.ApiExtensions.New(genericapiserver.NewEmptyDelegateWithCustomHandler(notFoundHandler))
 	if err != nil {
 		return nil, err
 	}
 	crdAPIEnabled := config.ApiExtensions.GenericConfig.MergedResourceConfig.ResourceEnabled(apiextensionsv1.SchemeGroupVersion.WithResource("customresourcedefinitions"))
 
-	onexAPIServer, err := config.ControlPlane.New(apiExtensionsServer.GenericAPIServer)
+	onexAPIServer, err := config.KubeAPIs.New(apiExtensionsServer.GenericAPIServer)
 	if err != nil {
 		return nil, err
 	}

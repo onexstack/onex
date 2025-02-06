@@ -12,7 +12,7 @@ import (
 func (h *Handler) CreateBlock(c *gin.Context) {
 	var rq v1.CreateBlockRequest
 	if err := core.ShouldBindJSON(c, &rq); err != nil {
-		core.WriteResponse(c, nil, err)
+		core.WriteResponse(c, err, nil)
 		return
 	}
 
@@ -22,5 +22,5 @@ func (h *Handler) CreateBlock(c *gin.Context) {
 
 // ListBlock retrieves a list of blocks based on query parameters.
 func (h *Handler) ListBlock(c *gin.Context) {
-	core.WriteResponse(c, h.bs.List(), nil)
+	core.WriteResponse(c, nil, h.bs.List())
 }

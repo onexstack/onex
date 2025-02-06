@@ -22,16 +22,16 @@ import (
 type Chain struct {
 	mu     sync.Mutex
 	client client.Client
-	ds     store.IStore
+	store  store.IStore
 }
 
 func (c *Chain) Name() string {
 	return "chain"
 }
 
-func (c *Chain) Initialize(client client.Client, ds store.IStore) {
+func (c *Chain) Initialize(client client.Client, store store.IStore) {
 	c.client = client
-	c.ds = ds
+	c.store = store
 }
 
 func (c *Chain) Delete(ctx context.Context) error {
@@ -39,7 +39,7 @@ func (c *Chain) Delete(ctx context.Context) error {
 	defer c.mu.Unlock()
 
 	klog.V(4).InfoS("Cleanup chains from chain table")
-	_, chains, err := c.ds.Chains().List(ctx, nil)
+	_, chains, err := c.store.Chain().List(ctx, nil)
 	if err != nil {
 		klog.ErrorS(err, "Failed to list chains")
 		return err
@@ -51,7 +51,7 @@ func (c *Chain) Delete(ctx context.Context) error {
 		key := client.ObjectKey{Namespace: chain.Namespace, Name: chain.Name}
 		if err := c.client.Get(ctx, key, &ch); err != nil {
 			if apierrors.IsNotFound(err) {
-				if derr := c.ds.Chains().Delete(ctx, where.F("namespace", chain.Namespace, "name", chain.Name)); derr != nil {
+				if derr := c.store.Chain().Delete(ctx, where.F("namespace", chain.Namespace, "name", chain.Name)); derr != nil {
 					klog.V(1).InfoS("Failed to delete chain", "chain", klog.KRef(chain.Namespace, chain.Name), "err", derr)
 					continue
 				}
