@@ -68,12 +68,12 @@ require (
 	gorm.io/gorm v1.25.12
 	k8s.io/api v0.32.1
 	k8s.io/apiextensions-apiserver v0.32.1
-	k8s.io/apimachinery v0.32.1
+	k8s.io/apimachinery v0.32.2
 	k8s.io/apiserver v0.32.1
 	k8s.io/cli-runtime v0.32.1
-	k8s.io/client-go v0.32.1
+	k8s.io/client-go v0.32.2
 	k8s.io/code-generator v0.32.1
-	k8s.io/component-base v0.32.1
+	k8s.io/component-base v0.32.2
 	k8s.io/controller-manager v0.32.1
 	k8s.io/klog/v2 v2.130.1
 	k8s.io/kube-aggregator v0.0.0

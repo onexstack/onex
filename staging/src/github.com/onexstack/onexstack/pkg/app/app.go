@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	_ "go.uber.org/automaxprocs"
 	"k8s.io/component-base/cli"
@@ -38,7 +39,7 @@ type App struct {
 	healthCheckFunc HealthCheckFunc
 
 	// +optional
-	options CliOptions
+	options any
 
 	// +optional
 	silence bool
@@ -65,7 +66,7 @@ type Option func(*App)
 
 // WithOptions to open the application's function to read from the command line
 // or read parameters from the configuration file.
-func WithOptions(opts CliOptions) Option {
+func WithOptions(opts any) Option {
 	return func(app *App) {
 		app.options = opts
 	}
@@ -207,23 +208,36 @@ func (app *App) buildCommand() {
 	cmd.SetErr(os.Stderr)
 	cmd.Flags().SortFlags = true
 
-	var fss cliflag.NamedFlagSets
-	if app.options != nil {
-		fss = app.options.Flags()
+	var fs *pflag.FlagSet
+	// 方法2：使用type switch
+	switch typed := app.options.(type) {
+	case NamedFlagSetOptions:
+		var fss cliflag.NamedFlagSets
+		fs = fss.FlagSet("global")
+
+		if app.options != nil {
+			fss = typed.Flags()
+		}
+
+		for _, f := range fss.FlagSets {
+			cmd.Flags().AddFlagSet(f)
+		}
+
+		cols, _, _ := term.TerminalSize(cmd.OutOrStdout())
+		cliflag.SetUsageAndHelpFunc(cmd, fss, cols)
+	case FlagSetOptions:
+		fs = cmd.PersistentFlags()
+		if app.options != nil {
+			typed.AddFlags(fs)
+		}
+	default:
 	}
 
-	version.AddFlags(fss.FlagSet("global"))
+	version.AddFlags(fs)
 
 	if !app.noConfig {
-		AddConfigFlag(fss.FlagSet("global"), app.name, app.watch)
+		AddConfigFlag(fs, app.name, app.watch)
 	}
-
-	for _, f := range fss.FlagSets {
-		cmd.Flags().AddFlagSet(f)
-	}
-
-	cols, _, _ := term.TerminalSize(cmd.OutOrStdout())
-	cliflag.SetUsageAndHelpFunc(cmd, fss, cols)
 
 	app.cmd = cmd
 }
@@ -252,9 +266,10 @@ func (app *App) runCommand(cmd *cobra.Command, args []string) error {
 			}
 		}
 
-		// validate options
-		if err := app.options.Validate(); err != nil {
-			return err
+		if validate, ok := app.options.(interface{ Validate() error }); ok {
+			if err := validate.Validate(); err != nil {
+				return err
+			}
 		}
 	}
 

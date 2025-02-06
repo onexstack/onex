@@ -4,7 +4,7 @@
 // this file is https://github.com/onexstack/onex.
 //
 
-package middleware
+package gin
 
 import (
 	"net/http"

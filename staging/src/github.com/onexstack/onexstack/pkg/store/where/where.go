@@ -18,8 +18,21 @@ type Tenant struct {
 	ValueFunc func(ctx context.Context) string // Function to retrieve the tenant's value based on the context
 }
 
+// Where defines an interface for types that can modify GORM database queries.
 type Where interface {
 	Where(db *gorm.DB) *gorm.DB
+}
+
+// Query represents a database query with its arguments.
+// It contains the query condition and any associated parameters.
+type Query struct {
+	// Query holds the condition to be used in the GORM query.
+	// Can be a string, map, struct, or other types supported by GORM's Where clause.
+	Query interface{}
+
+	// Args holds the arguments that will be passed to the query condition.
+	// These values will be used to replace placeholders in the query.
+	Args []interface{}
 }
 
 // Option defines a function type that modifies Options.
@@ -37,6 +50,8 @@ type Options struct {
 	Filters map[any]any
 	// Clauses contains custom clauses to be appended to the query.
 	Clauses []clause.Expression
+	// Queries contains a list of queries to be executed.
+	Queries []Query
 }
 
 // tenant holds the registered tenant instance.
@@ -89,6 +104,15 @@ func WithFilter(filter map[any]any) Option {
 func WithClauses(conds ...clause.Expression) Option {
 	return func(whr *Options) {
 		whr.Clauses = append(whr.Clauses, conds...)
+	}
+}
+
+// WithQuery creates an Option that adds a query condition with arguments to the Options struct.
+// The query parameter can be a string, map, struct, or any other type supported by GORM's Where clause.
+// The args parameter contains values that will replace placeholders in the query string.
+func WithQuery(query interface{}, args ...interface{}) Option {
+	return func(whr *Options) {
+		whr.Queries = append(whr.Queries, Query{Query: query, Args: args})
 	}
 }
 
@@ -145,6 +169,13 @@ func (whr *Options) C(conds ...clause.Expression) *Options {
 	return whr
 }
 
+// Q adds a query condition with arguments to the Options struct and returns the modified Options.
+// This method appends a new Query instance to the Queries slice.
+func (whr *Options) Q(query interface{}, args ...interface{}) *Options {
+	whr.Queries = append(whr.Queries, Query{Query: query, Args: args})
+	return whr
+}
+
 // T retrieves the value associated with the registered tenant using the provided context.
 func (whr *Options) T(ctx context.Context) *Options {
 	if registeredTenant.Key != "" && registeredTenant.ValueFunc != nil {
@@ -171,6 +202,10 @@ func (whr *Options) F(kvs ...any) *Options {
 
 // Where applies the filters and clauses to the given gorm.DB instance.
 func (whr *Options) Where(db *gorm.DB) *gorm.DB {
+	for _, query := range whr.Queries {
+		conds := db.Statement.BuildCondition(query.Query, query.Args...)
+		whr.Clauses = append(whr.Clauses, conds...)
+	}
 	return db.Where(whr.Filters).Clauses(whr.Clauses...).Offset(whr.Offset).Limit(whr.Limit)
 }
 
