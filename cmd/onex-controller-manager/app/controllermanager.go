@@ -66,12 +66,10 @@ import (
 	"github.com/onexstack/onex/internal/pkg/util/ratelimiter"
 	"github.com/onexstack/onex/internal/webhooks"
 	v1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
-	"github.com/onexstack/onexstack/pkg/db"
 	"github.com/onexstack/onex/pkg/record"
+	"github.com/onexstack/onexstack/pkg/db"
 	"github.com/onexstack/onexstack/pkg/version"
 )
-
-const appName = "onex-controller-manager"
 
 var scheme = runtime.NewScheme()
 
@@ -102,7 +100,7 @@ func NewControllerManagerCommand() *cobra.Command {
 	}
 
 	cmd := &cobra.Command{
-		Use: appName,
+		Use: "onex-controller-manager",
 		Long: `The onex controller manager is a daemon that embeds
 the core control loops. In applications of robotics and
 automation, a control loop is a non-terminating loop that regulates the state of
@@ -117,7 +115,7 @@ current state towards the desired state.`,
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			version.PrintAndExitIfRequested(appName)
+			version.PrintAndExitIfRequested()
 
 			// Activate logging as soon as possible, after that
 			// show flags with the final logging configuration.

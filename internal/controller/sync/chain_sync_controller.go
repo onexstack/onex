@@ -52,12 +52,12 @@ func (r *ChainSyncReconciler) Reconcile(ctx context.Context, rq ctrl.Request) (c
 	ch := &v1beta1.Chain{}
 	if err := r.client.Get(ctx, rq.NamespacedName, ch); err != nil {
 		if apierrors.IsNotFound(err) {
-			return ctrl.Result{}, r.Store.Chains().Delete(ctx, where.F("namespace", rq.Namespace, "name", rq.Name))
+			return ctrl.Result{}, r.Store.Chain().Delete(ctx, where.F("namespace", rq.Namespace, "name", rq.Name))
 		}
 		return ctrl.Result{}, err
 	}
 
-	chr, err := r.Store.Chains().Get(ctx, where.F("namespace", rq.Namespace, "name", rq.Name))
+	chr, err := r.Store.Chain().Get(ctx, where.F("namespace", rq.Namespace, "name", rq.Name))
 	if err != nil {
 		// chain record not exist, create it.
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -76,7 +76,7 @@ func (r *ChainSyncReconciler) Reconcile(ctx context.Context, rq ctrl.Request) (c
 		//nolint: errchkjson
 		data, _ := json.Marshal(chr)
 		log.V(4).Info("chain record changed", "newest", string(data))
-		return ctrl.Result{}, r.Store.Chains().Update(ctx, chr)
+		return ctrl.Result{}, r.Store.Chain().Update(ctx, chr)
 	}
 
 	return ctrl.Result{}, nil
@@ -84,7 +84,7 @@ func (r *ChainSyncReconciler) Reconcile(ctx context.Context, rq ctrl.Request) (c
 
 // create chain record.
 func addChain(ctx context.Context, dbcli store.IStore, ch *v1beta1.Chain) error {
-	return dbcli.Chains().Create(ctx, applyToChain(&gwmodel.ChainM{}, ch))
+	return dbcli.Chain().Create(ctx, applyToChain(&gwmodel.ChainM{}, ch))
 }
 
 func applyToChain(chr *gwmodel.ChainM, ch *v1beta1.Chain) *gwmodel.ChainM {

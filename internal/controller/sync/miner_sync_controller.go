@@ -55,12 +55,12 @@ func (r *MinerSyncReconciler) Reconcile(ctx context.Context, rq ctrl.Request) (c
 	m := &v1beta1.Miner{}
 	if err := r.client.Get(ctx, rq.NamespacedName, m); err != nil {
 		if apierrors.IsNotFound(err) {
-			return ctrl.Result{}, r.Store.Miners().Delete(ctx, where.F("namespace", rq.Namespace, "name", rq.Name))
+			return ctrl.Result{}, r.Store.Miner().Delete(ctx, where.F("namespace", rq.Namespace, "name", rq.Name))
 		}
 		return ctrl.Result{}, err
 	}
 
-	mr, err := r.Store.Miners().Get(ctx, where.F("namespace", rq.Namespace, "name", rq.Name))
+	mr, err := r.Store.Miner().Get(ctx, where.F("namespace", rq.Namespace, "name", rq.Name))
 	if err != nil {
 		// miner record not exist, create it.
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -79,7 +79,7 @@ func (r *MinerSyncReconciler) Reconcile(ctx context.Context, rq ctrl.Request) (c
 		//nolint: errchkjson
 		data, _ := json.Marshal(mr)
 		log.V(4).Info("miner record changed", "newest", string(data))
-		return ctrl.Result{}, r.Store.Miners().Update(ctx, mr)
+		return ctrl.Result{}, r.Store.Miner().Update(ctx, mr)
 	}
 
 	return ctrl.Result{}, nil
@@ -87,7 +87,7 @@ func (r *MinerSyncReconciler) Reconcile(ctx context.Context, rq ctrl.Request) (c
 
 // create miner record.
 func addMiner(ctx context.Context, dbcli store.IStore, m *v1beta1.Miner) error {
-	return dbcli.Miners().Create(ctx, applyToMiner(&gwmodel.MinerM{}, m))
+	return dbcli.Miner().Create(ctx, applyToMiner(&gwmodel.MinerM{}, m))
 }
 
 func applyToMiner(mr *gwmodel.MinerM, m *v1beta1.Miner) *gwmodel.MinerM {

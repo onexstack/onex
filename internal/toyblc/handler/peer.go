@@ -14,7 +14,7 @@ import (
 func (h *Handler) CreatePeer(c *gin.Context) {
 	var rq v1.CreatePeerRequest
 	if err := core.ShouldBindJSON(c, &rq); err != nil {
-		core.WriteResponse(c, nil, err)
+		core.WriteResponse(c, err, nil)
 		return
 	}
 
@@ -35,5 +35,5 @@ func (h *Handler) ListPeer(c *gin.Context) {
 		}
 	}
 
-	core.WriteResponse(c, slice, nil)
+	core.WriteResponse(c, nil, slice)
 }

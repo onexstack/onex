@@ -13,6 +13,7 @@ import (
 	"errors"
 	"reflect"
 
+	"github.com/onexstack/onexstack/pkg/ptr"
 	"gorm.io/gorm"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -53,12 +54,12 @@ func (r *MinerSetSyncReconciler) Reconcile(ctx context.Context, rq ctrl.Request)
 	ms := &v1beta1.MinerSet{}
 	if err := r.client.Get(ctx, rq.NamespacedName, ms); err != nil {
 		if apierrors.IsNotFound(err) {
-			return ctrl.Result{}, r.Store.MinerSets().Delete(ctx, where.F("namespace", rq.Namespace, "name", rq.Name))
+			return ctrl.Result{}, r.Store.MinerSet().Delete(ctx, where.F("namespace", rq.Namespace, "name", rq.Name))
 		}
 		return ctrl.Result{}, err
 	}
 
-	msr, err := r.Store.MinerSets().Get(ctx, where.F("namespace", rq.Namespace, "name", rq.Name))
+	msr, err := r.Store.MinerSet().Get(ctx, where.F("namespace", rq.Namespace, "name", rq.Name))
 	if err != nil {
 		// minerset record not exist, create it.
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -77,7 +78,7 @@ func (r *MinerSetSyncReconciler) Reconcile(ctx context.Context, rq ctrl.Request)
 		//nolint: errchkjson
 		data, _ := json.Marshal(msr)
 		log.V(4).Info("minerset record changed", "newest", string(data))
-		return ctrl.Result{}, r.Store.MinerSets().Update(ctx, msr)
+		return ctrl.Result{}, r.Store.MinerSet().Update(ctx, msr)
 	}
 
 	return ctrl.Result{}, nil
@@ -85,7 +86,7 @@ func (r *MinerSetSyncReconciler) Reconcile(ctx context.Context, rq ctrl.Request)
 
 // create minerset record.
 func addMinerSet(ctx context.Context, dbcli store.IStore, ms *v1beta1.MinerSet) error {
-	return dbcli.MinerSets().Create(ctx, applyToMinerSet(&gwmodel.MinerSetM{}, ms))
+	return dbcli.MinerSet().Create(ctx, applyToMinerSet(&gwmodel.MinerSetM{}, ms))
 }
 
 func applyToMinerSet(msr *gwmodel.MinerSetM, ms *v1beta1.MinerSet) *gwmodel.MinerSetM {
@@ -100,16 +101,16 @@ func applyToMinerSet(msr *gwmodel.MinerSetM, ms *v1beta1.MinerSet) *gwmodel.Mine
 	msr.AvailableReplicas = ms.Status.AvailableReplicas
 
 	if ms.Status.FailureReason != nil {
-		msr.FailureReason = string(*ms.Status.FailureReason)
+		msr.FailureReason = ptr.To(string(*ms.Status.FailureReason))
 	}
 	if ms.Status.FailureMessage != nil {
-		msr.FailureMessage = *ms.Status.FailureMessage
+		msr.FailureMessage = ms.Status.FailureMessage
 	}
 
 	if len(ms.Status.Conditions) > 0 {
 		//nolint:errchkjson
 		data, _ := json.Marshal(ms.Status.Conditions)
-		msr.Conditions = string(data)
+		msr.Conditions = ptr.To(string(data))
 	}
 
 	return msr
