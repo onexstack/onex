@@ -8,11 +8,11 @@
 package main
 
 import (
-	_ "go.uber.org/automaxprocs"
+	_ "go.uber.org/automaxprocs/maxprocs"
 
 	"github.com/superproj/onex/cmd/onex-gateway/app"
 )
 
 func main() {
-	app.NewApp("onex-gateway").Run()
+	app.NewApp().Run()
 }

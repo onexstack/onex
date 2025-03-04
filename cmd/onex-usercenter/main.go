@@ -9,12 +9,12 @@ package main
 
 import (
 	// Importing the package to automatically set GOMAXPROCS.
-	_ "go.uber.org/automaxprocs"
+	_ "go.uber.org/automaxprocs/maxprocs"
 
 	"github.com/superproj/onex/cmd/onex-usercenter/app"
 )
 
 func main() {
 	// Creating a new instance of the usercenter application and running it
-	app.NewApp("onex-usercenter").Run()
+	app.NewApp().Run()
 }

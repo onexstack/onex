@@ -12,12 +12,15 @@ import (
 	clientset "github.com/superproj/onex/pkg/generated/clientset/versioned"
 )
 
-// Config aggregates the configurations of all watchers and serves as a configuration aggregator.
-type Config struct {
+// AggregateConfig aggregates the configurations of all watchers and serves as a configuration aggregator.
+type AggregateConfig struct {
 	// The purpose of nightwatch is to handle asynchronous tasks on the onex platform
 	// in a unified manner, so a store aggregation type is needed here.
 	Store store.Interface
 
 	// Client is the client for onex-apiserver.
 	Client clientset.Interface
+
+	// Then maximum concurrency event of user watcher.
+	UserWatcherMaxWorkers int64
 }
