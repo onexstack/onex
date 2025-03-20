@@ -313,12 +313,9 @@ replace (
 	go.opentelemetry.io/otel/sdk => go.opentelemetry.io/otel/sdk v1.19.0
 	go.opentelemetry.io/otel/trace => go.opentelemetry.io/otel/trace v1.19.0
 	go.opentelemetry.io/proto/otlp => go.opentelemetry.io/proto/otlp v1.0.0
-	k8s.io/api => /home/colin/workspace/golang/src/k8s.io/api
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.30.2
-	k8s.io/apimachinery => /home/colin/workspace/golang/src/k8s.io/apimachinery
 	k8s.io/apiserver => k8s.io/apiserver v0.30.2
 	k8s.io/cli-runtime => k8s.io/cli-runtime v0.30.2
-	k8s.io/client-go => /home/colin/workspace/golang/src/k8s.io/client-go
 	k8s.io/cloud-provider => k8s.io/cloud-provider v0.30.2
 	k8s.io/cluster-bootstrap => k8s.io/cluster-bootstrap v0.30.2
 	k8s.io/code-generator => k8s.io/code-generator v0.30.2
