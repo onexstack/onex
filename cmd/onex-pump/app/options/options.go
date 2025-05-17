@@ -31,8 +31,8 @@ type ServerOptions struct {
 	FeatureGates  map[string]bool               `json:"feature-gates"`
 }
 
-// Ensure ServerOptions implements the app.CliOptions interface.
-var _ app.CliOptions = (*ServerOptions)(nil)
+// Ensure ServerOptions implements the app.NamedFlagSetOptions interface.
+var _ app.NamedFlagSetOptions = (*ServerOptions)(nil)
 
 // NewServerOptions creates a ServerOptions instance with default values.
 func NewServerOptions() *ServerOptions {

@@ -5,18 +5,18 @@ import (
 
 	"github.com/onexstack/onexstack/pkg/core"
 	"github.com/onexstack/onexstack/pkg/db"
-	"github.com/onexstack/onexstack/pkg/watch/logger/onex"
 	"github.com/onexstack/onexstack/pkg/log"
 	genericoptions "github.com/onexstack/onexstack/pkg/options"
 	"github.com/onexstack/onexstack/pkg/store/where"
 	"github.com/onexstack/onexstack/pkg/watch"
+	"github.com/onexstack/onexstack/pkg/watch/logger/onex"
 	"gorm.io/gorm"
 
 	"github.com/onexstack/onex/internal/nightwatch/watcher"
 	_ "github.com/onexstack/onex/internal/nightwatch/watcher/all"
 	fakeminio "github.com/onexstack/onex/internal/pkg/client/minio/fake"
-	clientset "github.com/onexstack/onex/pkg/generated/clientset/versioned"
 	"github.com/onexstack/onex/internal/pkg/contextx"
+	clientset "github.com/onexstack/onex/pkg/generated/clientset/versioned"
 )
 
 // Config contains application-related configurations.

@@ -47,8 +47,8 @@ type ServerOptions struct {
 	Log          *log.Options    `json:"log" mapstructure:"log"`
 }
 
-// Ensure ServerOptions implements the app.CliOptions interface.
-var _ app.CliOptions = (*ServerOptions)(nil)
+// Ensure ServerOptions implements the app.NamedFlagSetOptions interface.
+var _ app.NamedFlagSetOptions = (*ServerOptions)(nil)
 
 // NewServerOptions creates a ServerOptions instance with default values.
 func NewServerOptions() *ServerOptions {
@@ -120,7 +120,7 @@ func (o *ServerOptions) Validate() error {
 	return utilerrors.NewAggregate(errs)
 }
 
-// Config builds an nightwatch.Config based on ServerOptions.
+// Config builds a nightwatch.Config based on ServerOptions.
 func (o *ServerOptions) Config() (*nightwatch.Config, error) {
 	kubeconfig, err := clientcmd.BuildConfigFromFlags("", o.Kubeconfig)
 	if err != nil {

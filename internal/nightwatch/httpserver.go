@@ -51,7 +51,7 @@ func InstallJobAPI(engine *gin.Engine, db *gorm.DB) {
 
 	v1 := engine.Group("/v1")
 	{
-		// 用户相关路由
+		// 定时任务相关路由
 		cronjobv1 := v1.Group("/cronjobs")
 		{
 			cronjobv1.POST("", handler.CreateCronJob)
@@ -61,7 +61,7 @@ func InstallJobAPI(engine *gin.Engine, db *gorm.DB) {
 			cronjobv1.GET("", handler.ListCronJob)
 		}
 
-		// 博客相关路由
+		// 任务相关路由
 		jobv1 := v1.Group("/jobs")
 		{
 			jobv1.POST("", handler.CreateJob)
@@ -80,7 +80,7 @@ func InstallGenericAPI(engine *gin.Engine) {
 
 	// 注册 404 路由处理
 	engine.NoRoute(func(c *gin.Context) {
-		core.WriteResponse(c, errno.ErrorPageNotFound("Page Not Found"), nil)
+		core.WriteResponse(c, nil, errno.ErrorPageNotFound("Page Not Found"))
 	})
 }
 

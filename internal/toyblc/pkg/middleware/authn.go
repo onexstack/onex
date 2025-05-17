@@ -38,7 +38,7 @@ func (a authPairs) searchCredential(authValue string) (string, bool) {
 	return "", false
 }
 
-// Authn returns a Basic HTTP Authorization middleware. It takes as argument a map[string]string where
+// BasicAuth returns a Basic HTTP Authorization middleware. It takes as argument a map[string]string where
 // the key is the user name and the value is the password.
 func BasicAuth(accounts map[string]string) gin.HandlerFunc {
 	realm := "Basic realm=" + strconv.Quote("Authorization Required")
@@ -50,7 +50,7 @@ func BasicAuth(accounts map[string]string) gin.HandlerFunc {
 		if !found {
 			// Credentials doesn't match, we return 401 and abort handlers chain.
 			c.Header("WWW-Authenticate", realm)
-			core.WriteResponse(c, errors.Unauthorized("UNAUTHORIZED", "The username or password is incorrect"), nil)
+			core.WriteResponse(c, nil, errors.Unauthorized("UNAUTHORIZED", "The username or password is incorrect"))
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
