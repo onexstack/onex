@@ -67,7 +67,7 @@ func (w *userWatcher) Run() {
 			ctx := contextx.WithUserM(context.Background(), user)
 
 			usm := &UserStateMachine{UserM: user, FSM: NewFSM(user.Status, w)}
-			if err := usm.FSM.Event(ctx, user.Status); err != nil {
+			if err := usm.FSM.Event(ctx, user.Status); filterFSMError(err) != nil {
 				log.Errorw(err, "Failed to event user", "username", user.Username, "status", user.Status)
 				return
 			}

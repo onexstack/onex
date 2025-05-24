@@ -1,6 +1,7 @@
 package user
 
 import (
+	"errors"
 	"github.com/looplab/fsm"
 
 	known "github.com/onexstack/onex/internal/pkg/known/usercenter"
@@ -38,7 +39,7 @@ func NewFSM(initial string, w *userWatcher) *fsm.FSM {
 			known.UserStatusActived:  NewActiveUserCallback(w.store),
 			known.UserStatusDisabled: NewDisableUserCallback(w.store),
 			known.UserStatusDeleted:  NewDeleteUserCallback(w.store),
-			// log, alert, save to stoer, etc for all events.
+			// log, alert, save to store, etc. for all events.
 			// Alert the status of each step of the operation.
 			UserEventAfterEvent: NewUserEventAfterEvent(w.store),
 		},
@@ -46,8 +47,14 @@ func NewFSM(initial string, w *userWatcher) *fsm.FSM {
 }
 
 func filterFSMError(err error) error {
-	switch err.(type) {
-	case fsm.NoTransitionError:
+	var (
+		noTransitionError fsm.NoTransitionError
+		unknownEventError fsm.UnknownEventError
+	)
+	switch {
+	case errors.As(err, &noTransitionError):
+		return nil
+	case errors.As(err, &unknownEventError):
 		return nil
 	default:
 		return err
