@@ -1,4 +1,3 @@
-[项目网站]: https://konglingfei.com
 [项目文档]: https://konglingfei.com/onex/
 [安装指南]: https://konglingfei.com/onex/installation/
 [开发指南]: https://konglingfei.com/onex/devel/devel.html
@@ -36,8 +35,6 @@
 </div>
 
 OneX 云原生实战平台是一个 Go 语言 + 云原生实战平台，也是一个企业级的云平台，整个项目遵循最佳实践的思路去构建。
-
-OneX 项目通过提供功能完备、规范、高质量的 Go 源码来实现代码即学习的理念，通过配套的 Go 开发课程，来降低学习难度、扩展学习深度和广度。通过配套的云原生开发社群 [孔令飞的云原生实战营](https://konglingfei.com)，来提高云原生技术学习的效果。
 
 > OneX 寓意该实战项目具有功能全、扩展性高等特点。未来 OneX 会继续集成进很多跟 Go、云原生相关的功能。因为 OneX在项目设计的时候，就考虑到了未来功能和架构的扩展，所以 OneX 未来可以无缝、丝滑的扩展很多新的功能。
 
@@ -125,15 +122,6 @@ OneX [项目文档] 包含了 OneX 项目介绍、OneX 部署、OneX 项目测�
 欢迎贡献！ 请参阅 [CONTRIBUTING.md](./CONTRIBUTING.md) 以了解如何贡献。
 
 请遵守本项目的 行为准则 [code of conduct](./CODE_OF_CONDUCT.md)。
-
-## Contacts
-
-- 关注公众号【[令飞编程](https://mp.weixin.qq.com/s/a8efr1hZ6bZHOqH3ITj9yA)】，干货不错过：
-  - 回复【资料】获取全套 Go + 云原生学习资料；
-  - 回复【好友】可以添加我的微信，免费一对一技术交流指导；
-  - 回复【星球】加入 [孔令飞的云原生实战营](https://konglingfei.com)，带你进阶 Go+云原生高级开发工程师。
-
-![令飞编程](./docs/images/令飞编程.png)
 
 ## License
 
