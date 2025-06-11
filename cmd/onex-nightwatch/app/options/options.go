@@ -47,8 +47,8 @@ type ServerOptions struct {
 	Log          *log.Options    `json:"log" mapstructure:"log"`
 }
 
-// Ensure ServerOptions implements the app.CliOptions interface.
-var _ app.CliOptions = (*ServerOptions)(nil)
+// Ensure ServerOptions implements the app.NamedFlagSetOptions interface.
+var _ app.NamedFlagSetOptions = (*ServerOptions)(nil)
 
 // NewServerOptions creates a ServerOptions instance with default values.
 func NewServerOptions() *ServerOptions {

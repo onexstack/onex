@@ -35,5 +35,5 @@ func (h *Handler) ListPeer(c *gin.Context) {
 		}
 	}
 
-	core.WriteResponse(c, nil, slice)
+	core.WriteResponse(c, slice, nil)
 }

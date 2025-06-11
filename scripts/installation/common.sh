@@ -16,7 +16,7 @@ PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/../..
 source "${PROJ_ROOT_DIR}/scripts/common.sh"
 
 # 设置 ONEX_ENV_FILE（重要）
-ONEX_ENV_FILE=${ONEX_ENV_FILE:-${PROJ_ROOT_DIR}/manifests/env.local}
+ONEX_ENV_FILE=${ONEX_ENV_FILE:-${PROJ_ROOT_DIR}/manifests/env/env.local}
 # 加载本地安装环境变量（非常重要的一步，后面很多步骤都依赖于env.local中的变量设置）
 source ${ONEX_ENV_FILE}
 
