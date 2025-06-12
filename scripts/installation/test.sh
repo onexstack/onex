@@ -223,7 +223,8 @@ onex::test::controller()
 # 测试 onex-apiserver 组件
 onex::test::apiserver()
 {
-  kubectl api-resources | egrep -q 'apps.onex.io'
+  kubectl_output=`kubectl api-resources`
+  echo "$kubectl_output" | egrep -q 'apps.onex.io'
 }
 
 # 测试 onex-gateway 组件
