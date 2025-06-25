@@ -1,0 +1,699 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "miniblog/v1/miniblog.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "MiniBlog"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/login": {
+      "post": {
+        "summary": "用户登录",
+        "operationId": "MiniBlog_Login",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1LoginResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1LoginRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MiniBlog"
+        ]
+      }
+    },
+    "/v1/posts": {
+      "get": {
+        "summary": "列出所有文章",
+        "operationId": "MiniBlog_ListPost",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListPostResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "MiniBlog"
+        ]
+      },
+      "delete": {
+        "summary": "删除文章",
+        "operationId": "MiniBlog_DeletePost",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeletePostResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "postIDs",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "tags": [
+          "MiniBlog"
+        ]
+      },
+      "post": {
+        "summary": "创建文章",
+        "operationId": "MiniBlog_CreatePost",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreatePostResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreatePostRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MiniBlog"
+        ]
+      }
+    },
+    "/v1/posts/{postID}": {
+      "get": {
+        "summary": "获取文章信息",
+        "operationId": "MiniBlog_GetPost",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetPostResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "postID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "MiniBlog"
+        ]
+      },
+      "put": {
+        "summary": "更新文章",
+        "operationId": "MiniBlog_UpdatePost",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdatePostResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "postID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "content": {
+                  "type": "string"
+                }
+              },
+              "title": "UpdatePostRequest 表示更新文章请求"
+            }
+          }
+        ],
+        "tags": [
+          "MiniBlog"
+        ]
+      }
+    },
+    "/v1/users": {
+      "get": {
+        "summary": "列出所有用户",
+        "operationId": "MiniBlog_ListUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "MiniBlog"
+        ]
+      },
+      "post": {
+        "summary": "创建用户",
+        "operationId": "MiniBlog_CreateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MiniBlog"
+        ]
+      }
+    },
+    "/v1/users/{userID}": {
+      "get": {
+        "summary": "获取用户信息",
+        "operationId": "MiniBlog_GetUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "MiniBlog"
+        ]
+      },
+      "delete": {
+        "summary": "删除用户",
+        "operationId": "MiniBlog_DeleteUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "MiniBlog"
+        ]
+      },
+      "put": {
+        "summary": "更新用户信息",
+        "operationId": "MiniBlog_UpdateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string"
+                },
+                "nickname": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "phone": {
+                  "type": "string"
+                }
+              },
+              "title": "UpdateUserRequest 表示更新用户请求"
+            }
+          }
+        ],
+        "tags": [
+          "MiniBlog"
+        ]
+      }
+    },
+    "/v1/users/{userID}/change-password": {
+      "put": {
+        "summary": "修改密码",
+        "operationId": "MiniBlog_ChangePassword",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ChangePasswordResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "old_password": {
+                  "type": "string"
+                },
+                "new_password": {
+                  "type": "string"
+                }
+              },
+              "title": "ChangePasswordRequest 表示修改密码请求"
+            }
+          }
+        ],
+        "tags": [
+          "MiniBlog"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1ChangePasswordResponse": {
+      "type": "object",
+      "title": "ChangePasswordResponse 表示修改密码响应"
+    },
+    "v1CreatePostRequest": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        }
+      },
+      "title": "CreatePostRequest 表示创建文章请求"
+    },
+    "v1CreatePostResponse": {
+      "type": "object",
+      "properties": {
+        "postID": {
+          "type": "string"
+        }
+      },
+      "title": "CreatePostResponse 表示创建文章响应"
+    },
+    "v1CreateUserRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "nickname": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        }
+      },
+      "title": "CreateUserRequest 表示创建用户请求"
+    },
+    "v1CreateUserResponse": {
+      "type": "object",
+      "properties": {
+        "userID": {
+          "type": "string"
+        }
+      },
+      "title": "CreateUserResponse 表示创建用户响应"
+    },
+    "v1DeletePostResponse": {
+      "type": "object",
+      "title": "DeletePostResponse 表示删除文章响应"
+    },
+    "v1DeleteUserResponse": {
+      "type": "object",
+      "title": "DeleteUserResponse 表示删除用户响应"
+    },
+    "v1GetPostResponse": {
+      "type": "object",
+      "properties": {
+        "post": {
+          "$ref": "#/definitions/v1Post"
+        }
+      },
+      "title": "GetPostResponse 表示获取文章响应"
+    },
+    "v1GetUserResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/v1User"
+        }
+      },
+      "title": "GetUserResponse 表示获取用户响应"
+    },
+    "v1ListPostResponse": {
+      "type": "object",
+      "properties": {
+        "total_count": {
+          "type": "string",
+          "format": "int64"
+        },
+        "posts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Post"
+          }
+        }
+      },
+      "title": "ListPostResponse 表示获取文章列表响应"
+    },
+    "v1ListUserResponse": {
+      "type": "object",
+      "properties": {
+        "total_count": {
+          "type": "string",
+          "format": "int64"
+        },
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1User"
+          }
+        }
+      },
+      "title": "ListUserResponse 表示用户列表响应"
+    },
+    "v1LoginRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "title": "LoginRequest 表示登录请求"
+    },
+    "v1LoginResponse": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      },
+      "title": "LoginResponse 表示登录响应"
+    },
+    "v1Post": {
+      "type": "object",
+      "properties": {
+        "postID": {
+          "type": "string"
+        },
+        "userID": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "Post 表示博客文章"
+    },
+    "v1UpdatePostResponse": {
+      "type": "object",
+      "title": "UpdatePostResponse 表示更新文章响应"
+    },
+    "v1UpdateUserResponse": {
+      "type": "object",
+      "title": "UpdateUserResponse 表示更新用户响应"
+    },
+    "v1User": {
+      "type": "object",
+      "properties": {
+        "userID": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "nickname": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "post_count": {
+          "type": "string",
+          "format": "int64"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "User 表示用户信息"
+    }
+  }
+}

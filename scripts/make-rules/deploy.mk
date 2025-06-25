@@ -25,16 +25,16 @@ deploy.run.%: image.push.% ## Deploy a specified service.
 
 .PHONY: deploy.docker
 deploy.docker:
-	$(ONEX_ROOT)/scripts/installation/install.sh onex::install::docker::install
+	$(PROJ_ROOT_DIR)/scripts/installation/install.sh onex::install::docker::install
 
 .PHONY: deploy.docker.uninstall
 deploy.docker.uninstall:
-	$(ONEX_ROOT)/scripts/installation/install.sh onex::install::docker::uninstall
+	$(PROJ_ROOT_DIR)/scripts/installation/install.sh onex::install::docker::uninstall
 
 .PHONY: deploy.sbs
 deploy.sbs:
-	$(ONEX_ROOT)/scripts/installation/install.sh onex::install::sbs::install
+	$(PROJ_ROOT_DIR)/scripts/installation/install.sh onex::install::sbs::install
 
 .PHONY: deploy.sbs.uninstall
 deploy.sbs.uninstall:
-	$(ONEX_ROOT)/scripts/installation/install.sh onex::install::sbs::uninstall
+	$(PROJ_ROOT_DIR)/scripts/installation/install.sh onex::install::sbs::uninstall

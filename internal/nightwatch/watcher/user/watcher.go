@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Package user is a watcher implement.
@@ -12,18 +12,18 @@ import (
 
 	"github.com/gammazero/workerpool"
 	"github.com/looplab/fsm"
+	"github.com/onexstack/onexstack/pkg/log"
+	stringsutil "github.com/onexstack/onexstack/pkg/util/strings"
+	"github.com/onexstack/onexstack/pkg/watch/registry"
 
-	"github.com/superproj/onex/internal/nightwatch/watcher"
-	"github.com/superproj/onex/internal/pkg/client/store"
-	known "github.com/superproj/onex/internal/pkg/known/usercenter"
-	"github.com/superproj/onex/internal/pkg/onexx"
-	"github.com/superproj/onex/internal/usercenter/model"
-	"github.com/superproj/onex/pkg/log"
-	stringsutil "github.com/superproj/onex/pkg/util/strings"
-	"github.com/superproj/onex/pkg/watch"
+	"github.com/onexstack/onex/internal/nightwatch/watcher"
+	"github.com/onexstack/onex/internal/pkg/client/store"
+	"github.com/onexstack/onex/internal/pkg/contextx"
+	known "github.com/onexstack/onex/internal/pkg/known/usercenter"
+	"github.com/onexstack/onex/internal/usercenter/model"
 )
 
-var _ watch.Watcher = (*userWatcher)(nil)
+var _ registry.Watcher = (*userWatcher)(nil)
 
 // watcher implement.
 type userWatcher struct {
@@ -39,7 +39,7 @@ type UserStateMachine struct {
 
 // Run runs the watcher.
 func (w *userWatcher) Run() {
-	_, users, err := w.store.UserCenter().Users().List(context.Background())
+	_, users, err := w.store.UserCenter().User().List(context.Background(), nil)
 	if err != nil {
 		log.Errorw(err, "Failed to list users")
 		return
@@ -64,7 +64,7 @@ func (w *userWatcher) Run() {
 		}
 
 		wp.Submit(func() {
-			ctx := onexx.NewUserM(context.Background(), user)
+			ctx := contextx.WithUserM(context.Background(), user)
 
 			usm := &UserStateMachine{UserM: user, FSM: NewFSM(user.Status, w)}
 			if err := usm.FSM.Event(ctx, user.Status); err != nil {
@@ -87,10 +87,10 @@ func (w *userWatcher) Run() {
 
 // SetAggregateConfig initializes the watcher for later execution.
 func (w *userWatcher) SetAggregateConfig(config *watcher.AggregateConfig) {
-	w.store = config.Store
+	w.store = config.AggregateStore
 	w.maxWorkers = config.UserWatcherMaxWorkers
 }
 
 func init() {
-	watch.Register("user", &userWatcher{})
+	registry.Register("user", &userWatcher{})
 }

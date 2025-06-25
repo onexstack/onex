@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package webhooks
@@ -18,8 +18,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 
-	known "github.com/superproj/onex/internal/pkg/known/controllermanager"
-	"github.com/superproj/onex/pkg/apis/apps/v1beta1"
+	known "github.com/onexstack/onex/internal/pkg/known/controllermanager"
+	"github.com/onexstack/onex/pkg/apis/apps/v1beta1"
 )
 
 // Chain implements a validation and defaulting webhook for Chain.

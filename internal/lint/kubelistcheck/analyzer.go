@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package kubelistcheck
@@ -17,7 +17,7 @@ import (
 	"golang.org/x/tools/go/analysis/passes/inspect"
 	"golang.org/x/tools/go/ast/inspector"
 
-	passutil "github.com/superproj/onex/pkg/util/lint/pass"
+	passutil "github.com/onexstack/onexstack/pkg/util/lint/pass"
 )
 
 var (

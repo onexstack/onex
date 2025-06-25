@@ -1,13 +1,12 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package controlplane
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"reflect"
@@ -16,7 +15,6 @@ import (
 	coordinationv1 "k8s.io/api/coordination/v1"
 	apiv1 "k8s.io/api/core/v1"
 	flowcontrolv1 "k8s.io/api/flowcontrol/v1"
-	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	apiserverfeatures "k8s.io/apiserver/pkg/features"
 	peerreconcilers "k8s.io/apiserver/pkg/reconcilers"
@@ -26,17 +24,15 @@ import (
 	utilfeature "k8s.io/apiserver/pkg/util/feature"
 	utilpeerproxy "k8s.io/apiserver/pkg/util/peerproxy"
 	kubeinformers "k8s.io/client-go/informers"
+	clientset "k8s.io/client-go/kubernetes"
 	"k8s.io/klog/v2"
 	"k8s.io/kubernetes/pkg/routes"
 
-	"github.com/superproj/onex/internal/controlplane/controller/systemnamespaces"
-	"github.com/superproj/onex/internal/controlplane/storage"
-	"github.com/superproj/onex/internal/pkg/config/minerprofile"
-	coordinationrest "github.com/superproj/onex/internal/registry/coordination/rest"
-	corerest "github.com/superproj/onex/internal/registry/core/rest"
-	flowcontrolrest "github.com/superproj/onex/internal/registry/flowcontrol/rest"
-	"github.com/superproj/onex/pkg/generated/clientset/versioned"
-	"github.com/superproj/onex/pkg/generated/informers"
+	"github.com/onexstack/onex/internal/controlplane/controller/systemnamespaces"
+	coordinationrest "github.com/onexstack/onex/internal/registry/coordination/rest"
+	corerest "github.com/onexstack/onex/internal/registry/core/rest"
+	flowcontrolrest "github.com/onexstack/onex/internal/registry/flowcontrol/rest"
+	"github.com/onexstack/onex/pkg/apiserver/storage"
 )
 
 const (
@@ -89,8 +85,8 @@ type ExtraConfig struct {
 	// same value for this field. (Numbers > 1 currently untested.)
 	MasterCount int
 
-	KubeVersionedInformers     kubeinformers.SharedInformerFactory
-	InternalVersionedInformers informers.SharedInformerFactory
+	//KubeVersionedInformers     kubeinformers.SharedInformerFactory
+	InternalVersionedInformers kubeinformers.SharedInformerFactory
 	ExternalVersionedInformers ExternalSharedInformerFactory
 	ExternalPostStartHooks     map[string]genericapiserver.PostStartHookFunc
 }
@@ -140,7 +136,7 @@ func (c completedConfig) New(delegationTarget genericapiserver.DelegationTarget)
 		GenericAPIServer: s,
 	}
 
-	clientset, err := versioned.NewForConfig(c.GenericConfig.LoopbackClientConfig)
+	clientset, err := clientset.NewForConfig(c.GenericConfig.LoopbackClientConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -170,7 +166,7 @@ func (c completedConfig) New(delegationTarget genericapiserver.DelegationTarget)
 	}
 
 	m.GenericAPIServer.AddPostStartHookOrDie("start-system-namespaces-controller", func(hookContext genericapiserver.PostStartHookContext) error {
-		go systemnamespaces.NewController(clientset, c.ExtraConfig.InternalVersionedInformers.Core().V1().Namespaces()).Run(hookContext.StopCh)
+		go systemnamespaces.NewController(clientset, c.ExtraConfig.InternalVersionedInformers.Core().V1().Namespaces()).Run(hookContext.Done())
 		return nil
 	})
 
@@ -182,8 +178,8 @@ func (c completedConfig) New(delegationTarget genericapiserver.DelegationTarget)
 		"start-internal-informers",
 		func(context genericapiserver.PostStartHookContext) error {
 			// remove dependence with kube-apiserver
-			c.ExtraConfig.KubeVersionedInformers.Start(context.StopCh)
-			c.ExtraConfig.InternalVersionedInformers.Start(context.StopCh)
+			//c.ExtraConfig.KubeVersionedInformers.Start(context.StopCh)
+			c.ExtraConfig.InternalVersionedInformers.Start(context.Done())
 			return nil
 		},
 	)
@@ -192,31 +188,8 @@ func (c completedConfig) New(delegationTarget genericapiserver.DelegationTarget)
 		"start-external-informers",
 		func(context genericapiserver.PostStartHookContext) error {
 			if c.ExtraConfig.ExternalVersionedInformers != nil {
-				c.ExtraConfig.ExternalVersionedInformers.Start(context.StopCh)
+				c.ExtraConfig.ExternalVersionedInformers.Start(context.Done())
 			}
-			return nil
-		},
-	)
-
-	m.GenericAPIServer.AddPostStartHookOrDie(
-		"initialize-instance-config-client",
-		func(ctx genericapiserver.PostStartHookContext) error {
-			client, err := versioned.NewForConfig(ctx.LoopbackClientConfig)
-			if err != nil {
-				return err
-			}
-
-			if err := minerprofile.Init(context.Background(), client); err != nil {
-				// When returning 'NotFound' error, we should not report an error, otherwise we can not
-				// create 'MinerTypesConfigMapName' configmap via onex-apiserver
-				if apierrors.IsNotFound(err) {
-					return nil
-				}
-
-				klog.ErrorS(err, "Failed to init miner type cache")
-				return err
-			}
-
 			return nil
 		},
 	)
@@ -228,7 +201,7 @@ func (c completedConfig) New(delegationTarget genericapiserver.DelegationTarget)
 	// Add PostStartHooks for Unknown Version Proxy filter.
 	if c.ExtraConfig.PeerProxy != nil {
 		c.GenericConfig.AddPostStartHookOrDie("unknown-version-proxy-filter", func(context genericapiserver.PostStartHookContext) error {
-			err := c.ExtraConfig.PeerProxy.WaitForCacheSync(context.StopCh)
+			err := c.ExtraConfig.PeerProxy.WaitForCacheSync(context.Done())
 			return err
 		})
 	}
@@ -271,7 +244,7 @@ func (m *Instance) InstallAPIs(
 	nonLegacy := []*genericapiserver.APIGroupInfo{}
 
 	// used later in the loop to filter the served resource by those that have expired.
-	resourceExpirationEvaluator, err := genericapiserver.NewResourceExpirationEvaluator(*m.GenericAPIServer.Version)
+	resourceExpirationEvaluator, err := genericapiserver.NewResourceExpirationEvaluator(m.GenericAPIServer.EffectiveVersion.EmulationVersion())
 	if err != nil {
 		return err
 	}

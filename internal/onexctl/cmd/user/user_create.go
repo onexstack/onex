@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package user
@@ -11,11 +11,11 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"k8s.io/cli-runtime/pkg/genericiooptions"
 
-	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
-	"github.com/superproj/onex/internal/onexctl/util/templates"
-	v1 "github.com/superproj/onex/pkg/api/usercenter/v1"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	cmdutil "github.com/onexstack/onex/internal/onexctl/cmd/util"
+	"github.com/onexstack/onex/internal/onexctl/util/templates"
+	v1 "github.com/onexstack/onex/pkg/api/usercenter/v1"
 )
 
 const (
@@ -31,7 +31,7 @@ type CreateOptions struct {
 	CreateUserRequest *v1.CreateUserRequest
 
 	client v1.UserCenterHTTPClient
-	genericclioptions.IOStreams
+	genericiooptions.IOStreams
 }
 
 var (
@@ -52,7 +52,7 @@ If nickname not specified, username will be used.`)
 )
 
 // NewCreateOptions returns an initialized CreateOptions instance.
-func NewCreateOptions(ioStreams genericclioptions.IOStreams) *CreateOptions {
+func NewCreateOptions(ioStreams genericiooptions.IOStreams) *CreateOptions {
 	return &CreateOptions{
 		Email:     "colin@onex.com",
 		Phone:     "1812884xxxx",
@@ -61,7 +61,7 @@ func NewCreateOptions(ioStreams genericclioptions.IOStreams) *CreateOptions {
 }
 
 // NewCmdCreate returns new initialized instance of create sub command.
-func NewCmdCreate(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmdCreate(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	o := NewCreateOptions(ioStreams)
 
 	cmd := &cobra.Command{

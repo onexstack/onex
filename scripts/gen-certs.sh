@@ -3,18 +3,18 @@
 # Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 # Use of this source code is governed by a MIT style
 # license that can be found in the LICENSE file. The original repo for
-# this file is https://github.com/superproj/onex.
+# this file is https://github.com/onexstack/onex.
 #
 
 
 # The root of the build/dist directory
-ONEX_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
-source "${ONEX_ROOT}/scripts/lib/init.sh"
+PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/..
+source "${PROJ_ROOT_DIR}/scripts/lib/init.sh"
 
 # OUT_DIR can come in from the Makefile, so honor it.
-readonly LOCAL_OUTPUT_ROOT="${ONEX_ROOT}/${OUT_DIR:-_output}"
+readonly LOCAL_OUTPUT_ROOT="${PROJ_ROOT_DIR}/${OUT_DIR:-_output}"
 readonly LOCAL_OUTPUT_CAPATH="${LOCAL_OUTPUT_ROOT}/cert"
-readonly PROJ_DOMAIN="superproj.com"
+readonly PROJ_DOMAIN="onexstack.com"
 # To ensure that access is available in the default k8s cluster (with cluster domain as cluster.local).
 readonly DEFAULT_KUBERNETES_CLUSTER_DOMAIN="cluster.local"
 

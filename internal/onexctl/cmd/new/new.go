@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Package used to generate demo command code.
@@ -19,11 +19,11 @@ import (
 	"github.com/spf13/cobra"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
+	"k8s.io/cli-runtime/pkg/genericiooptions"
 
-	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
-	"github.com/superproj/onex/internal/onexctl/util/templates"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
-	fileutil "github.com/superproj/onex/pkg/util/file"
+	cmdutil "github.com/onexstack/onex/internal/onexctl/cmd/util"
+	"github.com/onexstack/onex/internal/onexctl/util/templates"
+	fileutil "github.com/onexstack/onexstack/pkg/util/file"
 )
 
 const (
@@ -57,7 +57,7 @@ This can improve your R&D efficiency.`)
 	cmdTemplate = `// Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for 
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 
 package {{.CommandName}}
 
@@ -65,10 +65,10 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"k8s.io/cli-runtime/pkg/genericiooptions"
 
-	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
-	"github.com/superproj/onex/internal/onexctl/util/templates"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	cmdutil "github.com/onexstack/onex/internal/onexctl/cmd/util"
+	"github.com/onexstack/onex/internal/onexctl/util/templates"
 )
 
 const (
@@ -88,7 +88,7 @@ type {{.CommandFunctionName}}Options struct {
 	Username string
 	Password string
 
-	genericclioptions.IOStreams
+	genericiooptions.IOStreams
 }
 
 var (
@@ -101,13 +101,13 @@ to quickly create a Cobra application.{{.Dot}})
 
 	{{.CommandName}}Example = templates.Examples({{.Dot}}
 		# Print all option values for {{.CommandName}} 
-		onexctl {{.CommandName}} superproj superprojpass{{.Dot}})
+		onexctl {{.CommandName}} onexstack onexstackpass{{.Dot}})
 
 	{{.CommandName}}UsageErrStr = fmt.Sprintf("expected '%s'.\nUSERNAME and PASSWORD are required arguments for the {{.CommandName}} command", {{.CommandName}}UsageStr)
 )
 
 // New{{.CommandFunctionName}}Options returns an initialized {{.CommandFunctionName}}Options instance.
-func New{{.CommandFunctionName}}Options(ioStreams genericclioptions.IOStreams) *{{.CommandFunctionName}}Options {
+func New{{.CommandFunctionName}}Options(ioStreams genericiooptions.IOStreams) *{{.CommandFunctionName}}Options {
 	return &{{.CommandFunctionName}}Options{
 		StringOption: "default",
 		IOStreams:    ioStreams,
@@ -115,7 +115,7 @@ func New{{.CommandFunctionName}}Options(ioStreams genericclioptions.IOStreams) *
 }
 
 // NewCmd{{.CommandFunctionName}} returns new initialized instance of '{{.CommandName}}' sub command.
-func NewCmd{{.CommandFunctionName}}(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmd{{.CommandFunctionName}}(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	o := New{{.CommandFunctionName}}Options(ioStreams)
 
 	cmd := &cobra.Command{
@@ -200,17 +200,17 @@ func (o *{{.CommandFunctionName}}Options) Run(args []string) error {
 	maincmdTemplate = `// Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for 
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 
 package {{.CommandName}}
 
 import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"k8s.io/cli-runtime/pkg/genericiooptions"
 
-	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
-	"github.com/superproj/onex/internal/onexctl/util/templates"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	cmdutil "github.com/onexstack/onex/internal/onexctl/cmd/util"
+	"github.com/onexstack/onex/internal/onexctl/util/templates"
 )
 
 const maxStringLength = 17
@@ -223,7 +223,7 @@ var (
 )
 
 // NewCmd{{.CommandFunctionName}} returns new initialized instance of '{{.CommandName}}' sub command.
-func NewCmd{{.CommandFunctionName}}(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmd{{.CommandFunctionName}}(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "{{.CommandName}} SUBCOMMAND",
 		DisableFlagsInUseLine: true,
@@ -251,7 +251,7 @@ func NewCmd{{.CommandFunctionName}}(f cmdutil.Factory, ioStreams genericclioptio
 	subcmd1Template = `// Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for 
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 
 package {{.CommandName}}
 
@@ -260,10 +260,10 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"k8s.io/cli-runtime/pkg/genericiooptions"
 
-	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
-	"github.com/superproj/onex/internal/onexctl/util/templates"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	cmdutil "github.com/onexstack/onex/internal/onexctl/cmd/util"
+	"github.com/onexstack/onex/internal/onexctl/util/templates"
 )
 
 const (
@@ -283,7 +283,7 @@ type SubCmd1Options struct {
 	Username string
 	Password string
 
-	genericclioptions.IOStreams
+	genericiooptions.IOStreams
 }
 
 var (
@@ -296,16 +296,16 @@ to quickly create a Cobra application.{{.Dot}})
 
 	subcmd1Example = templates.Examples({{.Dot}}
 		# Print all option values for subcmd1
-		onexctl {{.CommandName}} subcmd1 superproj superprojpass
+		onexctl {{.CommandName}} subcmd1 onexstack onexstackpass
 
 		# Print all option values for subcmd1 with --persistent specified
-		onexctl {{.CommandName}} subcmd1 superproj superprojpass --persistent="specified persistent option in command line"{{.Dot}})
+		onexctl {{.CommandName}} subcmd1 onexstack onexstackpass --persistent="specified persistent option in command line"{{.Dot}})
 
 	subcmd1UsageErrStr = fmt.Sprintf("expected '%s'.\nUSERNAME and PASSWORD are required arguments for the subcmd1 command", subcmd1UsageStr)
 )
 
 // NewSubCmd1Options returns an initialized SubCmd1Options instance.
-func NewSubCmd1Options(ioStreams genericclioptions.IOStreams) *SubCmd1Options {
+func NewSubCmd1Options(ioStreams genericiooptions.IOStreams) *SubCmd1Options {
 	return &SubCmd1Options{
 		StringOption: "default",
 		IOStreams:    ioStreams,
@@ -313,7 +313,7 @@ func NewSubCmd1Options(ioStreams genericclioptions.IOStreams) *SubCmd1Options {
 }
 
 // NewCmdSubCmd1 returns new initialized instance of subcmd1 sub command.
-func NewCmdSubCmd1(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmdSubCmd1(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	o := NewSubCmd1Options(ioStreams)
 
 	cmd := &cobra.Command{
@@ -397,10 +397,10 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"k8s.io/cli-runtime/pkg/genericiooptions"
 
-	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
-	"github.com/superproj/onex/internal/onexctl/util/templates"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	cmdutil "github.com/onexstack/onex/internal/onexctl/cmd/util"
+	"github.com/onexstack/onex/internal/onexctl/util/templates"
 )
 
 // SubCmd2Options is an options struct to support subcmd2 subcommands.
@@ -410,7 +410,7 @@ type SubCmd2Options struct {
 	IntOption         int
 	BoolOption        bool
 
-	genericclioptions.IOStreams
+	genericiooptions.IOStreams
 }
 
 var (
@@ -427,7 +427,7 @@ to quickly create a Cobra application.{{.Dot}})
 )
 
 // NewSubCmd2Options returns an initialized SubCmd2Options instance.
-func NewSubCmd2Options(ioStreams genericclioptions.IOStreams) *SubCmd2Options {
+func NewSubCmd2Options(ioStreams genericiooptions.IOStreams) *SubCmd2Options {
 	return &SubCmd2Options{
 		StringOption: "default",
 		IOStreams:    ioStreams,
@@ -435,7 +435,7 @@ func NewSubCmd2Options(ioStreams genericclioptions.IOStreams) *SubCmd2Options {
 }
 
 // NewCmdSubCmd2 returns new initialized instance of subcmd2 sub command.
-func NewCmdSubCmd2(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmdSubCmd2(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	o := NewSubCmd2Options(ioStreams)
 
 	cmd := &cobra.Command{
@@ -510,11 +510,11 @@ type NewOptions struct {
 	CommandFunctionName string
 	Dot                 string
 
-	genericclioptions.IOStreams
+	genericiooptions.IOStreams
 }
 
 // NewNewOptions returns an initialized NewOptions instance.
-func NewNewOptions(ioStreams genericclioptions.IOStreams) *NewOptions {
+func NewNewOptions(ioStreams genericiooptions.IOStreams) *NewOptions {
 	return &NewOptions{
 		Group:              false,
 		Outdir:             ".",
@@ -525,7 +525,7 @@ func NewNewOptions(ioStreams genericclioptions.IOStreams) *NewOptions {
 }
 
 // NewCmdNew returns new initialized instance of 'new' sub command.
-func NewCmdNew(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmdNew(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	o := NewNewOptions(ioStreams)
 
 	cmd := &cobra.Command{

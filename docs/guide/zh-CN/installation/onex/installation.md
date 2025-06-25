@@ -49,14 +49,14 @@ $ kubectl -n onex create configmap onex --from-file=_output/config
 ```bash
 $ su - root
 # cat << EOF >> /etc/hosts
-127.0.0.1 onex.usercenter.superproj.com
-127.0.0.1 onex.gateway.superproj.com
-127.0.0.1 onex.apiserver.superproj.com
-127.0.0.1 onex.controllermanager.superproj.com
-127.0.0.1 onex.nightwatch.superproj.com
-127.0.0.1 onex.miner.superproj.com
-127.0.0.1 onex.minerset.superproj.com
-127.0.0.1 onex.toyblc.superproj.com
+127.0.0.1 onex.usercenter.onexstack.com
+127.0.0.1 onex.gateway.onexstack.com
+127.0.0.1 onex.apiserver.onexstack.com
+127.0.0.1 onex.controllermanager.onexstack.com
+127.0.0.1 onex.nightwatch.onexstack.com
+127.0.0.1 onex.miner.onexstack.com
+127.0.0.1 onex.minerset.onexstack.com
+127.0.0.1 onex.toyblc.onexstack.com
 EOF
 ```
 
@@ -65,8 +65,8 @@ EOF
 前置操作：                                    
 
 ``bash
-$ export ONEX_ROOT=$GOPATH/src/github.com/superproj/onex
-$ cd ${ONEX_ROOT}
+$ export PROJ_ROOT_DIR=$GOPATH/src/github.com/onexstack/onex
+$ cd ${PROJ_ROOT_DIR}
 `
 
 组件安装：

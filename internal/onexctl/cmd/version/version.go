@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Package version print the client and server version information.
@@ -15,13 +15,12 @@ import (
 
 	"github.com/ghodss/yaml"
 	"github.com/spf13/cobra"
-	"google.golang.org/protobuf/types/known/emptypb"
+	"k8s.io/cli-runtime/pkg/genericiooptions"
 
-	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
-	"github.com/superproj/onex/internal/onexctl/util/templates"
-	v1 "github.com/superproj/onex/pkg/api/gateway/v1"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
-	"github.com/superproj/onex/pkg/version"
+	cmdutil "github.com/onexstack/onex/internal/onexctl/cmd/util"
+	"github.com/onexstack/onex/internal/onexctl/util/templates"
+	v1 "github.com/onexstack/onex/pkg/api/gateway/v1"
+	"github.com/onexstack/onexstack/pkg/version"
 )
 
 // Version is a struct for version information.
@@ -41,18 +40,18 @@ type Options struct {
 	Output     string
 
 	client v1.GatewayHTTPClient
-	genericclioptions.IOStreams
+	genericiooptions.IOStreams
 }
 
 // NewOptions returns initialized Options.
-func NewOptions(ioStreams genericclioptions.IOStreams) *Options {
+func NewOptions(ioStreams genericiooptions.IOStreams) *Options {
 	return &Options{
 		IOStreams: ioStreams,
 	}
 }
 
 // NewCmdVersion returns a cobra command for fetching versions.
-func NewCmdVersion(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmdVersion(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	o := NewOptions(ioStreams)
 	cmd := &cobra.Command{
 		Use:     "version",
@@ -106,7 +105,7 @@ func (o *Options) Run() error {
 
 	if !o.ClientOnly && o.client != nil {
 		// Always request fresh data from the server
-		vinfo, err := o.client.GetVersion(context.Background(), &emptypb.Empty{})
+		vinfo, err := o.client.GetVersion(context.Background(), &v1.GetVersionRequest{})
 		if err != nil {
 			return err
 		}

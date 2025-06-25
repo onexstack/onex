@@ -1,101 +1,57 @@
-// Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
-// Use of this source code is governed by a MIT style
-// license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
-//
-
+// nolint: dupl
 package store
 
 import (
 	"context"
-	"errors"
 
-	"gorm.io/gorm"
+	storelogger "github.com/onexstack/onexstack/pkg/log/logger/store"
+	genericstore "github.com/onexstack/onexstack/pkg/store"
+	"github.com/onexstack/onexstack/pkg/store/where"
 
-	known "github.com/superproj/onex/internal/pkg/known/usercenter"
-	"github.com/superproj/onex/internal/pkg/meta"
-	"github.com/superproj/onex/internal/usercenter/model"
+	"github.com/onexstack/onex/internal/usercenter/model"
 )
 
-// SecretStore defines the secret storage interface, containing methods
-// for managing secret records in a datastore.
+// SecretStore defines the interface for managing secret-related data operations.
 type SecretStore interface {
-	Create(ctx context.Context, secret *model.SecretM) error
-	Delete(ctx context.Context, userID string, name string) error
-	Update(ctx context.Context, secret *model.SecretM) error
-	Get(ctx context.Context, userID string, name string) (*model.SecretM, error)
-	List(ctx context.Context, userID string, opts ...meta.ListOption) (int64, []*model.SecretM, error)
+	// Create inserts a new Secret record into the store.
+	Create(ctx context.Context, obj *model.SecretM) error
+
+	// Update modifies an existing Secret record in the store based on the given model.
+	Update(ctx context.Context, obj *model.SecretM) error
+
+	// Delete removes Secret records that satisfy the given query options.
+	Delete(ctx context.Context, opts *where.Options) error
+
+	// Get retrieves a single Secret record that satisfies the given query options.
+	Get(ctx context.Context, opts *where.Options) (*model.SecretM, error)
+
+	// List retrieves a list of Secret records and their total count based on the given query options.
+	List(ctx context.Context, opts *where.Options) (int64, []*model.SecretM, error)
+
+	// SecretExpansion is a placeholder for extension methods for secrets,
+	// to be implemented by additional interfaces if needed.
+	SecretExpansion
 }
 
-// secretStore is an implementation of the SecretStore interface
-// that manages the secret model in a datastore.
+// SecretExpansion is an empty interface provided for extending
+// the SecretStore interface.
+// Developers can define secret-specific additional methods
+// in this interface for future expansion.
+type SecretExpansion interface{}
+
+// secretStore implements the SecretStore interface and provides
+// default implementations of the methods.
 type secretStore struct {
-	ds *datastore
+	*genericstore.Store[model.SecretM]
 }
 
-// newSecretStore initializes a new secretStore instance using the provided datastore.
-func newSecretStore(ds *datastore) *secretStore {
-	return &secretStore{ds}
-}
+// Ensure that secretStore satisfies the SecretStore interface at compile time.
+var _ SecretStore = (*secretStore)(nil)
 
-// db is an alias for accessing the Core method of the datastore using the provided context.
-func (d *secretStore) db(ctx context.Context) *gorm.DB {
-	return d.ds.Core(ctx)
-}
-
-// Create adds a new secret record in the datastore.
-func (d *secretStore) Create(ctx context.Context, secret *model.SecretM) error {
-	return d.db(ctx).Create(&secret).Error
-}
-
-// Delete removes a secret record from the datastore based on userID and name.
-func (d *secretStore) Delete(ctx context.Context, userID string, name string) error {
-	err := d.db(ctx).Where(model.SecretM{UserID: userID, Name: name}).Delete(&model.SecretM{}).Error
-	// If error is not a "record not found" error, return the error
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-		return err
+// newSecretStore creates a new secretStore instance with the provided
+// datastore and logger.
+func newSecretStore(store *datastore) *secretStore {
+	return &secretStore{
+		Store: genericstore.NewStore[model.SecretM](store, storelogger.NewLogger()),
 	}
-
-	return nil
-}
-
-// Update modifies an existing secret record in the datastore.
-func (d *secretStore) Update(ctx context.Context, secret *model.SecretM) error {
-	return d.db(ctx).Save(secret).Error
-}
-
-// Get retrieves a secret record from the datastore based on userID and name.
-func (d *secretStore) Get(ctx context.Context, userID string, name string) (*model.SecretM, error) {
-	secret := &model.SecretM{}
-	if err := d.db(ctx).Where(model.SecretM{UserID: userID, Name: name}).First(&secret).Error; err != nil {
-		return nil, err
-	}
-
-	return secret, nil
-}
-
-// List returns a list of secret records that match the specified query conditions.
-// It returns the total count of records and a slice of secret records.
-// The query dynamically applies filters, offset, limit, and order, based on provided list options.
-func (d *secretStore) List(ctx context.Context, userID string, opts ...meta.ListOption) (count int64, ret []*model.SecretM, err error) {
-	// Initialize and configure list options
-	o := meta.NewListOptions(opts...)
-	// List secrets for all users by default.
-	if userID != "" {
-		o.Filters["user_id"] = userID
-	}
-
-	// Build query with filters, offset, limit, and order, and execute
-	ans := d.db(ctx).
-		Not("name", known.TemporaryKeyName).
-		Where(o.Filters).
-		Offset(o.Offset).
-		Limit(o.Limit).
-		Order("id desc").
-		Find(&ret).
-		Offset(-1).
-		Limit(-1).
-		Count(&count)
-
-	return count, ret, ans.Error
 }

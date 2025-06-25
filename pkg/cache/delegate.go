@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package cache
@@ -10,7 +10,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/superproj/onex/pkg/cache/store"
+	"github.com/onexstack/onex/pkg/cache/store"
 )
 
 // DelegateCache is a representative cache used to represent the store. By representing

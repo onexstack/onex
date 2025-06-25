@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package app
@@ -11,16 +11,16 @@ import (
 	"k8s.io/apiserver/pkg/util/webhook"
 	aggregatorapiserver "k8s.io/kube-aggregator/pkg/apiserver"
 
-	"github.com/superproj/onex/cmd/onex-apiserver/app/options"
-	"github.com/superproj/onex/internal/controlplane"
-	"github.com/superproj/onex/internal/controlplane/apiserver"
+	"github.com/onexstack/onex/cmd/onex-apiserver/app/options"
+	"github.com/onexstack/onex/internal/controlplane"
+	"github.com/onexstack/onex/internal/controlplane/apiserver"
 )
 
 type Config struct {
 	Options options.CompletedOptions
 
 	Aggregator    *aggregatorapiserver.Config
-	ControlPlane  *controlplane.Config
+	KubeAPIs      *controlplane.Config
 	ApiExtensions *apiextensionsapiserver.Config
 
 	ExtraConfig
@@ -32,7 +32,7 @@ type completedConfig struct {
 	Options options.CompletedOptions
 
 	Aggregator    aggregatorapiserver.CompletedConfig
-	ControlPlane  controlplane.CompletedConfig
+	KubeAPIs      controlplane.CompletedConfig
 	ApiExtensions apiextensionsapiserver.CompletedConfig
 
 	ExtraConfig
@@ -48,7 +48,7 @@ func (c *Config) Complete() (CompletedConfig, error) {
 		Options: c.Options,
 
 		Aggregator:    c.Aggregator.Complete(),
-		ControlPlane:  c.ControlPlane.Complete(),
+		KubeAPIs:      c.KubeAPIs.Complete(),
 		ApiExtensions: c.ApiExtensions.Complete(),
 
 		ExtraConfig: c.ExtraConfig,
@@ -65,11 +65,11 @@ func NewConfig(opts options.CompletedOptions) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	c.ControlPlane = controlPlane
+	c.KubeAPIs = controlPlane
 
 	apiExtensions, err := apiserver.CreateAPIExtensionsConfig(
 		controlPlane.GenericConfig.Config,
-		controlPlane.ExtraConfig.KubeVersionedInformers,
+		controlPlane.ExtraConfig.InternalVersionedInformers,
 		nil,
 		opts.CompletedOptions,
 		3,
@@ -89,7 +89,7 @@ func NewConfig(opts options.CompletedOptions) (*Config, error) {
 	aggregator, err := createAggregatorConfig(
 		controlPlane.GenericConfig.Config,
 		opts.CompletedOptions,
-		controlPlane.ExtraConfig.KubeVersionedInformers,
+		controlPlane.ExtraConfig.InternalVersionedInformers,
 		serviceResolver,
 		controlPlane.ExtraConfig.ProxyTransport,
 		controlPlane.ExtraConfig.PeerProxy,

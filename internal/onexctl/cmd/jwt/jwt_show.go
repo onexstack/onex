@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package jwt
@@ -13,10 +13,10 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/spf13/cobra"
+	"k8s.io/cli-runtime/pkg/genericiooptions"
 
-	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
-	"github.com/superproj/onex/internal/onexctl/util/templates"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	cmdutil "github.com/onexstack/onex/internal/onexctl/cmd/util"
+	"github.com/onexstack/onex/internal/onexctl/util/templates"
 )
 
 const (
@@ -27,7 +27,7 @@ const (
 type ShowOptions struct {
 	Compact bool
 
-	genericclioptions.IOStreams
+	genericiooptions.IOStreams
 }
 
 var (
@@ -39,7 +39,7 @@ var (
 )
 
 // NewShowOptions returns an initialized ShowOptions instance.
-func NewShowOptions(ioStreams genericclioptions.IOStreams) *ShowOptions {
+func NewShowOptions(ioStreams genericiooptions.IOStreams) *ShowOptions {
 	return &ShowOptions{
 		Compact: false,
 
@@ -48,7 +48,7 @@ func NewShowOptions(ioStreams genericclioptions.IOStreams) *ShowOptions {
 }
 
 // NewCmdShow returns new initialized instance of show sub command.
-func NewCmdShow(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmdShow(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	o := NewShowOptions(ioStreams)
 
 	cmd := &cobra.Command{

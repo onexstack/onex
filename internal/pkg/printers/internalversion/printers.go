@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package internalversion
@@ -18,9 +18,9 @@ import (
 	api "k8s.io/kubernetes/pkg/apis/core"
 	"k8s.io/kubernetes/pkg/printers"
 
-	printersutil "github.com/superproj/onex/internal/pkg/util/printers"
-	"github.com/superproj/onex/pkg/apis/apps"
-	"github.com/superproj/onex/pkg/apis/apps/v1beta1"
+	printersutil "github.com/onexstack/onex/internal/pkg/util/printers"
+	"github.com/onexstack/onex/pkg/apis/apps"
+	"github.com/onexstack/onex/pkg/apis/apps/v1beta1"
 )
 
 // AddHandlers adds print handlers for default OneX types dealing with internal versions.

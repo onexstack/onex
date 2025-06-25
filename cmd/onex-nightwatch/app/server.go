@@ -1,59 +1,99 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package app
 
 import (
+	"fmt"
+
+	"github.com/gin-gonic/gin"
+	"github.com/onexstack/onexstack/pkg/app"
+	genericoptions "github.com/onexstack/onexstack/pkg/options"
+	"gorm.io/gorm"
 	genericapiserver "k8s.io/apiserver/pkg/server"
 
-	"github.com/superproj/onex/cmd/onex-nightwatch/app/options"
-	"github.com/superproj/onex/internal/nightwatch"
-	"github.com/superproj/onex/pkg/app"
+	"github.com/onexstack/onex/cmd/onex-nightwatch/app/options"
+	"github.com/onexstack/onex/internal/nightwatch"
 )
 
 const commandDesc = `The nightwatch server is responsible for executing some async tasks 
 like linux cronjob. You can add Cron(github.com/robfig/cron) jobs on the given schedule
 use the Cron spec format.`
 
-// NewApp creates an App object with default parameters.
-func NewApp() *app.App {
-	opts := options.NewOptions()
-	application := app.NewApp("onex-nightwatch", "Launch a onex asynchronous task processing server",
+// jobServer represents the HTTP server with optional TLS and graceful shutdown capabilities.
+type jobServer struct {
+	stopCh     <-chan struct{}
+	tlsOptions *genericoptions.TLSOptions
+}
+
+// Option is a function that configures the jobServer.
+type Option func(jrs *jobServer)
+
+// WithTLSOptions sets the TLS options for the job REST server.
+func WithTLSOptions(tlsOptions *genericoptions.TLSOptions) Option {
+	return func(jrs *jobServer) {
+		jrs.tlsOptions = tlsOptions
+	}
+}
+
+// WithStopChannel sets the stop channel for graceful shutdown.
+func WithStopChannel(stopCh <-chan struct{}) Option {
+	return func(jrs *jobServer) {
+		jrs.stopCh = stopCh
+	}
+}
+
+// NewApp creates and returns a new App object with default parameters.
+func NewApp(appName string) *app.App {
+	opts := options.NewServerOptions()
+	application := app.NewApp(
+		appName,
+		"Launch an asynchronous task processing server",
 		app.WithDescription(commandDesc),
 		app.WithOptions(opts),
 		app.WithDefaultValidArgs(),
 		app.WithRunFunc(run(opts)),
-		app.WithHealthCheckFunc(func() error {
-			go opts.HealthOptions.ServeHealthCheck()
-			return nil
-		}),
 	)
 
 	return application
 }
 
-func run(opts *options.Options) app.RunFunc {
+// run contains the main logic for initializing and running the server.
+func run(opts *options.ServerOptions) app.RunFunc {
 	return func() error {
+		// Load the configuration options
 		cfg, err := opts.Config()
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to load configuration: %w", err)
 		}
 
-		return Run(cfg, genericapiserver.SetupSignalHandler())
+		ctx := genericapiserver.SetupSignalContext()
+
+		// Build the server using the configuration
+		server, err := cfg.NewServer(ctx)
+		if err != nil {
+			return fmt.Errorf("failed to create server: %w", err)
+		}
+
+		// Run the server with signal context for graceful shutdown
+		return server.Run(ctx)
 	}
 }
 
-// Run runs the specified APIServer. This should never exit.
-func Run(c *nightwatch.Config, stopCh <-chan struct{}) error {
-	nw, err := c.Complete().New()
-	if err != nil {
-		return err
+// NewJobServer creates a new instance of the job server with the specified options.
+func NewJobServer(httpOptions *genericoptions.HTTPOptions, db *gorm.DB, opts ...Option) *nightwatch.RESTServer {
+	jrs := jobServer{}
+	for _, opt := range opts {
+		opt(&jrs)
 	}
 
-	nw.Run(stopCh)
+	return nightwatch.NewRESTServer(httpOptions, jrs.tlsOptions, db)
+}
 
-	return nil
+// InstallJobAPI sets up the job-related routes in the provided router.
+func InstallJobAPI(engine *gin.Engine, db *gorm.DB) {
+	nightwatch.InstallJobAPI(engine, db)
 }

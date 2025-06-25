@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package bootstrap
@@ -13,7 +13,7 @@ import (
 	consulapi "github.com/hashicorp/consul/api"
 	clientv3 "go.etcd.io/etcd/client/v3"
 
-	genericoptions "github.com/superproj/onex/pkg/options"
+	genericoptions "github.com/onexstack/onexstack/pkg/options"
 )
 
 func NewEtcdRegistrar(opts *genericoptions.EtcdOptions) registry.Registrar {

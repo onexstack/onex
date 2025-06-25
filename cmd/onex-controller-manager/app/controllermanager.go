@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Package app implements a server that runs a set of active
@@ -17,7 +17,6 @@ import (
 
 	"github.com/jinzhu/copier"
 	"github.com/spf13/cobra"
-	apiv1 "k8s.io/api/core/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/labels"
@@ -58,21 +57,19 @@ import (
 	ctrlmetrics "sigs.k8s.io/controller-runtime/pkg/metrics"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
-	"github.com/superproj/onex/cmd/onex-controller-manager/app/config"
-	"github.com/superproj/onex/cmd/onex-controller-manager/app/options"
-	"github.com/superproj/onex/cmd/onex-controller-manager/names"
-	configv1beta1 "github.com/superproj/onex/internal/controller/apis/config/v1beta1"
-	"github.com/superproj/onex/internal/gateway/store"
-	"github.com/superproj/onex/internal/pkg/metrics"
-	"github.com/superproj/onex/internal/pkg/util/ratelimiter"
-	"github.com/superproj/onex/internal/webhooks"
-	v1beta1 "github.com/superproj/onex/pkg/apis/apps/v1beta1"
-	"github.com/superproj/onex/pkg/db"
-	"github.com/superproj/onex/pkg/record"
-	"github.com/superproj/onex/pkg/version"
+	"github.com/onexstack/onex/cmd/onex-controller-manager/app/config"
+	"github.com/onexstack/onex/cmd/onex-controller-manager/app/options"
+	"github.com/onexstack/onex/cmd/onex-controller-manager/names"
+	configv1beta1 "github.com/onexstack/onex/internal/controller/apis/config/v1beta1"
+	"github.com/onexstack/onex/internal/gateway/store"
+	"github.com/onexstack/onex/internal/pkg/metrics"
+	"github.com/onexstack/onex/internal/pkg/util/ratelimiter"
+	"github.com/onexstack/onex/internal/webhooks"
+	v1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
+	"github.com/onexstack/onex/pkg/record"
+	"github.com/onexstack/onexstack/pkg/db"
+	"github.com/onexstack/onexstack/pkg/version"
 )
-
-const appName = "onex-controller-manager"
 
 var scheme = runtime.NewScheme()
 
@@ -81,7 +78,7 @@ func init() {
 	utilruntime.Must(features.AddFeatureGates(utilfeature.DefaultMutableFeatureGate))
 
 	// applies all the stored functions to the scheme created by controller-runtime
-	_ = apiv1.AddToScheme(scheme)
+	_ = corev1.AddToScheme(scheme)
 	_ = v1beta1.AddToScheme(scheme)
 	_ = configv1beta1.AddToScheme(scheme)
 	// _ = corev1.AddToScheme(scheme)
@@ -103,7 +100,7 @@ func NewControllerManagerCommand() *cobra.Command {
 	}
 
 	cmd := &cobra.Command{
-		Use: appName,
+		Use: "onex-controller-manager",
 		Long: `The onex controller manager is a daemon that embeds
 the core control loops. In applications of robotics and
 automation, a control loop is a non-terminating loop that regulates the state of
@@ -118,7 +115,7 @@ current state towards the desired state.`,
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			version.PrintAndExitIfRequested(appName)
+			version.PrintAndExitIfRequested()
 
 			// Activate logging as soon as possible, after that
 			// show flags with the final logging configuration.
@@ -199,7 +196,7 @@ func Run(ctx context.Context, c *config.CompletedConfig) error {
 
 	// Do some initialization here
 	var mysqlOptions db.MySQLOptions
-	_ = copier.Copy(&mysqlOptions, c.ComponentConfig.Generic.MySQL)
+	_ = copier.Copy(&mysqlOptions, c.ComponentConfig.MySQL)
 	storeClient, err := wireStoreClient(&mysqlOptions)
 	if err != nil {
 		return err

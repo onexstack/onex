@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 //nolint:funlen,gocritic
@@ -19,17 +19,17 @@ import (
 	"github.com/spf13/pflag"
 	"k8s.io/kubernetes/cmd/genutils"
 
-	apiservapp "github.com/superproj/onex/cmd/onex-apiserver/app"
-	ctrlmgrapp "github.com/superproj/onex/cmd/onex-controller-manager/app"
-	fakeserverapp "github.com/superproj/onex/cmd/onex-fakeserver/app"
-	gwapp "github.com/superproj/onex/cmd/onex-gateway/app"
-	minerctrlapp "github.com/superproj/onex/cmd/onex-miner-controller/app"
-	minersetctrlapp "github.com/superproj/onex/cmd/onex-minerset-controller/app"
-	nwapp "github.com/superproj/onex/cmd/onex-nightwatch/app"
-	pumpapp "github.com/superproj/onex/cmd/onex-pump/app"
-	toyblcapp "github.com/superproj/onex/cmd/onex-toyblc/app"
-	usercenterapp "github.com/superproj/onex/cmd/onex-usercenter/app"
-	onexctlcmd "github.com/superproj/onex/internal/onexctl/cmd"
+	apiservapp "github.com/onexstack/onex/cmd/onex-apiserver/app"
+	ctrlmgrapp "github.com/onexstack/onex/cmd/onex-controller-manager/app"
+	//fakeserverapp "github.com/onexstack/onex/cmd/onex-fakeserver/app"
+	gwapp "github.com/onexstack/onex/cmd/onex-gateway/app"
+	minerctrlapp "github.com/onexstack/onex/cmd/onex-miner-controller/app"
+	minersetctrlapp "github.com/onexstack/onex/cmd/onex-minerset-controller/app"
+	nwapp "github.com/onexstack/onex/cmd/onex-nightwatch/app"
+	pumpapp "github.com/onexstack/onex/cmd/onex-pump/app"
+	toyblcapp "github.com/onexstack/onex/cmd/onex-toyblc/app"
+	usercenterapp "github.com/onexstack/onex/cmd/onex-usercenter/app"
+	onexctlcmd "github.com/onexstack/onex/internal/onexctl/cmd"
 )
 
 func main() {
@@ -55,13 +55,15 @@ func main() {
 	_ = os.Setenv("HOME", "/home/username")
 
 	switch module {
-	case "onex-fakeserver":
-		// generate manpage for onexfakeserver-
-		fakeserver := fakeserverapp.NewApp().Command()
-		genMarkdown(fakeserver, "", outDir)
-		for _, c := range fakeserver.Commands() {
-			genMarkdown(c, "onex-fakeserver", outDir)
-		}
+	/*
+		case "onex-fakeserver":
+			// generate manpage for onexfakeserver-
+			fakeserver := fakeserverapp.NewApp().Command()
+			genMarkdown(fakeserver, "", outDir)
+			for _, c := range fakeserver.Commands() {
+				genMarkdown(c, "onex-fakeserver", outDir)
+			}
+	*/
 	case "onex-usercenter":
 		// generate manpage for onex-usercenter
 		usercenter := usercenterapp.NewApp().Command()
@@ -85,7 +87,7 @@ func main() {
 		}
 	case "onex-nightwatch":
 		// generate manpage for onex-nightwatch
-		nw := nwapp.NewApp().Command()
+		nw := nwapp.NewApp("onex-nightwatch").Command()
 		genMarkdown(nw, "", outDir)
 		for _, c := range nw.Commands() {
 			genMarkdown(c, "onex-nightwatch", outDir)
@@ -229,7 +231,7 @@ func genMarkdown(command *cobra.Command, parent, docsDir string) {
 
 	out.WriteString(`
 # HISTORY
-January 2015, Originally compiled by Eric Paris (eparis at redhat dot com) based on the superproj source material, but hopefully they have been automatically generated since!
+January 2015, Originally compiled by Eric Paris (eparis at redhat dot com) based on the onexstack source material, but hopefully they have been automatically generated since!
 `)
 
 	final := mangen.Render(out.Bytes())

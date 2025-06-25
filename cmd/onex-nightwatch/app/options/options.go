@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Package options contains flags and options for initializing an nightwatch.
@@ -10,19 +10,19 @@ package options
 import (
 	"math"
 
+	"github.com/onexstack/onexstack/pkg/app"
+	"github.com/onexstack/onexstack/pkg/log"
+	genericoptions "github.com/onexstack/onexstack/pkg/options"
+	"github.com/onexstack/onexstack/pkg/watch"
 	"github.com/spf13/viper"
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	"k8s.io/client-go/tools/clientcmd"
 	cliflag "k8s.io/component-base/cli/flag"
 
-	"github.com/superproj/onex/internal/nightwatch"
-	"github.com/superproj/onex/internal/pkg/feature"
-	kubeutil "github.com/superproj/onex/internal/pkg/util/kube"
-	"github.com/superproj/onex/pkg/app"
-	clientset "github.com/superproj/onex/pkg/generated/clientset/versioned"
-	"github.com/superproj/onex/pkg/log"
-	genericoptions "github.com/superproj/onex/pkg/options"
-	"github.com/superproj/onex/pkg/watch"
+	"github.com/onexstack/onex/internal/nightwatch"
+	"github.com/onexstack/onex/internal/pkg/feature"
+	kubeutil "github.com/onexstack/onex/internal/pkg/util/kube"
+	clientset "github.com/onexstack/onex/pkg/generated/clientset/versioned"
 )
 
 const (
@@ -30,15 +30,16 @@ const (
 	UserAgent = "onex-nightwatch"
 )
 
-var _ app.CliOptions = (*Options)(nil)
-
-// Options contains everything necessary to create and run a nightwatch server.
-type Options struct {
+// ServerOptions contains the configuration options for the server.
+type ServerOptions struct {
 	HealthOptions         *genericoptions.HealthOptions  `json:"health" mapstructure:"health"`
 	MySQLOptions          *genericoptions.MySQLOptions   `json:"mysql" mapstructure:"mysql"`
 	RedisOptions          *genericoptions.RedisOptions   `json:"redis" mapstructure:"redis"`
 	WatchOptions          *watch.Options                 `json:"nightwatch" mapstructure:"nightwatch"`
+	HTTPOptions           *genericoptions.HTTPOptions    `json:"http" mapstructure:"http"`
+	TLSOptions            *genericoptions.TLSOptions     `json:"tls" mapstructure:"tls"`
 	UserWatcherMaxWorkers int64                          `json:"user-watcher-max-workers" mapstructure:"user-watcher-max-workers"`
+	DisableRESTServer     bool                           `json:"disable-rest-server" mapstructure:"disable-rest-server"`
 	Metrics               *genericoptions.MetricsOptions `json:"metrics" mapstructure:"metrics"`
 	// Path to kubeconfig file with authorization and master location information.
 	Kubeconfig   string          `json:"kubeconfig" mapstructure:"kubeconfig"`
@@ -46,12 +47,18 @@ type Options struct {
 	Log          *log.Options    `json:"log" mapstructure:"log"`
 }
 
-// NewOptions returns initialized Options.
-func NewOptions() *Options {
-	o := &Options{
+// Ensure ServerOptions implements the app.NamedFlagSetOptions interface.
+var _ app.NamedFlagSetOptions = (*ServerOptions)(nil)
+
+// NewServerOptions creates a ServerOptions instance with default values.
+func NewServerOptions() *ServerOptions {
+	o := &ServerOptions{
 		HealthOptions:         genericoptions.NewHealthOptions(),
 		MySQLOptions:          genericoptions.NewMySQLOptions(),
 		RedisOptions:          genericoptions.NewRedisOptions(),
+		HTTPOptions:           genericoptions.NewHTTPOptions(),
+		TLSOptions:            genericoptions.NewTLSOptions(),
+		DisableRESTServer:     false,
 		UserWatcherMaxWorkers: math.MaxInt64,
 		WatchOptions:          watch.NewOptions(),
 		Metrics:               genericoptions.NewMetricsOptions(),
@@ -62,10 +69,12 @@ func NewOptions() *Options {
 }
 
 // Flags returns flags for a specific server by section name.
-func (o *Options) Flags() (fss cliflag.NamedFlagSets) {
+func (o *ServerOptions) Flags() (fss cliflag.NamedFlagSets) {
 	o.HealthOptions.AddFlags(fss.FlagSet("health"))
 	o.MySQLOptions.AddFlags(fss.FlagSet("mysql"))
 	o.RedisOptions.AddFlags(fss.FlagSet("redis"))
+	o.HTTPOptions.AddFlags(fss.FlagSet("http"))
+	o.TLSOptions.AddFlags(fss.FlagSet("tls"))
 	o.WatchOptions.AddFlags(fss.FlagSet("watch"))
 	o.Metrics.AddFlags(fss.FlagSet("metrics"))
 	o.Log.AddFlags(fss.FlagSet("log"))
@@ -74,6 +83,7 @@ func (o *Options) Flags() (fss cliflag.NamedFlagSets) {
 	// arrange these text blocks sensibly. Grrr.
 	fs := fss.FlagSet("misc")
 	fs.StringVar(&o.Kubeconfig, "kubeconfig", o.Kubeconfig, "Path to kubeconfig file with authorization and master location information.")
+	fs.BoolVar(&o.DisableRESTServer, "disable-rest-server", o.DisableRESTServer, "Disable the REST server functionality.")
 	fs.Int64Var(&o.UserWatcherMaxWorkers, "user-watcher-max-workers", o.UserWatcherMaxWorkers, "Specify the maximum concurrency event of user watcher.")
 	feature.DefaultMutableFeatureGate.AddFlag(fs)
 
@@ -81,7 +91,7 @@ func (o *Options) Flags() (fss cliflag.NamedFlagSets) {
 }
 
 // Complete completes all the required options.
-func (o *Options) Complete() error {
+func (o *ServerOptions) Complete() error {
 	if err := viper.Unmarshal(&o); err != nil {
 		return err
 	}
@@ -94,13 +104,15 @@ func (o *Options) Complete() error {
 	return nil
 }
 
-// Validate validates all the required options.
-func (o *Options) Validate() error {
+// Validate checks whether the options in ServerOptions are valid.
+func (o *ServerOptions) Validate() error {
 	errs := []error{}
 
 	errs = append(errs, o.HealthOptions.Validate()...)
 	errs = append(errs, o.MySQLOptions.Validate()...)
 	errs = append(errs, o.RedisOptions.Validate()...)
+	errs = append(errs, o.HTTPOptions.Validate()...)
+	errs = append(errs, o.TLSOptions.Validate()...)
 	errs = append(errs, o.WatchOptions.Validate()...)
 	errs = append(errs, o.Metrics.Validate()...)
 	errs = append(errs, o.Log.Validate()...)
@@ -108,17 +120,8 @@ func (o *Options) Validate() error {
 	return utilerrors.NewAggregate(errs)
 }
 
-// ApplyTo fills up onex-nightwatch config with options.
-func (o *Options) ApplyTo(c *nightwatch.Config) error {
-	c.MySQLOptions = o.MySQLOptions
-	c.RedisOptions = o.RedisOptions
-	c.WatchOptions = o.WatchOptions
-	c.UserWatcherMaxWorkers = o.UserWatcherMaxWorkers
-	return nil
-}
-
-// Config return an onex-nightwatch config object.
-func (o *Options) Config() (*nightwatch.Config, error) {
+// Config builds an nightwatch.Config based on ServerOptions.
+func (o *ServerOptions) Config() (*nightwatch.Config, error) {
 	kubeconfig, err := clientcmd.BuildConfigFromFlags("", o.Kubeconfig)
 	if err != nil {
 		return nil, err
@@ -130,13 +133,17 @@ func (o *Options) Config() (*nightwatch.Config, error) {
 		return nil, err
 	}
 
-	c := &nightwatch.Config{
-		Client: client,
+	cfg := &nightwatch.Config{
+		HealthOptions:         o.HealthOptions,
+		MySQLOptions:          o.MySQLOptions,
+		RedisOptions:          o.RedisOptions,
+		HTTPOptions:           o.HTTPOptions,
+		TLSOptions:            o.TLSOptions,
+		WatchOptions:          o.WatchOptions,
+		DisableRESTServer:     o.DisableRESTServer,
+		UserWatcherMaxWorkers: o.UserWatcherMaxWorkers,
+		Client:                client,
 	}
 
-	if err := o.ApplyTo(c); err != nil {
-		return nil, err
-	}
-
-	return c, nil
+	return cfg, nil
 }

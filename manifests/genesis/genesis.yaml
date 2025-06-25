@@ -1,7 +1,7 @@
 # Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 # Use of this source code is governed by a MIT style
 # license that can be found in the LICENSE file. The original repo for
-# this file is https://github.com/superproj/onex.
+# this file is https://github.com/onexstack/onex.
 #
 
 
@@ -75,7 +75,7 @@ spec:
         - --bootstrap-account=0x9049b2dcdb126e3003eff55f23bc3d7f570ce0e3
         - --miner=0x9049b2dcdb126e3003eff55f23bc3d7f570ce0e3
         - --datadir=/opt/tbb/data
-        image: ccr.ccs.tencentyun.com/superproj/tbb:v0.0.2
+        image: ccr.ccs.tencentyun.com/onexstack/tbb:v0.0.2
         name: genesis
         ports:
         - containerPort: 8080

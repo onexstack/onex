@@ -63,7 +63,7 @@ drop user onex;
 ## 创建数据库和表
 
 ```sql
-CREATE DATABASE  IF NOT EXISTS `superproj`;
+CREATE DATABASE  IF NOT EXISTS `onexstack`;
 CREATE TABLE `user` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(253) DEFAULT NULL,

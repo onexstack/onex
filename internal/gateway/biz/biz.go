@@ -1,47 +1,52 @@
-// Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
-// Use of this source code is governed by a MIT style
-// license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
-//
-
 package biz
 
-//go:generate mockgen -self_package github.com/superproj/onex/internal/gateway/biz -destination mock_biz.go -package biz github.com/superproj/onex/internal/gateway/biz IBiz
+//go:generate mockgen -destination mock_biz.go -package biz github.com/onexstack/onex/internal/gateway/biz IBiz
 
 import (
 	"github.com/google/wire"
 
-	"github.com/superproj/onex/internal/gateway/biz/miner"
-	"github.com/superproj/onex/internal/gateway/biz/minerset"
-	"github.com/superproj/onex/internal/gateway/store"
-	clientset "github.com/superproj/onex/pkg/generated/clientset/versioned"
-	"github.com/superproj/onex/pkg/generated/informers"
+	minerv1 "github.com/onexstack/onex/internal/gateway/biz/v1/miner"
+	minersetv1 "github.com/onexstack/onex/internal/gateway/biz/v1/minerset"
+	"github.com/onexstack/onex/internal/gateway/store"
+	clientset "github.com/onexstack/onex/pkg/generated/clientset/versioned"
+	"github.com/onexstack/onex/pkg/generated/informers"
 )
 
-// ProviderSet is biz providers.
+// ProviderSet is a Wire provider set used to declare dependency injection rules.
+// Includes the NewBiz constructor to create a biz instance.
+// wire.Bind binds the IBiz interface to the concrete implementation *biz,
+// so places that depend on IBiz will automatically inject a *biz instance.
 var ProviderSet = wire.NewSet(NewBiz, wire.Bind(new(IBiz), new(*biz)))
 
-// IBiz defines functions used to return resource interface.
+// IBiz defines the methods that must be implemented by the business layer.
 type IBiz interface {
-	Miners() miner.MinerBiz
-	MinerSets() minerset.MinerSetBiz
+	// MinerSetV1 returns the MinerSetBiz business interface.
+	MinerSetV1() minersetv1.MinerSetBiz
+	// MinerV1 returns the MinerBiz business interface.
+	MinerV1() minerv1.MinerBiz
 }
 
+// biz is a concrete implementation of IBiz.
 type biz struct {
-	ds store.IStore
-	cl clientset.Interface
-	f  informers.SharedInformerFactory
+	store     store.IStore
+	clientset clientset.Interface
+	informer  informers.SharedInformerFactory
 }
 
-// NewBiz returns IBiz interface.
-func NewBiz(ds store.IStore, cl clientset.Interface, f informers.SharedInformerFactory) *biz {
-	return &biz{ds, cl, f}
+// Ensure that biz implements the IBiz.
+var _ IBiz = (*biz)(nil)
+
+// NewBiz creates an instance of IBiz.
+func NewBiz(store store.IStore, clientset clientset.Interface, informer informers.SharedInformerFactory) *biz {
+	return &biz{store: store, clientset: clientset, informer: informer}
 }
 
-func (b *biz) MinerSets() minerset.MinerSetBiz {
-	return minerset.New(b.ds, b.cl, b.f)
+// MinerSetV1 returns an instance that implements the MinerSetBiz.
+func (b *biz) MinerSetV1() minersetv1.MinerSetBiz {
+	return minersetv1.New(b.store, b.clientset, b.informer)
 }
 
-func (b *biz) Miners() miner.MinerBiz {
-	return miner.New(b.ds, b.cl, b.f)
+// MinerV1 returns an instance that implements the MinerBiz.
+func (b *biz) MinerV1() minerv1.MinerBiz {
+	return minerv1.New(b.store, b.clientset, b.informer)
 }

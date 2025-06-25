@@ -1,18 +1,26 @@
 package watcher
 
 import (
-	"github.com/superproj/onex/internal/pkg/client/store"
-	"github.com/superproj/onex/pkg/watch"
+	"github.com/onexstack/onexstack/pkg/watch/registry"
+
+	"github.com/onexstack/onex/internal/nightwatch/store"
+	aggregatestore "github.com/onexstack/onex/internal/pkg/client/store"
 )
 
 // WantsAggregateConfig defines a function which sets AggregateConfig for watcher plugins that need it.
 type WantsAggregateConfig interface {
-	watch.Watcher
+	registry.Watcher
 	SetAggregateConfig(config *AggregateConfig)
+}
+
+// WantsAggregateStore defines a function which sets aggregate store for watcher plugins that need it.
+type WantsAggregateStore interface {
+	registry.Watcher
+	SetAggregateStore(store aggregatestore.Interface)
 }
 
 // WantsStore defines a function which sets store for watcher plugins that need it.
 type WantsStore interface {
-	watch.Watcher
-	SetStore(store store.Interface)
+	registry.Watcher
+	SetStore(store store.IStore)
 }

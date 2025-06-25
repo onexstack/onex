@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Package app does all of the work necessary to create a OneX
@@ -11,6 +11,7 @@
 package app
 
 import (
+	"context"
 	"crypto/tls"
 	"fmt"
 	"net/http"
@@ -43,18 +44,16 @@ import (
 	"k8s.io/klog/v2"
 	aggregatorapiserver "k8s.io/kube-aggregator/pkg/apiserver"
 	aggregatorscheme "k8s.io/kube-aggregator/pkg/apiserver/scheme"
+	"k8s.io/kube-openapi/pkg/common"
 	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	"k8s.io/kubernetes/pkg/features"
 
-	"github.com/superproj/onex/cmd/onex-apiserver/app/options"
-	"github.com/superproj/onex/internal/controlplane"
-	controlplaneapiserver "github.com/superproj/onex/internal/controlplane/apiserver"
-	"github.com/superproj/onex/internal/controlplane/storage"
-	generatedopenapi "github.com/superproj/onex/pkg/generated/openapi"
-	"github.com/superproj/onex/pkg/version"
+	"github.com/onexstack/onex/cmd/onex-apiserver/app/options"
+	"github.com/onexstack/onex/internal/controlplane"
+	controlplaneapiserver "github.com/onexstack/onex/internal/controlplane/apiserver"
+	"github.com/onexstack/onex/pkg/apiserver/storage"
+	"github.com/onexstack/onexstack/pkg/version"
 )
-
-const appName = "onex-apiserver"
 
 func init() {
 	utilruntime.Must(logsapi.AddFeatureGates(utilfeature.DefaultMutableFeatureGate))
@@ -89,6 +88,13 @@ func WithAdmissionPlugin(name string, registerFunc RegisterFunc) Option {
 		// Note: Need to add this to the RecommendedPluginOrder list.
 		s.RecommendedOptions.Admission.RecommendedPluginOrder = append(s.RecommendedOptions.Admission.RecommendedPluginOrder, name)
 		registerFunc(s.RecommendedOptions.Admission.Plugins)
+	}
+}
+
+// WithOpenAPIDefinitions sets the OpenAPI definitions for the server.
+func WithGetOpenAPIDefinitions(getOpenAPIDefinitions common.GetOpenAPIDefinitions) Option {
+	return func(s *options.ServerRunOptions) {
+		s.GetOpenAPIDefinitions = getOpenAPIDefinitions
 	}
 }
 
@@ -135,7 +141,7 @@ func NewAPIServerCommand(serverRunOptions ...Option) *cobra.Command {
 	}
 
 	cmd := &cobra.Command{
-		Use:   appName,
+		Use:   "onex-apiserver",
 		Short: "Launch a onex API server",
 		Long: `The OneX API server validates and configures data
 for the api objects which include miners, minersets, configmaps, and
@@ -151,7 +157,7 @@ onex's shared state through which all other components interact.`,
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			version.PrintAndExitIfRequested(appName)
+			version.PrintAndExitIfRequested()
 			fs := cmd.Flags()
 
 			// Activate logging as soon as possible, after that
@@ -173,7 +179,7 @@ onex's shared state through which all other components interact.`,
 			}
 			// add feature enablement metrics
 			utilfeature.DefaultMutableFeatureGate.AddMetrics()
-			return Run(completedOptions, genericapiserver.SetupSignalHandler())
+			return Run(cmd.Context(), completedOptions)
 		},
 		Args: func(cmd *cobra.Command, args []string) error {
 			for _, arg := range args {
@@ -203,7 +209,7 @@ onex's shared state through which all other components interact.`,
 }
 
 // Run runs the specified APIServer. This should never exit.
-func Run(opts options.CompletedOptions, stopCh <-chan struct{}) error {
+func Run(ctx context.Context, opts options.CompletedOptions) error {
 	// To help debugging, immediately log version
 	klog.Infof("Version: %+v", version.Get().String())
 
@@ -227,19 +233,19 @@ func Run(opts options.CompletedOptions, stopCh <-chan struct{}) error {
 		return err
 	}
 
-	return prepared.Run(stopCh)
+	return prepared.Run(ctx)
 }
 
 // CreateServerChain creates the apiservers connected via delegation.
 func CreateServerChain(config CompletedConfig) (*aggregatorapiserver.APIAggregator, error) {
-	notFoundHandler := notfoundhandler.New(config.ControlPlane.GenericConfig.Serializer, genericapifilters.NoMuxAndDiscoveryIncompleteKey)
+	notFoundHandler := notfoundhandler.New(config.KubeAPIs.GenericConfig.Serializer, genericapifilters.NoMuxAndDiscoveryIncompleteKey)
 	apiExtensionsServer, err := config.ApiExtensions.New(genericapiserver.NewEmptyDelegateWithCustomHandler(notFoundHandler))
 	if err != nil {
 		return nil, err
 	}
 	crdAPIEnabled := config.ApiExtensions.GenericConfig.MergedResourceConfig.ResourceEnabled(apiextensionsv1.SchemeGroupVersion.WithResource("customresourcedefinitions"))
 
-	onexAPIServer, err := config.ControlPlane.New(apiExtensionsServer.GenericAPIServer)
+	onexAPIServer, err := config.KubeAPIs.New(apiExtensionsServer.GenericAPIServer)
 	if err != nil {
 		return nil, err
 	}
@@ -274,10 +280,10 @@ func CreateOneXAPIServerConfig(opts options.CompletedOptions) (
 ) {
 	proxyTransport := CreateProxyTransport()
 
-	genericConfig, _, kubeSharedInformers, storageFactory, err := controlplaneapiserver.BuildGenericConfig(
+	genericConfig, kubeSharedInformers, storageFactory, err := controlplaneapiserver.BuildGenericConfig(
 		opts.CompletedOptions,
 		[]*runtime.Scheme{legacyscheme.Scheme, extensionsapiserver.Scheme, aggregatorscheme.Scheme},
-		generatedopenapi.GetOpenAPIDefinitions,
+		opts.GetOpenAPIDefinitions,
 	)
 	if err != nil {
 		return nil, nil, err
@@ -298,7 +304,7 @@ func CreateOneXAPIServerConfig(opts options.CompletedOptions) (
 			MasterCount:                  opts.MasterCount,
 			//VersionedInformers:           opts.SharedInformerFactory,
 			// Here we will use the config file of "onex" to create a client-go informers.
-			KubeVersionedInformers:     kubeSharedInformers,
+			//KubeVersionedInformers:     kubeSharedInformers,
 			InternalVersionedInformers: opts.InternalVersionedInformers,
 			ExternalVersionedInformers: opts.ExternalVersionedInformers,
 			ExternalPostStartHooks:     opts.ExternalPostStartHooks,

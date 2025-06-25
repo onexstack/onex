@@ -3,13 +3,13 @@
 # Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 # Use of this source code is governed by a MIT style
 # license that can be found in the LICENSE file. The original repo for
-# this file is https://github.com/superproj/onex.
+# this file is https://github.com/onexstack/onex.
 #
 
 # The root of the build/dist directory.
-ONEX_ROOT=$(dirname "${BASH_SOURCE[0]}")/../..
+PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/../..
 # If common.sh has already been sourced, it will not be sourced again here.
-[[ -z ${COMMON_SOURCED} ]] && source ${ONEX_ROOT}/scripts/installation/common.sh
+[[ -z ${COMMON_SOURCED} ]] && source ${PROJ_ROOT_DIR}/scripts/installation/common.sh
 # Set some environment variables.
 
 source $(dirname "${BASH_SOURCE[0]}")/man.sh
@@ -20,7 +20,7 @@ onex::onex::docker::install()
   onex::onex::prepare
 
   if [[ "${INSTALL_WITH_FRESH_IMAGE}" -eq 1 ]];then
-    make -C ${ONEX_ROOT} image IMAGES=onex-allinone VERSION=${ONEX_IMAGE_VERSION}
+    make -C ${PROJ_ROOT_DIR} image IMAGES=onex-allinone VERSION=${ONEX_IMAGE_VERSION}
   fi
 
   # 创建一个数据卷，将 onex 容器中的安装目录挂载到宿主机上
@@ -35,7 +35,7 @@ onex::onex::docker::install()
   # 请参考：https://stackoverflow.com/questions/66474191/how-does-volume-mount-from-container-to-host-and-vice-versa-work
   docker volume create --driver local -o type=none -o device=${ONEX_INSTALL_DIR} -o o=bind onex-volume
 
-  echo "Create onex using ccr.ccs.tencentyun.com/superproj/onex-allinone-amd64:${ONEX_IMAGE_VERSION}"
+  echo "Create onex using ccr.ccs.tencentyun.com/onexstack/onex-allinone-amd64:${ONEX_IMAGE_VERSION}"
   # 启动 onex 容器
   # 注意：启动时需要通过 --privileged 容器 root 权限，否则可能会报以下错误：
   # "Failed to get D-Bus connection: Operation not permitted"
@@ -62,7 +62,7 @@ onex::onex::docker::install()
     -p ${ONEX_ACCESS_HOST}:${ONEX_MINER_CONTROLLER_METRICS_PORT}:${ONEX_MINER_CONTROLLER_METRICS_PORT} \
     -p ${ONEX_ACCESS_HOST}:${ONEX_MINER_CONTROLLER_HEALTHZ_PORT}:${ONEX_MINER_CONTROLLER_HEALTHZ_PORT} \
     -p ${ONEX_ACCESS_HOST}:${ONEX_TOYBLC_HTTP_PORT}:${ONEX_TOYBLC_HTTP_PORT} \
-    ccr.ccs.tencentyun.com/superproj/onex-allinone-amd64:${ONEX_IMAGE_VERSION}
+    ccr.ccs.tencentyun.com/onexstack/onex-allinone-amd64:${ONEX_IMAGE_VERSION}
   onex::onex::info
 }
 
@@ -80,7 +80,7 @@ onex::onex::build_artifacts()
   export OUTPUT_DIR=${LOCAL_OUTPUT_ROOT}
 
   # 进入到 OneX 项目仓库根目录，开始安装操作
-  pushd "${ONEX_ROOT}" >/dev/null 2>&1
+  pushd "${PROJ_ROOT_DIR}" >/dev/null 2>&1
 
   # 构建需要的产物
   # 构建服务二进制文件
@@ -247,7 +247,7 @@ onex::onex::sbs::status()
 # 要实现幂等
 onex::onex::prepare()
 {
-  pushd "${ONEX_ROOT}" >/dev/null 2>&1
+  pushd "${PROJ_ROOT_DIR}" >/dev/null 2>&1
 
   # 2. 配置 $HOME/.bashrc 添加一些便捷入口
   if ! grep -q 'Alias and environments for onex quick access' $HOME/.bashrc; then
@@ -255,15 +255,15 @@ onex::onex::prepare()
 # Alias and environments for onex quick access
 export GOSRC="$WORKSPACE/golang/src"
 # OneX project root directory, used in many places.
-export ONEX_ROOT="$GOSRC/github.com/superproj/onex"
+export PROJ_ROOT_DIR="$GOSRC/github.com/onexstack/onex"
 # Allows you to run latest compiled onex components like executing
 # Linux commands, for example: onexctl.
-export PATH=${ONEX_ROOT}/_output/platforms/linux/amd64:${ONEX_ROOT}/scripts:$PATH
+export PATH=${PROJ_ROOT_DIR}/_output/platforms/linux/amd64:${PROJ_ROOT_DIR}/scripts:$PATH
 export OVERSION=v1.0.0
-# a very convenient alias used to enter superproj root directory.
-alias sp="cd $GOSRC/github.com/superproj"
+# a very convenient alias used to enter onexstack root directory.
+alias sp="cd $GOSRC/github.com/onexstack"
 # a very convenient alias used to enter onex root directory.
-alias o="cd $GOSRC/github.com/superproj/onex"
+alias o="cd $GOSRC/github.com/onexstack/onex"
 EOF
   fi
 

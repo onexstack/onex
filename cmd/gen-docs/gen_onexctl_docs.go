@@ -1,20 +1,22 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package main
 
 import (
+	"bytes"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 
 	"github.com/spf13/cobra/doc"
+	"k8s.io/cli-runtime/pkg/genericiooptions"
 	"k8s.io/kubernetes/cmd/genutils"
 
-	"github.com/superproj/onex/internal/onexctl/cmd"
+	"github.com/onexstack/onex/internal/onexctl/cmd"
 )
 
 func main() {
@@ -37,6 +39,6 @@ func main() {
 	// regardless of where we run.
 	_ = os.Setenv("HOME", "/home/username")
 	// TODO os.Stdin should really be something like ioutil.Discard, but a Reader
-	onexctl := cmd.NewOneXCtlCommand(os.Stdin, ioutil.Discard, ioutil.Discard)
+	onexctl := cmd.NewOneXCtlCommand(cmd.OneXctlOptions{IOStreams: genericiooptions.IOStreams{In: bytes.NewReader(nil), Out: io.Discard, ErrOut: io.Discard}})
 	_ = doc.GenMarkdownTree(onexctl, outDir)
 }

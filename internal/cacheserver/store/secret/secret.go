@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package secret
@@ -13,7 +13,7 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/superproj/onex/internal/usercenter/model"
+	"github.com/onexstack/onex/internal/usercenter/model"
 )
 
 // secretStore provides methods to interact with secrets in the database.
@@ -24,27 +24,6 @@ type secretStore struct {
 // New creates a new instance of secretStore.
 func New(db *gorm.DB) *secretStore {
 	return &secretStore{db: db}
-}
-
-// Get retrieves a secret by its key.
-func (s *secretStore) Get(ctx context.Context, key any) (any, error) {
-	secret := &model.SecretM{}
-	if err := s.db.Where(model.SecretM{SecretID: key.(string)}).First(&secret).Error; err != nil {
-		return nil, err
-	}
-	return secret, nil
-}
-
-// GetWithTTL retrieves a secret by its key along with its time to live (TTL).
-func (s *secretStore) GetWithTTL(ctx context.Context, key any) (any, time.Duration, error) {
-	value, err := s.Get(ctx, key)
-	if err != nil {
-		return nil, 0, err
-	}
-
-	ttl := time.Until(time.Unix(value.(*model.SecretM).Expires, 0))
-
-	return value, ttl, nil
 }
 
 // Set stores a secret with the given key and value.
@@ -73,6 +52,27 @@ func (s *secretStore) Del(ctx context.Context, key any) error {
 	}
 
 	return nil
+}
+
+// Get retrieves a secret by its key.
+func (s *secretStore) Get(ctx context.Context, key any) (any, error) {
+	secret := &model.SecretM{}
+	if err := s.db.Where(model.SecretM{SecretID: key.(string)}).First(&secret).Error; err != nil {
+		return nil, err
+	}
+	return secret, nil
+}
+
+// GetWithTTL retrieves a secret by its key along with its time to live (TTL).
+func (s *secretStore) GetWithTTL(ctx context.Context, key any) (any, time.Duration, error) {
+	value, err := s.Get(ctx, key)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	ttl := time.Until(time.Unix(value.(*model.SecretM).Expires, 0))
+
+	return value, ttl, nil
 }
 
 // Clear is not supported for secretStore.

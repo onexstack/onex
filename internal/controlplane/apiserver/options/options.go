@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Package options contains flags and options for initializing an apiserver
@@ -20,6 +20,7 @@ import (
 	"k8s.io/apiserver/pkg/admission"
 	peerreconcilers "k8s.io/apiserver/pkg/reconcilers"
 	genericoptions "k8s.io/apiserver/pkg/server/options"
+	"k8s.io/client-go/informers"
 	cliflag "k8s.io/component-base/cli/flag"
 	"k8s.io/component-base/logs"
 	logsapi "k8s.io/component-base/logs/api/v1"
@@ -28,8 +29,7 @@ import (
 	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	netutils "k8s.io/utils/net"
 
-	"github.com/superproj/onex/internal/pkg/options"
-	"github.com/superproj/onex/pkg/generated/informers"
+	"github.com/onexstack/onex/internal/pkg/options"
 )
 
 const defaultEtcdPathPrefix = "/registry/onex.io"

@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package i18n
@@ -14,7 +14,7 @@ import (
 	"golang.org/x/text/language"
 	"google.golang.org/grpc/metadata"
 
-	"github.com/superproj/onex/pkg/i18n"
+	"github.com/onexstack/onexstack/pkg/i18n"
 )
 
 func Translator(options ...func(*i18n.Options)) middleware.Middleware {
@@ -30,7 +30,7 @@ func Translator(options ...func(*i18n.Options)) middleware.Middleware {
 			ii := i.Select(lang)
 			header.Set(key, ii.Language().String())
 			ctx = metadata.NewOutgoingContext(ctx, header)
-			ctx = i18n.NewContext(ctx, ii)
+			ctx = i18n.WithContext(ctx, ii)
 			return handler(ctx, rq)
 		}
 	}

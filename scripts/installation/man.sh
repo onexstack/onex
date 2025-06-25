@@ -5,9 +5,9 @@
 # license that can be found in the LICENSE file.
 
 # The root of the build/dist directory.
-ONEX_ROOT=$(dirname "${BASH_SOURCE[0]}")/../..
+PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/../..
 # If common.sh has already been sourced, it will not be sourced again here.
-[[ -z ${COMMON_SOURCED} ]] && source ${ONEX_ROOT}/scripts/installation/common.sh
+[[ -z ${COMMON_SOURCED} ]] && source ${PROJ_ROOT_DIR}/scripts/installation/common.sh
 
 # 安装后打印必要的信息
 onex::man::info() {
@@ -19,10 +19,10 @@ EOF
 # 安装
 onex::man::install()
 {
-  pushd ${ONEX_ROOT}
+  pushd ${PROJ_ROOT_DIR}
 
   # 生成各个组件的 man1 文件
-  ${ONEX_ROOT}/scripts/update-generated-docs.sh
+  ${PROJ_ROOT_DIR}/scripts/update-generated-docs.sh
   onex::util::sudo "cp docs/man/man1/* /usr/share/man/man1/"
   onex::man::status || return 1
   onex::man::info

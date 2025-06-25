@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Package user provides functions to manage users on onex cloud platform.
@@ -10,10 +10,10 @@ package user
 import (
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
+	"k8s.io/cli-runtime/pkg/genericiooptions"
 
-	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
-	"github.com/superproj/onex/internal/onexctl/util/templates"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
+	cmdutil "github.com/onexstack/onex/internal/onexctl/cmd/util"
+	"github.com/onexstack/onex/internal/onexctl/util/templates"
 )
 
 var userLong = templates.LongDesc(`
@@ -23,7 +23,7 @@ Administrator can use all subcommands, non-administrator only allow to use creat
 only allow to operate their own resources, if permission not allowed, will return an 'Permission denied' error.`)
 
 // NewCmdUser returns new initialized instance of 'user' sub command.
-func NewCmdUser(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmdUser(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "user SUBCOMMAND",
 		DisableFlagsInUseLine: true,

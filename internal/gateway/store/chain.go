@@ -1,91 +1,57 @@
-// Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
-// Use of this source code is governed by a MIT style
-// license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
-//
-
+// nolint: dupl
 package store
 
 import (
 	"context"
-	"errors"
 
-	"gorm.io/gorm"
+	storelogger "github.com/onexstack/onexstack/pkg/log/logger/store"
+	genericstore "github.com/onexstack/onexstack/pkg/store"
+	"github.com/onexstack/onexstack/pkg/store/where"
 
-	"github.com/superproj/onex/internal/gateway/model"
-	"github.com/superproj/onex/internal/pkg/meta"
+	"github.com/onexstack/onex/internal/gateway/model"
 )
 
-// ChainStore defines the chain storage interface.
+// ChainStore defines the interface for managing chain-related data operations.
 type ChainStore interface {
-	Create(ctx context.Context, ch *model.ChainM) error
-	Delete(ctx context.Context, filters map[string]any) error
-	Update(ctx context.Context, ch *model.ChainM) error
-	Get(ctx context.Context, filters map[string]any) (*model.ChainM, error)
-	List(ctx context.Context, namespace string, opts ...meta.ListOption) (int64, []*model.ChainM, error)
+	// Create inserts a new Chain record into the store.
+	Create(ctx context.Context, obj *model.ChainM) error
+
+	// Update modifies an existing Chain record in the store based on the given model.
+	Update(ctx context.Context, obj *model.ChainM) error
+
+	// Delete removes Chain records that satisfy the given query options.
+	Delete(ctx context.Context, opts *where.Options) error
+
+	// Get retrieves a single Chain record that satisfies the given query options.
+	Get(ctx context.Context, opts *where.Options) (*model.ChainM, error)
+
+	// List retrieves a list of Chain records and their total count based on the given query options.
+	List(ctx context.Context, opts *where.Options) (int64, []*model.ChainM, error)
+
+	// ChainExpansion is a placeholder for extension methods for chains,
+	// to be implemented by additional interfaces if needed.
+	ChainExpansion
 }
 
-// chainStore is a structure which implements the ChainStore interface.
+// ChainExpansion is an empty interface provided for extending
+// the ChainStore interface.
+// Developers can define chain-specific additional methods
+// in this interface for future expansion.
+type ChainExpansion interface{}
+
+// chainStore implements the ChainStore interface and provides
+// default implementations of the methods.
 type chainStore struct {
-	ds *datastore
+	*genericstore.Store[model.ChainM]
 }
 
-// newChainStore creates a new chainStore instance with provided datastore.
-func newChainStore(ds *datastore) *chainStore {
-	return &chainStore{ds}
-}
+// Ensure that chainStore satisfies the ChainStore interface at compile time.
+var _ ChainStore = (*chainStore)(nil)
 
-// db is an alias for m.ds.Core(ctx context.Context), a convenience method to get the core database instance.
-func (d *chainStore) db(ctx context.Context) *gorm.DB {
-	return d.ds.Core(ctx)
-}
-
-// Create creates a new chain record in the database.
-func (d *chainStore) Create(ctx context.Context, ch *model.ChainM) error {
-	return d.db(ctx).Create(&ch).Error
-}
-
-// Delete deletes a chain record from the database based on provided filters.
-func (d *chainStore) Delete(ctx context.Context, filters map[string]any) error {
-	err := d.db(ctx).Where(filters).Delete(&model.ChainM{}).Error
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-		return err
+// newChainStore creates a new chainStore instance with the provided
+// datastore and logger.
+func newChainStore(store *datastore) *chainStore {
+	return &chainStore{
+		Store: genericstore.NewStore[model.ChainM](store, storelogger.NewLogger()),
 	}
-
-	return nil
-}
-
-// Update updates a chain record in the database.
-func (d *chainStore) Update(ctx context.Context, ch *model.ChainM) error {
-	return d.db(ctx).Save(ch).Error
-}
-
-// Get retrieves a single chain record from the database based on provided filters.
-func (d *chainStore) Get(ctx context.Context, filters map[string]any) (*model.ChainM, error) {
-	chain := &model.ChainM{}
-	if err := d.db(ctx).Where(filters).First(&chain).Error; err != nil {
-		return nil, err
-	}
-
-	return chain, nil
-}
-
-// List returns a list of chain records according to the provided query conditions.
-func (d *chainStore) List(ctx context.Context, namespace string, opts ...meta.ListOption) (count int64, ret []*model.ChainM, err error) {
-	los := meta.NewListOptions(opts...)
-	if namespace != "" {
-		los.Filters["namespace"] = namespace
-	}
-
-	ans := d.db(ctx).
-		Where(los.Filters).
-		Offset(los.Offset).
-		Limit(los.Limit).
-		Order("id desc").
-		Find(&ret).
-		Offset(-1).
-		Limit(-1).
-		Count(&count)
-
-	return count, ret, ans.Error
 }

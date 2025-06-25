@@ -9,11 +9,11 @@ import (
 	"k8s.io/kubernetes/pkg/controller/garbagecollector"
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	"github.com/superproj/onex/cmd/onex-controller-manager/names"
-	chaincontroller "github.com/superproj/onex/internal/controller/chain"
-	namespacecontroller "github.com/superproj/onex/internal/controller/namespace"
-	resourcecleancontroller "github.com/superproj/onex/internal/controller/resourceclean"
-	synccontroller "github.com/superproj/onex/internal/controller/sync"
+	"github.com/onexstack/onex/cmd/onex-controller-manager/names"
+	chaincontroller "github.com/onexstack/onex/internal/controller/chain"
+	namespacecontroller "github.com/onexstack/onex/internal/controller/namespace"
+	resourcecleancontroller "github.com/onexstack/onex/internal/controller/resourceclean"
+	synccontroller "github.com/onexstack/onex/internal/controller/sync"
 )
 
 func newGarbageCollectorControllerDescriptor() *ControllerDescriptor {
@@ -163,11 +163,12 @@ func startGarbageCollectorController(ctx context.Context, cctx ControllerContext
 
 	// Start the garbage collector.
 	workers := int(cctx.Config.ComponentConfig.GarbageCollectorController.ConcurrentGCSyncs)
-	go garbageCollector.Run(ctx, workers)
+	const syncPeriod = 30 * time.Second
+	go garbageCollector.Run(ctx, workers, syncPeriod)
 
 	// Periodically refresh the RESTMapper with new discovery information and sync
 	// the garbage collector.
-	go garbageCollector.Sync(ctx, discoveryClient, 30*time.Second)
+	go garbageCollector.Sync(ctx, discoveryClient, syncPeriod)
 
 	return true, nil
 }

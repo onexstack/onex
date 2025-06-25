@@ -3,10 +3,10 @@
 #
 
 HELM := helm
-CHARTS_DIR=${ONEX_ROOT}/manifests/installation/charts
+CHARTS_DIR=${PROJ_ROOT_DIR}/manifests/installation/charts
 CHARTS ?= $(foreach charts,$(filter-out %.md, $(wildcard $(CHARTS_DIR)/*)),$(notdir ${charts}))
 ifeq (${CHARTS},)
-	$(error Could not determine CHARTS, set ONEX_ROOT or run in source dir)
+	$(error Could not determine CHARTS, set PROJ_ROOT_DIR or run in source dir)
 endif
 
 HELM_REPO ?= https://market-tke.tencentcloudcr.com/chartrepo/onex

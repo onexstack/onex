@@ -3,15 +3,15 @@
 # Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 # Use of this source code is governed by a MIT style
 # license that can be found in the LICENSE file. The original repo for
-# this file is https://github.com/superproj/onex.
+# this file is https://github.com/onexstack/onex.
 #
 
 # The root of the build/dist directory
-ONEX_ROOT=$(dirname "${BASH_SOURCE[0]}")/../..
+PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/../..
 # If common.sh has already been sourced, it will not be sourced again here.
-[[ -z ${COMMON_SOURCED} ]] && source ${ONEX_ROOT}/scripts/installation/common.sh
+[[ -z ${COMMON_SOURCED} ]] && source ${PROJ_ROOT_DIR}/scripts/installation/common.sh
 # Set some environment variables.
-INSTALL_DIR=${ONEX_ROOT}/scripts/installation
+INSTALL_DIR=${PROJ_ROOT_DIR}/scripts/installation
 
 source ${INSTALL_DIR}/jaeger.sh
 source ${INSTALL_DIR}/kafka.sh
@@ -55,15 +55,15 @@ onex::install::pre_install()
   onex::util::sudo "apt install -y software-properties-common dirmngr apt-transport-https"
 
   # 配置 hosts
-  if ! egrep -q 'onex.*.superproj.com' /etc/hosts; then
+  if ! egrep -q 'onex.*.onexstack.com' /etc/hosts; then
     echo ${LINUX_PASSWORD} | sudo -S cat << EOF | sudo tee -a /etc/hosts
 
 # host configs for onex project
-${ONEX_ACCESS_HOST} onex.usercenter.superproj.com
-${ONEX_ACCESS_HOST} onex.gateway.superproj.com
-${ONEX_ACCESS_HOST} onex.apiserver.superproj.com
-${ONEX_ACCESS_HOST} onex.nightwatch.superproj.com
-${ONEX_ACCESS_HOST} onex.pump.superproj.com
+${ONEX_ACCESS_HOST} onex.usercenter.onexstack.com
+${ONEX_ACCESS_HOST} onex.gateway.onexstack.com
+${ONEX_ACCESS_HOST} onex.apiserver.onexstack.com
+${ONEX_ACCESS_HOST} onex.nightwatch.onexstack.com
+${ONEX_ACCESS_HOST} onex.pump.onexstack.com
 EOF
   fi
 }

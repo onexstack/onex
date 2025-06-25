@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // APIServer is the main API server and master for the onex.
@@ -22,15 +22,17 @@ import (
 	_ "k8s.io/component-base/metrics/prometheus/version"  // for version metric registration
 	"k8s.io/klog/v2"
 
-	"github.com/superproj/onex/cmd/onex-apiserver/app"
-	"github.com/superproj/onex/internal/apiserver/admission/plugin/minerset"
-	"github.com/superproj/onex/internal/controlplane/admission/initializer"
-	"github.com/superproj/onex/internal/pkg/config/minerprofile"
-	//"github.com/superproj/onex/internal/pkg/options"
-	appsrest "github.com/superproj/onex/internal/apiserver/registry/apps/rest"
-	"github.com/superproj/onex/pkg/apis/apps/v1beta1"
-	"github.com/superproj/onex/pkg/generated/clientset/versioned"
-	"github.com/superproj/onex/pkg/generated/informers"
+	"github.com/onexstack/onex/cmd/onex-apiserver/app"
+	"github.com/onexstack/onex/internal/apiserver/admission/plugin/minerset"
+	//"github.com/onexstack/onex/internal/controlplane/admission/initializer"
+	"github.com/onexstack/onex/internal/pkg/config/minerprofile"
+	//"github.com/onexstack/onex/internal/pkg/options"
+	"github.com/onexstack/onex/internal/apiserver/admission/initializer"
+	appsrest "github.com/onexstack/onex/internal/apiserver/registry/apps/rest"
+	"github.com/onexstack/onex/pkg/apis/apps/v1beta1"
+	"github.com/onexstack/onex/pkg/generated/clientset/versioned"
+	"github.com/onexstack/onex/pkg/generated/informers"
+	generatedopenapi "github.com/onexstack/onex/pkg/generated/openapi"
 )
 
 func main() {
@@ -45,6 +47,7 @@ func main() {
 		// Add custom admission plugins.
 		app.WithAdmissionPlugin(minerset.PluginName, minerset.Register),
 		// Add custom admission plugins initializer.
+		app.WithGetOpenAPIDefinitions(generatedopenapi.GetOpenAPIDefinitions),
 		app.WithAdmissionInitializers(func(c *genericapiserver.RecommendedConfig) ([]admission.PluginInitializer, error) {
 			client, err := versioned.NewForConfig(c.LoopbackClientConfig)
 			if err != nil {

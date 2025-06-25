@@ -1,89 +1,57 @@
-// Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
-// Use of this source code is governed by a MIT style
-// license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
-//
-
+// nolint: dupl
 package store
 
 import (
 	"context"
-	"errors"
 
-	"gorm.io/gorm"
+	storelogger "github.com/onexstack/onexstack/pkg/log/logger/store"
+	genericstore "github.com/onexstack/onexstack/pkg/store"
+	"github.com/onexstack/onexstack/pkg/store/where"
 
-	"github.com/superproj/onex/internal/gateway/model"
-	"github.com/superproj/onex/internal/pkg/meta"
+	"github.com/onexstack/onex/internal/gateway/model"
 )
 
-// MinerStore defines the miner storage interface.
+// MinerStore defines the interface for managing miner-related data operations.
 type MinerStore interface {
-	Create(ctx context.Context, miner *model.MinerM) error
-	Delete(ctx context.Context, filters map[string]any) error
-	Update(ctx context.Context, miner *model.MinerM) error
-	Get(ctx context.Context, filters map[string]any) (*model.MinerM, error)
-	List(ctx context.Context, namespace string, opts ...meta.ListOption) (int64, []*model.MinerM, error)
+	// Create inserts a new Miner record into the store.
+	Create(ctx context.Context, obj *model.MinerM) error
+
+	// Update modifies an existing Miner record in the store based on the given model.
+	Update(ctx context.Context, obj *model.MinerM) error
+
+	// Delete removes Miner records that satisfy the given query options.
+	Delete(ctx context.Context, opts *where.Options) error
+
+	// Get retrieves a single Miner record that satisfies the given query options.
+	Get(ctx context.Context, opts *where.Options) (*model.MinerM, error)
+
+	// List retrieves a list of Miner records and their total count based on the given query options.
+	List(ctx context.Context, opts *where.Options) (int64, []*model.MinerM, error)
+
+	// MinerExpansion is a placeholder for extension methods for miners,
+	// to be implemented by additional interfaces if needed.
+	MinerExpansion
 }
 
+// MinerExpansion is an empty interface provided for extending
+// the MinerStore interface.
+// Developers can define miner-specific additional methods
+// in this interface for future expansion.
+type MinerExpansion interface{}
+
+// minerStore implements the MinerStore interface and provides
+// default implementations of the methods.
 type minerStore struct {
-	ds *datastore
+	*genericstore.Store[model.MinerM]
 }
 
-func newMinerStore(ds *datastore) *minerStore {
-	return &minerStore{ds}
-}
+// Ensure that minerStore satisfies the MinerStore interface at compile time.
+var _ MinerStore = (*minerStore)(nil)
 
-// db is alias for d.ds.Core(ctx context.Context).
-func (d *minerStore) db(ctx context.Context) *gorm.DB {
-	return d.ds.Core(ctx)
-}
-
-// Create creates a new miner record.
-func (d *minerStore) Create(ctx context.Context, miner *model.MinerM) error {
-	return d.db(ctx).Create(&miner).Error
-}
-
-// Delete delete an miner record.
-func (d *minerStore) Delete(ctx context.Context, filters map[string]any) error {
-	err := d.db(ctx).Where(filters).Delete(&model.MinerM{}).Error
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-		return err
+// newMinerStore creates a new minerStore instance with the provided
+// datastore and logger.
+func newMinerStore(store *datastore) *minerStore {
+	return &minerStore{
+		Store: genericstore.NewStore[model.MinerM](store, storelogger.NewLogger()),
 	}
-
-	return nil
-}
-
-// Update updates an miner record.
-func (d *minerStore) Update(ctx context.Context, miner *model.MinerM) error {
-	return d.db(ctx).Save(miner).Error
-}
-
-// Get get an miner record.
-func (d *minerStore) Get(ctx context.Context, filters map[string]any) (*model.MinerM, error) {
-	miner := &model.MinerM{}
-	if err := d.db(ctx).Where(filters).First(&miner).Error; err != nil {
-		return nil, err
-	}
-
-	return miner, nil
-}
-
-// List return miners by specified query conditions.
-func (d *minerStore) List(ctx context.Context, namespace string, opts ...meta.ListOption) (count int64, ret []*model.MinerM, err error) {
-	los := meta.NewListOptions(opts...)
-	if namespace != "" {
-		los.Filters["namespace"] = namespace
-	}
-
-	ans := d.db(ctx).
-		Where(los.Filters).
-		Offset(los.Offset).
-		Limit(los.Limit).
-		Order("id desc").
-		Find(&ret).
-		Offset(-1).
-		Limit(-1).
-		Count(&count)
-
-	return count, ret, ans.Error
 }

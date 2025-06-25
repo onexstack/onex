@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Package options contains flags and options for initializing an apiserver
@@ -11,15 +11,15 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/onexstack/onexstack/pkg/app"
+	"github.com/onexstack/onexstack/pkg/log"
+	genericoptions "github.com/onexstack/onexstack/pkg/options"
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	cliflag "k8s.io/component-base/cli/flag"
 
-	"github.com/superproj/onex/internal/pkg/zflag"
-	"github.com/superproj/onex/internal/toyblc"
-	"github.com/superproj/onex/internal/toyblc/defaults"
-	"github.com/superproj/onex/pkg/app"
-	"github.com/superproj/onex/pkg/log"
-	genericoptions "github.com/superproj/onex/pkg/options"
+	"github.com/onexstack/onex/internal/pkg/zflag"
+	"github.com/onexstack/onex/internal/toyblc"
+	"github.com/onexstack/onex/internal/toyblc/pkg/defaults"
 )
 
 const (
@@ -27,10 +27,8 @@ const (
 	UserAgent = "onex-toyblc"
 )
 
-var _ app.CliOptions = (*Options)(nil)
-
-// Options contains state for master/api server.
-type Options struct {
+// ServerOptions contains the configuration options for the server.
+type ServerOptions struct {
 	Miner            bool                        `json:"miner" mapstructure:"miner"`
 	MinMineInterval  time.Duration               `json:"min-mine-interval" mapstructure:"min-mine-interval"`
 	MiningDifficulty int                         `json:"mining-difficulty" mapstructure:"mining-difficulty"`
@@ -38,14 +36,17 @@ type Options struct {
 	Accounts         map[string]string           `json:"accounts" mapstructure:"-"`
 	P2PAddr          string                      `json:"p2p-addr" mapstructure:"p2p-addr"`
 	Peers            []string                    `json:"peers" mapstructure:"peers"`
-	HTTPOptions      *genericoptions.HTTPOptions `json:"http" mapstructure:"http"`
+	HTTPOptions      *genericoptions.HTTPOptions `json:"http" mapstructure:"http"` // blc server
 	TLSOptions       *genericoptions.TLSOptions  `json:"tls" mapstructure:"tls"`
 	Log              *log.Options                `json:"log" mapstructure:"log"`
 }
 
-// NewOptions returns initialized Options.
-func NewOptions() *Options {
-	o := &Options{
+// Ensure ServerOptions implements the app.NamedFlagSetOptions interface.
+var _ app.NamedFlagSetOptions = (*ServerOptions)(nil)
+
+// NewServerOptions creates a ServerOptions instance with default values.
+func NewServerOptions() *ServerOptions {
+	o := &ServerOptions{
 		MinMineInterval:  2 * time.Hour,
 		MiningDifficulty: 1,
 		Address:          defaults.GenesisAddress,
@@ -61,7 +62,7 @@ func NewOptions() *Options {
 }
 
 // Flags returns flags for a specific server by section name.
-func (o *Options) Flags() (fss cliflag.NamedFlagSets) {
+func (o *ServerOptions) Flags() (fss cliflag.NamedFlagSets) {
 	o.HTTPOptions.AddFlags(fss.FlagSet("http"))
 	o.TLSOptions.AddFlags(fss.FlagSet("tls"))
 	o.Log.AddFlags(fss.FlagSet("log"))
@@ -81,12 +82,12 @@ func (o *Options) Flags() (fss cliflag.NamedFlagSets) {
 }
 
 // Complete completes all the required options.
-func (o *Options) Complete() error {
+func (o *ServerOptions) Complete() error {
 	return nil
 }
 
-// Validate validates all the required options.
-func (o *Options) Validate() error {
+// Validate checks whether the options in ServerOptions are valid.
+func (o *ServerOptions) Validate() error {
 	errs := []error{}
 
 	if o.MiningDifficulty < 0 {
@@ -114,27 +115,16 @@ func (o *Options) Validate() error {
 	return utilerrors.NewAggregate(errs)
 }
 
-// ApplyTo fills up onex-toyblc config with options.
-func (o *Options) ApplyTo(c *toyblc.Config) error {
-	c.Miner = o.Miner
-	c.MinMineInterval = o.MinMineInterval
-	c.Address = o.Address
-	c.Accounts = o.Accounts
-	c.HTTPOptions = o.HTTPOptions
-	c.TLSOptions = o.TLSOptions
-	c.P2PAddr = o.P2PAddr
-	c.Peers = o.Peers
-
-	return nil
-}
-
-// Config return an onex-toyblc config object.
-func (o *Options) Config() (*toyblc.Config, error) {
-	c := &toyblc.Config{}
-
-	if err := o.ApplyTo(c); err != nil {
-		return nil, err
-	}
-
-	return c, nil
+// Config builds an toyblc.Config based on ServerOptions.
+func (o *ServerOptions) Config() (*toyblc.Config, error) {
+	return &toyblc.Config{
+		Miner:           o.Miner,
+		MinMineInterval: o.MinMineInterval,
+		Address:         o.Address,
+		Accounts:        o.Accounts,
+		HTTPOptions:     o.HTTPOptions,
+		TLSOptions:      o.TLSOptions,
+		P2PAddr:         o.P2PAddr,
+		Peers:           o.Peers,
+	}, nil
 }

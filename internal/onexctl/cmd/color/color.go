@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Package color print colors supported by the current terminal.
@@ -14,11 +14,11 @@ import (
 	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
+	"k8s.io/cli-runtime/pkg/genericiooptions"
 
-	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
-	"github.com/superproj/onex/internal/onexctl/util/templates"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
-	stringsutil "github.com/superproj/onex/pkg/util/strings"
+	cmdutil "github.com/onexstack/onex/internal/onexctl/cmd/util"
+	"github.com/onexstack/onex/internal/onexctl/util/templates"
+	stringsutil "github.com/onexstack/onexstack/pkg/util/strings"
 )
 
 // ColorOptions is an options struct to support color subcommands.
@@ -26,7 +26,7 @@ type ColorOptions struct {
 	Type    []string
 	Example bool
 
-	genericclioptions.IOStreams
+	genericiooptions.IOStreams
 }
 
 var (
@@ -177,7 +177,7 @@ c.Println("This prints again cyan...")`)
 )
 
 // NewColorOptions returns an initialized ColorOptions instance.
-func NewColorOptions(ioStreams genericclioptions.IOStreams) *ColorOptions {
+func NewColorOptions(ioStreams genericiooptions.IOStreams) *ColorOptions {
 	return &ColorOptions{
 		Type:      []string{},
 		Example:   false,
@@ -186,7 +186,7 @@ func NewColorOptions(ioStreams genericclioptions.IOStreams) *ColorOptions {
 }
 
 // NewCmdColor returns new initialized instance of color sub command.
-func NewCmdColor(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmdColor(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	o := NewColorOptions(ioStreams)
 
 	cmd := &cobra.Command{

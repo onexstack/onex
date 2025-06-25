@@ -244,7 +244,7 @@
 │   │   ├── printers/ # onex-apiserver 命令行输出相关代码
 │   │   ├── util/ # 工具包，里面包含了一些utils
 │   │   ├── validation/ # 校验
-│   │   ├── onexx/ # onex 项目的 context 定义
+│   │   ├── contextx. # onex 项目的 context 定义
 │   │   └── zid/ # onex id generator
 │   ├── pump/ # pump 组件的实现
 │   ├── registry/ # onex-apiserver 的 registry 实现

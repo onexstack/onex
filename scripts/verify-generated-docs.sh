@@ -22,7 +22,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-ONEX_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
-source "${ONEX_ROOT}/scripts/lib/verify-generated.sh"
+PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/..
+source "${PROJ_ROOT_DIR}/scripts/lib/verify-generated.sh"
 
 onex::verify::generated "Generated docs need to be updated" "Please run 'scripts/update-generated-docs.sh'" scripts/update-generated-docs.sh "$@"

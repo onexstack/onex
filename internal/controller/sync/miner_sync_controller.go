@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 //nolint:dupl
@@ -20,10 +20,11 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 
-	gwmodel "github.com/superproj/onex/internal/gateway/model"
-	"github.com/superproj/onex/internal/gateway/store"
-	"github.com/superproj/onex/internal/pkg/known"
-	"github.com/superproj/onex/pkg/apis/apps/v1beta1"
+	gwmodel "github.com/onexstack/onex/internal/gateway/model"
+	"github.com/onexstack/onex/internal/gateway/store"
+	"github.com/onexstack/onex/internal/pkg/known"
+	"github.com/onexstack/onex/pkg/apis/apps/v1beta1"
+	"github.com/onexstack/onexstack/pkg/store/where"
 )
 
 const minerControllerName = "controller-manager.minerSync"
@@ -54,12 +55,12 @@ func (r *MinerSyncReconciler) Reconcile(ctx context.Context, rq ctrl.Request) (c
 	m := &v1beta1.Miner{}
 	if err := r.client.Get(ctx, rq.NamespacedName, m); err != nil {
 		if apierrors.IsNotFound(err) {
-			return ctrl.Result{}, r.Store.Miners().Delete(ctx, map[string]any{"namespace": rq.Namespace, "name": rq.Name})
+			return ctrl.Result{}, r.Store.Miner().Delete(ctx, where.F("namespace", rq.Namespace, "name", rq.Name))
 		}
 		return ctrl.Result{}, err
 	}
 
-	mr, err := r.Store.Miners().Get(ctx, map[string]any{"namespace": rq.Namespace, "name": rq.Name})
+	mr, err := r.Store.Miner().Get(ctx, where.F("namespace", rq.Namespace, "name", rq.Name))
 	if err != nil {
 		// miner record not exist, create it.
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -78,7 +79,7 @@ func (r *MinerSyncReconciler) Reconcile(ctx context.Context, rq ctrl.Request) (c
 		//nolint: errchkjson
 		data, _ := json.Marshal(mr)
 		log.V(4).Info("miner record changed", "newest", string(data))
-		return ctrl.Result{}, r.Store.Miners().Update(ctx, mr)
+		return ctrl.Result{}, r.Store.Miner().Update(ctx, mr)
 	}
 
 	return ctrl.Result{}, nil
@@ -86,7 +87,7 @@ func (r *MinerSyncReconciler) Reconcile(ctx context.Context, rq ctrl.Request) (c
 
 // create miner record.
 func addMiner(ctx context.Context, dbcli store.IStore, m *v1beta1.Miner) error {
-	return dbcli.Miners().Create(ctx, applyToMiner(&gwmodel.MinerM{}, m))
+	return dbcli.Miner().Create(ctx, applyToMiner(&gwmodel.MinerM{}, m))
 }
 
 func applyToMiner(mr *gwmodel.MinerM, m *v1beta1.Miner) *gwmodel.MinerM {

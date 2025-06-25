@@ -14,7 +14,7 @@
 ###############################################################################
 
 # Tencent cos configuration
-readonly BUCKET="superproj-1254073058"
+readonly BUCKET="onexstack-1254073058"
 readonly REGION="ap-beijing"
 readonly COS_RELEASE_DIR="onex-release"
 readonly COSTOOL="coscmd"
@@ -25,7 +25,7 @@ readonly RELEASE_TARS="${LOCAL_OUTPUT_ROOT}/release-tars"
 readonly RELEASE_IMAGES="${LOCAL_OUTPUT_ROOT}/release-images"
 
 # onex github account info
-readonly ONEX_GITHUB_ORG=superproj
+readonly ONEX_GITHUB_ORG=onexstack
 readonly ONEX_GITHUB_REPO=onex
 
 readonly ARTIFACT=onex.tar.gz
@@ -122,22 +122,22 @@ function onex::release::package_src_tarball() {
   if [[ "${ONEX_GIT_TREE_STATE-}" = 'clean' ]]; then
     git archive -o "${src_tarball}" HEAD
   else
-    find "${ONEX_ROOT}" -mindepth 1 -maxdepth 1 \
+    find "${PROJ_ROOT_DIR}" -mindepth 1 -maxdepth 1 \
       ! \( \
-      \( -path "${ONEX_ROOT}"/_\* -o \
-      -path "${ONEX_ROOT}"/.git\* -o \
-      -path "${ONEX_ROOT}"/.gitignore\* -o \
-      -path "${ONEX_ROOT}"/.gsemver.yaml\* -o \
-      -path "${ONEX_ROOT}"/.config\* -o \
-      -path "${ONEX_ROOT}"/.chglog\* -o \
-      -path "${ONEX_ROOT}"/.gitlint -o \
-      -path "${ONEX_ROOT}"/.golangci.yaml -o \
-      -path "${ONEX_ROOT}"/.goreleaser.yml -o \
-      -path "${ONEX_ROOT}"/.note.md -o \
-      -path "${ONEX_ROOT}"/.todo.md \
+      \( -path "${PROJ_ROOT_DIR}"/_\* -o \
+      -path "${PROJ_ROOT_DIR}"/.git\* -o \
+      -path "${PROJ_ROOT_DIR}"/.gitignore\* -o \
+      -path "${PROJ_ROOT_DIR}"/.gsemver.yaml\* -o \
+      -path "${PROJ_ROOT_DIR}"/.config\* -o \
+      -path "${PROJ_ROOT_DIR}"/.chglog\* -o \
+      -path "${PROJ_ROOT_DIR}"/.gitlint -o \
+      -path "${PROJ_ROOT_DIR}"/.golangci.yaml -o \
+      -path "${PROJ_ROOT_DIR}"/.goreleaser.yml -o \
+      -path "${PROJ_ROOT_DIR}"/.note.md -o \
+      -path "${PROJ_ROOT_DIR}"/.todo.md \
       \) -prune \
       \) -print0 \
-      | "${TAR}" czf "${src_tarball}" --transform "s|${ONEX_ROOT#/*}|onex|" --null -T -
+      | "${TAR}" czf "${src_tarball}" --transform "s|${PROJ_ROOT_DIR#/*}|onex|" --null -T -
   fi
 }
 
@@ -332,7 +332,7 @@ function onex::release::create_docker_images_for_server() {
         rm -rf "${docker_build_path}"
         mkdir -p "${docker_build_path}"
         ln "${binary_file_path}" "${docker_build_path}/${binary_name}"
-        ln "${ONEX_ROOT}/build/nsswitch.conf" "${docker_build_path}/nsswitch.conf"
+        ln "${PROJ_ROOT_DIR}/build/nsswitch.conf" "${docker_build_path}/nsswitch.conf"
         chmod 0644 "${docker_build_path}/nsswitch.conf"
         cat <<EOF > "${docker_file_path}"
 FROM ${base_image}
@@ -377,7 +377,7 @@ EOF
 function onex::release::package_onex_manifests_tarball() {
   onex::log::status "Building tarball: manifests"
 
-  local src_dir="${ONEX_ROOT}/deployments"
+  local src_dir="${PROJ_ROOT_DIR}/deployments"
 
   local release_stage="${RELEASE_STAGE}/manifests/onex"
   rm -rf "${release_stage}"
@@ -389,7 +389,7 @@ function onex::release::package_onex_manifests_tarball() {
   #cp "${src_dir}/onex-authz-server.yaml" "${dst_dir}"
   #cp "${src_dir}/onex-pump.yaml" "${dst_dir}"
   #cp "${src_dir}/onex-watcher.yaml" "${dst_dir}"
-  #cp "${ONEX_ROOT}/cluster/gce/gci/health-monitor.sh" "${dst_dir}/health-monitor.sh"
+  #cp "${PROJ_ROOT_DIR}/cluster/gce/gci/health-monitor.sh" "${dst_dir}/health-monitor.sh"
 
   onex::release::clean_cruft
 
@@ -423,7 +423,7 @@ EOF
 
   # We want everything in /scripts.
   mkdir -p "${release_stage}/release"
-  cp -R "${ONEX_ROOT}/scripts/release" "${release_stage}/"
+  cp -R "${PROJ_ROOT_DIR}/scripts/release" "${release_stage}/"
   cat <<EOF > "${release_stage}/release/get-onex-binaries.sh"
 #!/usr/bin/env bash
 
@@ -447,9 +447,9 @@ EOF
 
   # Include hack/lib as a dependency for the cluster/ scripts
   #mkdir -p "${release_stage}/hack"
-  #cp -R "${ONEX_ROOT}/hack/lib" "${release_stage}/hack/"
+  #cp -R "${PROJ_ROOT_DIR}/hack/lib" "${release_stage}/hack/"
 
-  cp -R ${ONEX_ROOT}/{docs,configs,scripts,deployments,init,README.md,LICENSE} "${release_stage}/"
+  cp -R ${PROJ_ROOT_DIR}/{docs,configs,scripts,deployments,init,README.md,LICENSE} "${release_stage}/"
 
   echo "${ONEX_GIT_VERSION}" > "${release_stage}/version"
 
@@ -512,7 +512,7 @@ function onex::release::verify_prereqs(){
   if [ -z "$(which ${COSTOOL} 2>/dev/null)" ]; then
     onex::log::info "${COSTOOL} tool not installed, try to install it."
 
-    if ! make -C "${ONEX_ROOT}" tools.install.${COSTOOL}; then
+    if ! make -C "${PROJ_ROOT_DIR}" tools.install.${COSTOOL}; then
       onex::log::error "failed to install ${COSTOOL}"
       return 1
     fi
@@ -587,10 +587,10 @@ function onex::release::github_release() {
 function onex::release::generate_changelog() {
   onex::log::info "generate CHANGELOG-${ONEX_GIT_VERSION#v}.md and commit it"
 
-  git-chglog ${ONEX_GIT_VERSION} > ${ONEX_ROOT}/CHANGELOG/CHANGELOG-${ONEX_GIT_VERSION#v}.md
+  git-chglog ${ONEX_GIT_VERSION} > ${PROJ_ROOT_DIR}/CHANGELOG/CHANGELOG-${ONEX_GIT_VERSION#v}.md
 
   set +o errexit
-  git add ${ONEX_ROOT}/CHANGELOG/CHANGELOG-${ONEX_GIT_VERSION#v}.md
+  git add ${PROJ_ROOT_DIR}/CHANGELOG/CHANGELOG-${ONEX_GIT_VERSION#v}.md
   git commit -a -m "docs(changelog): add CHANGELOG-${ONEX_GIT_VERSION#v}.md"
   git push -f origin master # 最后将 CHANGELOG 也 push 上去
 }

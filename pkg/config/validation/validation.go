@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package validation
@@ -9,7 +9,8 @@ package validation
 import (
 	"k8s.io/apimachinery/pkg/util/validation/field"
 
-	"github.com/superproj/onex/pkg/config"
+	"github.com/onexstack/onex/internal/pkg/util/validation"
+	"github.com/onexstack/onex/pkg/config"
 )
 
 // ValidateMySQLConfiguration ensures validation of the MySQLConfiguration struct.
@@ -33,5 +34,22 @@ func ValidateMySQLConfiguration(cc *config.MySQLConfiguration, fldPath *field.Pa
 	if len(cc.Password) == 0 {
 		allErrs = append(allErrs, field.Invalid(fldPath.Child("password"), cc.Password, "password is required"))
 	}
+	return allErrs
+}
+
+// ValidateGenericControllerManagerConfiguration ensures validation of the GenericControllerManagerConfiguration struct.
+func ValidateGenericControllerManagerConfiguration(cc *config.GenericControllerManagerConfiguration, fldPath *field.Path) field.ErrorList {
+	allErrs := field.ErrorList{}
+
+	if cc.HealthzBindAddress != "" {
+		allErrs = append(allErrs, validation.ValidateHostPort(cc.HealthzBindAddress, fldPath.Child("healthzBindAddress"))...)
+	}
+	if cc.PprofBindAddress != "" {
+		allErrs = append(allErrs, validation.ValidateHostPort(cc.PprofBindAddress, fldPath.Child("pprofBindAddress"))...)
+	}
+	if cc.MetricsBindAddress != "" {
+		allErrs = append(allErrs, validation.ValidateHostPort(cc.MetricsBindAddress, fldPath.Child("metricsBindAddress"))...)
+	}
+
 	return allErrs
 }

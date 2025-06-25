@@ -1,8 +1,18 @@
-// Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
-// Use of this source code is governed by a MIT style
-// license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
-//
+/*
+Copyright 2019 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package rest
 
@@ -12,24 +22,27 @@ import (
 	"time"
 
 	flowcontrolv1 "k8s.io/api/flowcontrol/v1"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/util/wait"
 	flowcontrolbootstrap "k8s.io/apiserver/pkg/apis/flowcontrol/bootstrap"
 	"k8s.io/apiserver/pkg/registry/generic"
 	"k8s.io/apiserver/pkg/registry/rest"
 	genericapiserver "k8s.io/apiserver/pkg/server"
 	serverstorage "k8s.io/apiserver/pkg/server/storage"
+	"k8s.io/client-go/informers"
+	flowcontrolclient "k8s.io/client-go/kubernetes/typed/flowcontrol/v1"
+	flowcontrollisters "k8s.io/client-go/listers/flowcontrol/v1"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/klog/v2"
 	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	"k8s.io/kubernetes/pkg/apis/flowcontrol"
+	flowcontrolapisv1 "k8s.io/kubernetes/pkg/apis/flowcontrol/v1"
+	flowcontrolapisv1beta1 "k8s.io/kubernetes/pkg/apis/flowcontrol/v1beta1"
+	flowcontrolapisv1beta2 "k8s.io/kubernetes/pkg/apis/flowcontrol/v1beta2"
+	flowcontrolapisv1beta3 "k8s.io/kubernetes/pkg/apis/flowcontrol/v1beta3"
+	"k8s.io/kubernetes/pkg/registry/flowcontrol/ensurer"
 	flowschemastore "k8s.io/kubernetes/pkg/registry/flowcontrol/flowschema/storage"
 	prioritylevelconfigurationstore "k8s.io/kubernetes/pkg/registry/flowcontrol/prioritylevelconfiguration/storage"
-
-	serializerutil "github.com/superproj/onex/internal/pkg/util/serializer"
-	"github.com/superproj/onex/internal/registry/flowcontrol/ensurer"
-	flowcontrolclient "github.com/superproj/onex/pkg/generated/clientset/versioned/typed/flowcontrol/v1"
-	"github.com/superproj/onex/pkg/generated/informers"
-	flowcontrollisters "github.com/superproj/onex/pkg/generated/listers/flowcontrol/v1"
 )
 
 var _ genericapiserver.PostStartHookProvider = RESTStorageProvider{}
@@ -45,32 +58,61 @@ const PostStartHookName = "priority-and-fairness-config-producer"
 // NewRESTStorage creates a new rest storage for flow-control api models.
 func (p RESTStorageProvider) NewRESTStorage(apiResourceConfigSource serverstorage.APIResourceConfigSource, restOptionsGetter generic.RESTOptionsGetter) (genericapiserver.APIGroupInfo, error) {
 	apiGroupInfo := genericapiserver.NewDefaultAPIGroupInfo(flowcontrol.GroupName, legacyscheme.Scheme, legacyscheme.ParameterCodec, legacyscheme.Codecs)
-	apiGroupInfo.NegotiatedSerializer = serializerutil.NewProtocolShieldSerializers(&legacyscheme.Codecs)
 
-	flowSchemaStorage, flowSchemaStatusStorage, err := flowschemastore.NewREST(restOptionsGetter)
-	if err != nil {
+	if storageMap, err := p.storage(apiResourceConfigSource, restOptionsGetter, flowcontrolapisv1beta1.SchemeGroupVersion); err != nil {
 		return genericapiserver.APIGroupInfo{}, err
+	} else if len(storageMap) > 0 {
+		apiGroupInfo.VersionedResourcesStorageMap[flowcontrolapisv1beta1.SchemeGroupVersion.Version] = storageMap
 	}
 
-	priorityLevelConfigurationStorage, priorityLevelConfigurationStatusStorage, err := prioritylevelconfigurationstore.NewREST(restOptionsGetter)
-	if err != nil {
+	if storageMap, err := p.storage(apiResourceConfigSource, restOptionsGetter, flowcontrolapisv1beta2.SchemeGroupVersion); err != nil {
 		return genericapiserver.APIGroupInfo{}, err
+	} else if len(storageMap) > 0 {
+		apiGroupInfo.VersionedResourcesStorageMap[flowcontrolapisv1beta2.SchemeGroupVersion.Version] = storageMap
 	}
 
-	restStorageMap := map[string]rest.Storage{
-		"flowschemas":        flowSchemaStorage,
-		"flowschemas/status": flowSchemaStatusStorage,
-
-		"prioritylevelconfigurations":        priorityLevelConfigurationStorage,
-		"prioritylevelconfigurations/status": priorityLevelConfigurationStatusStorage,
+	if storageMap, err := p.storage(apiResourceConfigSource, restOptionsGetter, flowcontrolapisv1beta3.SchemeGroupVersion); err != nil {
+		return genericapiserver.APIGroupInfo{}, err
+	} else if len(storageMap) > 0 {
+		apiGroupInfo.VersionedResourcesStorageMap[flowcontrolapisv1beta3.SchemeGroupVersion.Version] = storageMap
 	}
 
-	apiGroupInfo.VersionedResourcesStorageMap[flowcontrolv1.SchemeGroupVersion.Version] = restStorageMap
+	if storageMap, err := p.storage(apiResourceConfigSource, restOptionsGetter, flowcontrolapisv1.SchemeGroupVersion); err != nil {
+		return genericapiserver.APIGroupInfo{}, err
+	} else if len(storageMap) > 0 {
+		apiGroupInfo.VersionedResourcesStorageMap[flowcontrolapisv1.SchemeGroupVersion.Version] = storageMap
+	}
 
 	return apiGroupInfo, nil
 }
 
-// GroupName return the api group name.
+func (p RESTStorageProvider) storage(apiResourceConfigSource serverstorage.APIResourceConfigSource, restOptionsGetter generic.RESTOptionsGetter, groupVersion schema.GroupVersion) (map[string]rest.Storage, error) {
+	storage := map[string]rest.Storage{}
+
+	// flow-schema
+	if resource := "flowschemas"; apiResourceConfigSource.ResourceEnabled(groupVersion.WithResource(resource)) {
+		flowSchemaStorage, flowSchemaStatusStorage, err := flowschemastore.NewREST(restOptionsGetter)
+		if err != nil {
+			return nil, err
+		}
+		storage[resource] = flowSchemaStorage
+		storage[resource+"/status"] = flowSchemaStatusStorage
+	}
+
+	// priority-level-configuration
+	if resource := "prioritylevelconfigurations"; apiResourceConfigSource.ResourceEnabled(groupVersion.WithResource(resource)) {
+		priorityLevelConfigurationStorage, priorityLevelConfigurationStatusStorage, err := prioritylevelconfigurationstore.NewREST(restOptionsGetter)
+		if err != nil {
+			return nil, err
+		}
+		storage[resource] = priorityLevelConfigurationStorage
+		storage[resource+"/status"] = priorityLevelConfigurationStatusStorage
+	}
+
+	return storage, nil
+}
+
+// GroupName returns group name of the storage
 func (p RESTStorageProvider) GroupName() string {
 	return flowcontrol.GroupName
 }
@@ -103,7 +145,7 @@ func (bce *bootstrapConfigurationEnsurer) ensureAPFBootstrapConfiguration(hookCo
 	err = func() error {
 		// get a derived context that gets cancelled after 5m or
 		// when the StopCh gets closed, whichever happens first.
-		ctx, cancel := contextFromChannelAndMaxWaitDuration(hookContext.StopCh, 5*time.Minute)
+		ctx, cancel := contextFromChannelAndMaxWaitDuration(hookContext.Done(), 5*time.Minute)
 		defer cancel()
 
 		if !cache.WaitForCacheSync(ctx.Done(), bce.informersSynced...) {
@@ -132,16 +174,15 @@ func (bce *bootstrapConfigurationEnsurer) ensureAPFBootstrapConfiguration(hookCo
 	// we have successfully initialized the bootstrap configuration, now we
 	// spin up a goroutine which reconciles the bootstrap configuration periodically.
 	go func() {
-		ctx := wait.ContextForChannel(hookContext.StopCh)
 		wait.PollImmediateUntil(
 			time.Minute,
 			func() (bool, error) {
-				if err := ensure(ctx, clientset, bce.fsLister, bce.plcLister); err != nil {
+				if err := ensure(hookContext, clientset, bce.fsLister, bce.plcLister); err != nil {
 					klog.ErrorS(err, "APF bootstrap ensurer ran into error, will retry later")
 				}
 				// always auto update both suggested and mandatory configuration
 				return false, nil
-			}, hookContext.StopCh)
+			}, hookContext.Done())
 		klog.Info("APF bootstrap ensurer is exiting")
 	}()
 

@@ -3,12 +3,12 @@
 # Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 # Use of this source code is governed by a MIT style
 # license that can be found in the LICENSE file. The original repo for
-# this file is https://github.com/superproj/onex.
+# this file is https://github.com/onexstack/onex.
 #
 
 # The root of the build/dist directory
-ONEX_ROOT=$(dirname "${BASH_SOURCE[0]}")/../..
-[[ -z ${COMMON_SOURCED} ]] && source ${ONEX_ROOT}/scripts/installation/common.sh
+PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/../..
+[[ -z ${COMMON_SOURCED} ]] && source ${PROJ_ROOT_DIR}/scripts/installation/common.sh
 
 ONEX_USERCENTER_ADDR=${ONEX_ACCESS_HOST}:${ONEX_USERCENTER_HTTP_PORT}
 ONEX_GATEWAY_ADDR=${ONEX_ACCESS_HOST}:${ONEX_GATEWAY_HTTP_PORT}
@@ -28,7 +28,7 @@ export KUBECONFIG=${ONEX_ADMIN_KUBECONFIG}
 
 # 确保 kubectl 命令被安装
 if [[ "$(command -v kubectl)" == "" ]];then
-  make -C ${ONEX_ROOT} tools.install.kubectl
+  make -C ${PROJ_ROOT_DIR} tools.install.kubectl
 fi
 
 # 测试整个 OneX 项目
@@ -193,27 +193,27 @@ onex::test::controller()
 {
   NS=user-admin
   # 先幂等删除
-  kubectl delete -f ${ONEX_ROOT}/manifests/sample/onex/chain.yaml &>/dev/null || true
-  kubectl delete -f ${ONEX_ROOT}/manifests/sample/onex/minerset.yaml &>/dev/null || true
-  kubectl delete -f ${ONEX_ROOT}/manifests/sample/onex/miner.yaml &>/dev/null || true
+  kubectl delete -f ${PROJ_ROOT_DIR}/manifests/sample/onex/chain.yaml &>/dev/null || true
+  kubectl delete -f ${PROJ_ROOT_DIR}/manifests/sample/onex/minerset.yaml &>/dev/null || true
+  kubectl delete -f ${PROJ_ROOT_DIR}/manifests/sample/onex/miner.yaml &>/dev/null || true
 
   # 等待 2s 等 controller 删除资源
   sleep 2
 
   # 创建一个私有链
-  kubectl create -f ${ONEX_ROOT}/manifests/sample/onex/chain.yaml
+  kubectl create -f ${PROJ_ROOT_DIR}/manifests/sample/onex/chain.yaml
   kubectl -n kube-system get chain --no-headers|grep -q genesis
   sleep 1
   kubectl -n kube-system get miner | egrep -q 'genesis.*Running'
 
   # 创建一个矿机池
-  kubectl create -f ${ONEX_ROOT}/manifests/sample/onex/minerset.yaml
+  kubectl create -f ${PROJ_ROOT_DIR}/manifests/sample/onex/minerset.yaml
   sleep 2
   kubectl -n ${NS} get minerset | grep -q test
   kubectl -n ${NS} get miner | egrep test-.*Running
 
   # 创建一个游离的矿机
-  kubectl create -f ${ONEX_ROOT}/manifests/sample/onex/miner.yaml
+  kubectl create -f ${PROJ_ROOT_DIR}/manifests/sample/onex/miner.yaml
   sleep 1
   kubectl -n ${NS} get miner | egrep freeminer.*Running
 
@@ -241,7 +241,7 @@ onex::test::gateway()
 # 确保创世区块存在
 onex::test::gateway::ensure_genesis_chain()
 {
-  kubectl create -f ${ONEX_ROOT}/manifests/sample/onex/chain.yaml || true
+  kubectl create -f ${PROJ_ROOT_DIR}/manifests/sample/onex/chain.yaml || true
   kubectl -n kube-system get chain genesis
 }
 
@@ -249,7 +249,7 @@ onex::test::gateway::ensure_genesis_chain()
 onex::test::gateway::chain()
 {
   # 创建一个创世区块链
-  kubectl create -f ${ONEX_ROOT}/manifests/sample/onex/chain.yaml || true
+  kubectl create -f ${PROJ_ROOT_DIR}/manifests/sample/onex/chain.yaml || true
   kubectl -n kube-system get chain genesis
 
   onex::log::info "$(echo -e ${C_GREEN}===========\> /v1/chains test passed!${C_NORMAL})"
@@ -379,8 +379,8 @@ onex::test::toyblc()
 onex::test::onexctl()
 {
   # 创建一个测试矿机池
-  kubectl delete -f ${ONEX_ROOT}/manifests/sample/onex/minerset.yaml &>/dev/null || true
-  kubectl create -f ${ONEX_ROOT}/manifests/sample/onex/minerset.yaml
+  kubectl delete -f ${PROJ_ROOT_DIR}/manifests/sample/onex/minerset.yaml &>/dev/null || true
+  kubectl create -f ${PROJ_ROOT_DIR}/manifests/sample/onex/minerset.yaml
   ${ONEX_BIN_DIR}/onexctl --config ${ONEX_CONFIG_DIR}/onexctl.yaml minerset list | grep -q testminerset
 
   onex::log::info "$(echo -e ${C_GREEN}===========\> onexctl test passed!${C_NORMAL})"

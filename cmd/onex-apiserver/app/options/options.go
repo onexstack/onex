@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Package options contains flags and options for initializing an apiserver
@@ -12,10 +12,11 @@ import (
 
 	genericapiserver "k8s.io/apiserver/pkg/server"
 	cliflag "k8s.io/component-base/cli/flag"
+	"k8s.io/kube-openapi/pkg/common"
 
-	"github.com/superproj/onex/internal/controlplane"
-	controlplaneoptions "github.com/superproj/onex/internal/controlplane/apiserver/options"
-	"github.com/superproj/onex/internal/controlplane/storage"
+	"github.com/onexstack/onex/internal/controlplane"
+	controlplaneoptions "github.com/onexstack/onex/internal/controlplane/apiserver/options"
+	"github.com/onexstack/onex/pkg/apiserver/storage"
 )
 
 const defaultEtcdPathPrefix = "/registry/onex.io"
@@ -38,6 +39,7 @@ type Extra struct {
 	ExternalRESTStorageProviders []storage.RESTStorageProvider
 	ExternalVersionedInformers   controlplane.ExternalSharedInformerFactory
 	ExternalPostStartHooks       map[string]genericapiserver.PostStartHookFunc
+	GetOpenAPIDefinitions        common.GetOpenAPIDefinitions
 }
 
 // NewServerRunOptions returns a new ServerRunOptions.

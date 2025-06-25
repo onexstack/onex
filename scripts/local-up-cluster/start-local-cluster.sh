@@ -3,7 +3,7 @@
 # Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 # Use of this source code is governed by a MIT style
 # license that can be found in the LICENSE file. The original repo for
-# this file is https://github.com/superproj/onex.
+# this file is https://github.com/onexstack/onex.
 #
 
 
@@ -16,8 +16,8 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-ONEX_ROOT=$(dirname "${BASH_SOURCE[0]}")/../..
-source "${ONEX_ROOT}/scripts/lib/init.sh"
+PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/../..
+source "${PROJ_ROOT_DIR}/scripts/lib/init.sh"
 
 KUBE_ROOT=${KUBE_ROOT:-$GOPATH/src/k8s.io/kubernetes}
 # 存放 Kuberentes 组件启动命令

@@ -3,7 +3,7 @@
 # Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 # Use of this source code is governed by a MIT style
 # license that can be found in the LICENSE file. The original repo for
-# this file is https://github.com/superproj/onex.
+# this file is https://github.com/onexstack/onex.
 #
 
 
@@ -15,20 +15,20 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-ONEX_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
-source "${ONEX_ROOT}/scripts/lib/init.sh"
+PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/..
+source "${PROJ_ROOT_DIR}/scripts/lib/init.sh"
 
 KINDS=(deployment service)
 
-for component in $(ls ${ONEX_ROOT}/cmd)
+for component in $(ls ${PROJ_ROOT_DIR}/cmd)
 do
-  truncate -s 0 ${ONEX_ROOT}/deployments/${component}.yaml
+  truncate -s 0 ${PROJ_ROOT_DIR}/deployments/${component}.yaml
 
   for kind in ${KINDS[@]}
   do
-    echo -e "---\n# Source: deployments/${component}-${kind}.yaml" >> ${ONEX_ROOT}/deployments/${component}.yaml
-    sed '/^#\|^$/d' ${ONEX_ROOT}/deployments/${component}-${kind}.yaml >> ${ONEX_ROOT}/deployments/${component}.yaml
+    echo -e "---\n# Source: deployments/${component}-${kind}.yaml" >> ${PROJ_ROOT_DIR}/deployments/${component}.yaml
+    sed '/^#\|^$/d' ${PROJ_ROOT_DIR}/deployments/${component}-${kind}.yaml >> ${PROJ_ROOT_DIR}/deployments/${component}.yaml
   done
 
-  onex::log::info "generate ${ONEX_ROOT}/deployments/${component}.yaml success"
+  onex::log::info "generate ${PROJ_ROOT_DIR}/deployments/${component}.yaml success"
 done

@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Package info print the host information.
@@ -14,11 +14,11 @@ import (
 
 	hoststat "github.com/likexian/host-stat-go"
 	"github.com/spf13/cobra"
+	"k8s.io/cli-runtime/pkg/genericiooptions"
 
-	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
-	"github.com/superproj/onex/internal/onexctl/util/templates"
-	"github.com/superproj/onex/pkg/cli/genericclioptions"
-	iputil "github.com/superproj/onex/pkg/util/ip"
+	cmdutil "github.com/onexstack/onex/internal/onexctl/cmd/util"
+	"github.com/onexstack/onex/internal/onexctl/util/templates"
+	iputil "github.com/onexstack/onexstack/pkg/util/ip"
 )
 
 // Info defines the host information struct.
@@ -33,7 +33,7 @@ type Info struct {
 
 // InfoOptions is an options struct to support 'info' sub command.
 type InfoOptions struct {
-	genericclioptions.IOStreams
+	genericiooptions.IOStreams
 }
 
 var infoExample = templates.Examples(`
@@ -41,14 +41,14 @@ var infoExample = templates.Examples(`
 		onexctl info`)
 
 // NewInfoOptions returns an initialized InfoOptions instance.
-func NewInfoOptions(ioStreams genericclioptions.IOStreams) *InfoOptions {
+func NewInfoOptions(ioStreams genericiooptions.IOStreams) *InfoOptions {
 	return &InfoOptions{
 		IOStreams: ioStreams,
 	}
 }
 
 // NewCmdInfo returns new initialized instance of 'info' sub command.
-func NewCmdInfo(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
+func NewCmdInfo(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.Command {
 	o := NewInfoOptions(ioStreams)
 
 	cmd := &cobra.Command{

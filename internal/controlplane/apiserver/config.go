@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 // Package app does all of the work necessary to create a OneX
@@ -13,6 +13,7 @@ package apiserver
 import (
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/blang/semver/v4"
 	oteltrace "go.opentelemetry.io/otel/trace"
@@ -32,21 +33,28 @@ import (
 	utilfeature "k8s.io/apiserver/pkg/util/feature"
 	"k8s.io/apiserver/pkg/util/openapi"
 	utilpeerproxy "k8s.io/apiserver/pkg/util/peerproxy"
-	kubeinformers "k8s.io/client-go/informers"
-	kubeclientset "k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/informers"
+	clientset "k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/transport"
 	"k8s.io/klog/v2"
 	openapicommon "k8s.io/kube-openapi/pkg/common"
 	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	api "k8s.io/kubernetes/pkg/apis/core"
 
-	"github.com/superproj/onex/internal/controlplane"
-	"github.com/superproj/onex/internal/controlplane/admission/initializer"
-	controlplaneoptions "github.com/superproj/onex/internal/controlplane/apiserver/options"
-	"github.com/superproj/onex/internal/controlplane/storage"
-	"github.com/superproj/onex/pkg/generated/clientset/versioned"
-	"github.com/superproj/onex/pkg/generated/informers"
-	"github.com/superproj/onex/pkg/version"
+	"github.com/onexstack/onex/internal/controlplane"
+	"github.com/onexstack/onex/internal/controlplane/admission/initializer"
+	controlplaneoptions "github.com/onexstack/onex/internal/controlplane/apiserver/options"
+	"github.com/onexstack/onex/pkg/apiserver/storage"
+	"github.com/onexstack/onexstack/pkg/version"
+)
+
+const (
+	// DefaultPeerEndpointReconcileInterval is the default amount of time for how often
+	// the peer endpoint leases are reconciled.
+	DefaultPeerEndpointReconcileInterval = 10 * time.Second
+	// DefaultPeerEndpointReconcilerTTL is the default TTL timeout for peer endpoint
+	// leases on the storage layer
+	DefaultPeerEndpointReconcilerTTL = 15 * time.Second
 )
 
 // BuildGenericConfig takes the master server options and produces the genericapiserver.Config associated with it.
@@ -56,8 +64,7 @@ func BuildGenericConfig(
 	getOpenAPIDefinitions func(ref openapicommon.ReferenceCallback) map[string]openapicommon.OpenAPIDefinition,
 ) (
 	genericConfig *genericapiserver.RecommendedConfig,
-	versionedInformers informers.SharedInformerFactory,
-	kubeSharedInformers kubeinformers.SharedInformerFactory,
+	kubeSharedInformers informers.SharedInformerFactory,
 	storageFactory *serverstorage.DefaultStorageFactory,
 	lastErr error,
 ) {
@@ -69,7 +76,7 @@ func BuildGenericConfig(
 	}
 
 	s.RecommendedOptions.ExtraAdmissionInitializers = func(c *genericapiserver.RecommendedConfig) ([]admission.PluginInitializer, error) {
-		client, err := versioned.NewForConfig(c.LoopbackClientConfig)
+		client, err := clientset.NewForConfig(c.LoopbackClientConfig)
 		if err != nil {
 			return nil, err
 		}
@@ -94,22 +101,15 @@ func BuildGenericConfig(
 	genericConfig.LoopbackClientConfig.DisableCompression = true
 
 	loopbackClientConfig := genericConfig.LoopbackClientConfig
-	// Build onex client
-	internalClient, err := versioned.NewForConfig(loopbackClientConfig)
-	if err != nil {
-		lastErr = fmt.Errorf("failed to create real external clientset: %w", err)
-		return
-	}
-	versionedInformers = informers.NewSharedInformerFactory(internalClient, loopbackClientConfig.Timeout)
 
 	// Build kubernetes client
 	// Use onex's config to mock a kubernetes client.
-	kubeClient, err := kubeclientset.NewForConfig(loopbackClientConfig)
+	kubeClient, err := clientset.NewForConfig(loopbackClientConfig)
 	if err != nil {
 		lastErr = fmt.Errorf("failed to create real external clientset: %v", err)
 		return
 	}
-	kubeSharedInformers = kubeinformers.NewSharedInformerFactory(kubeClient, loopbackClientConfig.Timeout)
+	kubeSharedInformers = informers.NewSharedInformerFactory(kubeClient, loopbackClientConfig.Timeout)
 
 	if lastErr = s.Features.ApplyTo(&genericConfig.Config, kubeClient, kubeSharedInformers); lastErr != nil {
 		return
@@ -139,7 +139,6 @@ func BuildGenericConfig(
 		sets.NewString("watch", "proxy"),
 		sets.NewString("attach", "exec", "proxy", "log", "portforward"),
 	)
-	genericConfig.Version = convertVersion(version.Get())
 
 	if genericConfig.EgressSelector != nil {
 		s.RecommendedOptions.Etcd.StorageConfig.Transport.EgressLookup = genericConfig.EgressSelector.Lookup
@@ -151,7 +150,9 @@ func BuildGenericConfig(
 	}
 
 	storageFactoryConfig := storage.NewStorageFactoryConfig()
+	storageFactoryConfig.CurrentVersion = genericConfig.EffectiveVersion
 	storageFactoryConfig.APIResourceConfig = genericConfig.MergedResourceConfig
+	storageFactoryConfig.DefaultResourceEncoding.SetEffectiveVersion(genericConfig.EffectiveVersion)
 	storageFactory, lastErr = storageFactoryConfig.Complete(s.RecommendedOptions.Etcd).New()
 	if lastErr != nil {
 		return
@@ -201,8 +202,8 @@ func BuildGenericConfig(
 // CreatePeerEndpointLeaseReconciler creates a apiserver endpoint lease reconciliation loop
 // The peer endpoint leases are used to find network locations of apiservers for peer proxy
 func CreatePeerEndpointLeaseReconciler(c genericapiserver.Config, storageFactory serverstorage.StorageFactory) (reconcilers.PeerEndpointLeaseReconciler, error) {
-	ttl := controlplane.DefaultEndpointReconcilerTTL
-	config, err := storageFactory.NewConfig(api.Resource("apiServerPeerIPInfo"))
+	ttl := DefaultPeerEndpointReconcilerTTL
+	config, err := storageFactory.NewConfig(api.Resource("apiServerPeerIPInfo"), &api.Endpoints{})
 	if err != nil {
 		return nil, fmt.Errorf("error creating storage factory config: %w", err)
 	}
@@ -210,7 +211,7 @@ func CreatePeerEndpointLeaseReconciler(c genericapiserver.Config, storageFactory
 	return reconciler, err
 }
 
-func BuildPeerProxy(versionedInformer kubeinformers.SharedInformerFactory, svm storageversion.Manager,
+func BuildPeerProxy(versionedInformer informers.SharedInformerFactory, svm storageversion.Manager,
 	proxyClientCertFile string, proxyClientKeyFile string, peerCAFile string, peerAdvertiseAddress reconcilers.PeerAdvertiseAddress,
 	apiServerID string, reconciler reconcilers.PeerEndpointLeaseReconciler, serializer runtime.NegotiatedSerializer) (utilpeerproxy.Interface, error) {
 	if proxyClientCertFile == "" {

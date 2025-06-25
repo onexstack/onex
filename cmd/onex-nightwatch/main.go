@@ -1,18 +1,23 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
-// The nightwatch binary is responsible for executing some async tasks like linux crontab.
 package main
 
 import (
+	// Import the automaxprocs package, which automatically configures the GOMAXPROCS
+	// value at program startup to match the Linux container's CPU quota.
+	// This avoids performance issues caused by an inappropriate default GOMAXPROCS
+	// value when running in containers, ensuring that the Go program can fully utilize
+	// available CPU resources and avoid CPU waste.
 	_ "go.uber.org/automaxprocs/maxprocs"
 
-	"github.com/superproj/onex/cmd/onex-nightwatch/app"
+	"github.com/onexstack/onex/cmd/onex-nightwatch/app"
 )
 
 func main() {
-	app.NewApp().Run()
+	// Creating a new instance of the nightwatch application and running it.
+	app.NewApp("onex-nightwatch").Run()
 }

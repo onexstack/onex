@@ -59,14 +59,16 @@
         },
         "parameters": [
           {
-            "name": "limit",
+            "name": "offset",
+            "description": "Offset is the starting point of the list for pagination.\n@gotags: form:\"offset\"",
             "in": "query",
             "required": false,
             "type": "string",
             "format": "int64"
           },
           {
-            "name": "offset",
+            "name": "limit",
+            "description": "Limit is the maximum number of miners to return.\n@gotags: form:\"limit\"",
             "in": "query",
             "required": false,
             "type": "string",
@@ -84,8 +86,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/definitions/appsv1beta1Miner"
             }
           },
           "default": {
@@ -117,8 +118,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/definitions/appsv1beta1Miner"
             }
           },
           "default": {
@@ -165,6 +165,7 @@
         "parameters": [
           {
             "name": "name",
+            "description": "name is the unique identifier of the miner to retrieve.\n@gotags: uri:\"name\"",
             "in": "path",
             "required": true,
             "type": "string"
@@ -181,8 +182,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/definitions/v1DeleteMinerResponse"
             }
           },
           "default": {
@@ -225,14 +225,16 @@
         },
         "parameters": [
           {
-            "name": "limit",
+            "name": "offset",
+            "description": "Offset is the starting point of the list for pagination.\n@gotags: form:\"offset\"",
             "in": "query",
             "required": false,
             "type": "string",
             "format": "int64"
           },
           {
-            "name": "offset",
+            "name": "limit",
+            "description": "Limit is the maximum number of minersets to return.\n@gotags: form:\"limit\"",
             "in": "query",
             "required": false,
             "type": "string",
@@ -250,8 +252,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/definitions/appsv1beta1MinerSet"
             }
           },
           "default": {
@@ -283,8 +284,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/definitions/appsv1beta1MinerSet"
             }
           },
           "default": {
@@ -331,6 +331,7 @@
         "parameters": [
           {
             "name": "name",
+            "description": "name is the unique identifier of the minerset to retrieve.\n@gotags: uri:\"name\"",
             "in": "path",
             "required": true,
             "type": "string"
@@ -347,8 +348,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/definitions/v1DeleteMinerSetResponse"
             }
           },
           "default": {
@@ -379,8 +379,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/definitions/v1ScaleMinerSetResponse"
             }
           },
           "default": {
@@ -402,13 +401,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "replicas": {
-                  "type": "integer",
-                  "format": "int32"
-                }
-              }
+              "$ref": "#/definitions/GatewayScaleMinerSetBody"
             }
           }
         ],
@@ -442,6 +435,15 @@
     }
   },
   "definitions": {
+    "GatewayScaleMinerSetBody": {
+      "type": "object",
+      "properties": {
+        "replicas": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
     "appsv1beta1Condition": {
       "type": "object",
       "properties": {
@@ -551,13 +553,16 @@
         },
         "createdAt": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "description": "CreatedAt is the timestamp when the miner was created."
         },
         "updatedAt": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "description": "UpdatedAt is the timestamp when the miner was last updated."
         }
-      }
+      },
+      "description": "Miner represents a miner with its metadata."
     },
     "gatewayv1MinerSet": {
       "type": "object",
@@ -586,7 +591,8 @@
           "type": "string",
           "format": "date-time"
         }
-      }
+      },
+      "description": "MinerSet represents a minerset with its metadata."
     },
     "googlerpcStatus": {
       "type": "object",
@@ -601,6 +607,7 @@
         "details": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
         }
@@ -678,6 +685,7 @@
         "ownerReferences": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1OwnerReference"
           },
           "title": "List of objects depended by this object. If ALL objects in the list have\nbeen deleted, this object will be garbage collected. If this object is managed by a controller,\nthen an entry in this list will point to this controller, with the controller field set to true.\nThere cannot be more than one managing controller.\n+optional\n+patchMergeKey=uid\n+patchStrategy=merge\n+listType=map\n+listMapKey=uid"
@@ -692,6 +700,7 @@
         "managedFields": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1ManagedFieldsEntry"
           },
           "description": "ManagedFields maps workflow-id and version to the set of fields\nthat are managed by that workflow. This is mostly for internal\nhousekeeping, and users typically shouldn't need to set or\nunderstand this field. A workflow can be the user's name, a\ncontroller's name, or the name of a specific apply path like\n\"ci-cd\". The set of fields is always in the version that the\nworkflow used when modifying the object.\n\n+optional\n+listType=atomic"
@@ -709,6 +718,14 @@
       },
       "additionalProperties": {},
       "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(\u0026foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n\nExample 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\nExample 4: Pack and unpack a message in Go\n\n     foo := \u0026pb.Foo{...}\n     any, err := anypb.New(foo)\n     if err != nil {\n       ...\n     }\n     ...\n     foo := \u0026pb.Foo{}\n     if err := any.UnmarshalTo(foo); err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\n\nJSON\n\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": \u003cstring\u003e,\n      \"lastName\": \u003cstring\u003e\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }"
+    },
+    "v1DeleteMinerResponse": {
+      "type": "object",
+      "description": "DeleteMinerResponse represents the response message for a successful miner deletion."
+    },
+    "v1DeleteMinerSetResponse": {
+      "type": "object",
+      "description": "DeleteMinerSetResponse represents the response message for a successful minerset deletion."
     },
     "v1FieldsV1": {
       "type": "object",
@@ -768,6 +785,7 @@
         "matchExpressions": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1LabelSelectorRequirement"
           },
           "title": "matchExpressions is a list of label selector requirements. The requirements are ANDed.\n+optional\n+listType=atomic"
@@ -799,32 +817,40 @@
     "v1ListMinerResponse": {
       "type": "object",
       "properties": {
-        "totalCount": {
+        "total": {
           "type": "string",
-          "format": "int64"
+          "format": "int64",
+          "description": "TotalCount is the total number of miners matching the query."
         },
-        "Miners": {
+        "miners": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/gatewayv1Miner"
-          }
+          },
+          "description": "Miner is the list of miners in the current page."
         }
-      }
+      },
+      "description": "ListMinerResponse represents the response message for listing miners."
     },
     "v1ListMinerSetResponse": {
       "type": "object",
       "properties": {
-        "totalCount": {
+        "total": {
           "type": "string",
-          "format": "int64"
+          "format": "int64",
+          "description": "TotalCount is the total number of minersets matching the query."
         },
-        "MinerSets": {
+        "minerSets": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/gatewayv1MinerSet"
-          }
+          },
+          "description": "MinerSet is the list of minersets in the current page."
         }
-      }
+      },
+      "description": "ListMinerSetResponse represents the response message for listing minersets."
     },
     "v1ManagedFieldsEntry": {
       "type": "object",
@@ -874,6 +900,40 @@
         }
       }
     },
+    "v1ObjectReference": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "title": "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds\n+optional"
+        },
+        "namespace": {
+          "type": "string",
+          "title": "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/\n+optional"
+        },
+        "name": {
+          "type": "string",
+          "title": "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\n+optional"
+        },
+        "uid": {
+          "type": "string",
+          "title": "UID of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids\n+optional"
+        },
+        "apiVersion": {
+          "type": "string",
+          "title": "API version of the referent.\n+optional"
+        },
+        "resourceVersion": {
+          "type": "string",
+          "title": "Specific resourceVersion to which this reference is made, if any.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency\n+optional"
+        },
+        "fieldPath": {
+          "type": "string",
+          "title": "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object.\nTODO: this design is not final and this field is subject to change in the future.\n+optional"
+        }
+      },
+      "description": "ObjectReference contains enough information to let you inspect or modify the referred object.\n---\nNew uses of this type are discouraged because of difficulty describing its usage when embedded in APIs.\n 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage.\n 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular\n    restrictions like, \"must refer only to types A and B\" or \"UID not honored\" or \"name must be restricted\".\n    Those cannot be well described when embedded.\n 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen.\n 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity\n    during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple\n    and the version of the actual struct is irrelevant.\n 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type\n    will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control.\n\nInstead of using this type, create a locally provided and used type that is well-focused on your reference.\nFor example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .\n+k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object\n+structType=atomic"
+    },
     "v1OwnerReference": {
       "type": "object",
       "properties": {
@@ -903,6 +963,9 @@
         }
       },
       "title": "OwnerReference contains enough information to let you identify an owning\nobject. An owning object must be in the same namespace as the dependent, or\nbe cluster-scoped, so there is no namespace field.\n+structType=atomic"
+    },
+    "v1ScaleMinerSetResponse": {
+      "type": "object"
     },
     "v1Time": {
       "type": "object",
@@ -1010,6 +1073,7 @@
         "conditions": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/appsv1beta1Condition"
           },
           "title": "Represents the latest available observations of a miner set's current state.\n+optional\n+patchMergeKey=type\n+patchStrategy=merge"
@@ -1051,7 +1115,7 @@
       "type": "object",
       "properties": {
         "podRef": {
-          "$ref": "#/definitions/v1beta1ObjectReference",
+          "$ref": "#/definitions/v1ObjectReference",
           "title": "PodRef will point to the corresponding Pod if it exists.\n+optional"
         },
         "lastUpdated": {
@@ -1069,6 +1133,7 @@
         "addresses": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1beta1MinerAddress"
           },
           "title": "Addresses is a list of addresses assigned to the miner. Queried from kind cluster, if available.\n+optional\n+patchMergeKey=type\n+patchStrategy=merge"
@@ -1085,6 +1150,7 @@
         "conditions": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/appsv1beta1Condition"
           },
           "title": "Conditions defines the current state of the Miner\n+optional"
@@ -1105,39 +1171,6 @@
         }
       },
       "description": "MinerTemplateSpec describes the data needed to create a Miner from a template."
-    },
-    "v1beta1ObjectReference": {
-      "type": "object",
-      "properties": {
-        "kind": {
-          "type": "string",
-          "title": "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds\n+optional"
-        },
-        "namespace": {
-          "type": "string",
-          "title": "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/\n+optional"
-        },
-        "name": {
-          "type": "string",
-          "title": "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\n+optional"
-        },
-        "uid": {
-          "type": "string",
-          "title": "UID of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids\n+optional"
-        },
-        "apiVersion": {
-          "type": "string",
-          "title": "API version of the referent.\n+optional"
-        },
-        "resourceVersion": {
-          "type": "string",
-          "title": "Specific resourceVersion to which this reference is made, if any.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency\n+optional"
-        },
-        "fieldPath": {
-          "type": "string",
-          "title": "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object.\nTODO: this design is not final and this field is subject to change in the future.\n+optional"
-        }
-      }
     }
   }
 }

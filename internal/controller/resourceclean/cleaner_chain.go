@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package resourceclean
@@ -14,23 +14,24 @@ import (
 	"k8s.io/klog/v2"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/superproj/onex/internal/gateway/store"
-	"github.com/superproj/onex/pkg/apis/apps/v1beta1"
+	"github.com/onexstack/onex/internal/gateway/store"
+	"github.com/onexstack/onex/pkg/apis/apps/v1beta1"
+	"github.com/onexstack/onexstack/pkg/store/where"
 )
 
 type Chain struct {
 	mu     sync.Mutex
 	client client.Client
-	ds     store.IStore
+	store  store.IStore
 }
 
 func (c *Chain) Name() string {
 	return "chain"
 }
 
-func (c *Chain) Initialize(client client.Client, ds store.IStore) {
+func (c *Chain) Initialize(client client.Client, store store.IStore) {
 	c.client = client
-	c.ds = ds
+	c.store = store
 }
 
 func (c *Chain) Delete(ctx context.Context) error {
@@ -38,7 +39,7 @@ func (c *Chain) Delete(ctx context.Context) error {
 	defer c.mu.Unlock()
 
 	klog.V(4).InfoS("Cleanup chains from chain table")
-	_, chains, err := c.ds.Chains().List(ctx, "")
+	_, chains, err := c.store.Chain().List(ctx, nil)
 	if err != nil {
 		klog.ErrorS(err, "Failed to list chains")
 		return err
@@ -50,8 +51,7 @@ func (c *Chain) Delete(ctx context.Context) error {
 		key := client.ObjectKey{Namespace: chain.Namespace, Name: chain.Name}
 		if err := c.client.Get(ctx, key, &ch); err != nil {
 			if apierrors.IsNotFound(err) {
-				filter := map[string]any{"namespace": chain.Namespace, "name": chain.Name}
-				if derr := c.ds.Chains().Delete(ctx, filter); derr != nil {
+				if derr := c.store.Chain().Delete(ctx, where.F("namespace", chain.Namespace, "name", chain.Name)); derr != nil {
 					klog.V(1).InfoS("Failed to delete chain", "chain", klog.KRef(chain.Namespace, chain.Name), "err", derr)
 					continue
 				}

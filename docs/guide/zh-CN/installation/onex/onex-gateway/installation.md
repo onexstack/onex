@@ -18,5 +18,5 @@ $ kubectl -n onex apply -f deployments/onex/onex-gateway
 3. 测试是否部署成功
 
 ```bash
-$ curl -H "Host: onex.gateway.superproj.com" http://127.0.0.1:18080/metrics
+$ curl -H "Host: onex.gateway.onexstack.com" http://127.0.0.1:18080/metrics
 ```

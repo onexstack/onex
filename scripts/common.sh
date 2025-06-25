@@ -3,7 +3,7 @@
 # Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 # Use of this source code is governed by a MIT style
 # license that can be found in the LICENSE file. The original repo for
-# this file is https://github.com/superproj/onex.
+# this file is https://github.com/onexstack/onex.
 #
 
 
@@ -26,13 +26,13 @@ DOCKER_MACHINE_NAME=${DOCKER_MACHINE_NAME:-"miner-dev"}
 readonly DOCKER_MACHINE_DRIVER=${DOCKER_MACHINE_DRIVER:-"virtualbox --virtualbox-cpu-count -1"}
 
 # This will canonicalize the path
-ONEX_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd -P)
+PROJ_ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd -P)
 
-source "${ONEX_ROOT}/scripts/lib/init.sh"
+source "${PROJ_ROOT_DIR}/scripts/lib/init.sh"
 
 # Constants
 readonly ONEX_BUILD_IMAGE_REPO=miner-build
-#readonly ONEX_BUILD_IMAGE_CROSS_TAG="$(cat "${ONEX_ROOT}/build/build-image/cross/VERSION")"
+#readonly ONEX_BUILD_IMAGE_CROSS_TAG="$(cat "${PROJ_ROOT_DIR}/build/build-image/cross/VERSION")"
 
 readonly ONEX_DOCKER_REGISTRY="${ONEX_DOCKER_REGISTRY:-k8s.gcr.io}"
 readonly ONEX_BASE_IMAGE_REGISTRY="${ONEX_BASE_IMAGE_REGISTRY:-us.gcr.io/k8s-artifacts-prod/build-image}"
@@ -43,7 +43,7 @@ readonly ONEX_BASE_IMAGE_REGISTRY="${ONEX_BASE_IMAGE_REGISTRY:-us.gcr.io/k8s-art
 #
 # Increment/change this number if you change the build image (anything under
 # build/build-image) or change the set of volumes in the data container.
-#readonly ONEX_BUILD_IMAGE_VERSION_BASE="$(cat "${ONEX_ROOT}/build/build-image/VERSION")"
+#readonly ONEX_BUILD_IMAGE_VERSION_BASE="$(cat "${PROJ_ROOT_DIR}/build/build-image/VERSION")"
 #readonly ONEX_BUILD_IMAGE_VERSION="${ONEX_BUILD_IMAGE_VERSION_BASE}-${ONEX_BUILD_IMAGE_CROSS_TAG}"
 
 # Here we map the output directories across both the local and remote _output
@@ -56,7 +56,7 @@ readonly ONEX_BASE_IMAGE_REGISTRY="${ONEX_BASE_IMAGE_REGISTRY:-us.gcr.io/k8s-art
 #                    is really remote, this is the stuff that has to be copied
 #                    back.
 # OUTPUT_DIR can come in from the Makefile, so honor it.
-LOCAL_OUTPUT_ROOT=${OUTPUT_DIR:-${ONEX_ROOT}/_output}
+LOCAL_OUTPUT_ROOT=${OUTPUT_DIR:-${PROJ_ROOT_DIR}/_output}
 readonly LOCAL_OUTPUT_SUBPATH="${LOCAL_OUTPUT_ROOT}/platforms"
 readonly LOCAL_OUTPUT_BINPATH="${LOCAL_OUTPUT_SUBPATH}"
 readonly LOCAL_OUTPUT_GOPATH="${LOCAL_OUTPUT_SUBPATH}/go"
@@ -134,7 +134,7 @@ onex::build::get_docker_wrapped_binaries() {
 #   $1 - boolean of whether to require functioning docker (default true)
 #
 # Vars set:
-#   ONEX_ROOT_HASH
+#   PROJ_ROOT_DIR_HASH
 #   ONEX_BUILD_IMAGE_TAG_BASE
 #   ONEX_BUILD_IMAGE_TAG
 #   ONEX_BUILD_IMAGE
@@ -162,21 +162,21 @@ function onex::build::verify_prereqs() {
   fi
 
   ONEX_GIT_BRANCH=$(git symbolic-ref --short -q HEAD 2>/dev/null || true)
-  ONEX_ROOT_HASH=$(onex::build::short_hash "${HOSTNAME:-}:${ONEX_ROOT}:${ONEX_GIT_BRANCH}")
-  ONEX_BUILD_IMAGE_TAG_BASE="build-${ONEX_ROOT_HASH}"
+  PROJ_ROOT_DIR_HASH=$(onex::build::short_hash "${HOSTNAME:-}:${PROJ_ROOT_DIR}:${ONEX_GIT_BRANCH}")
+  ONEX_BUILD_IMAGE_TAG_BASE="build-${PROJ_ROOT_DIR_HASH}"
   #ONEX_BUILD_IMAGE_TAG="${ONEX_BUILD_IMAGE_TAG_BASE}-${ONEX_BUILD_IMAGE_VERSION}"
   #ONEX_BUILD_IMAGE="${ONEX_BUILD_IMAGE_REPO}:${ONEX_BUILD_IMAGE_TAG}"
-  ONEX_BUILD_CONTAINER_NAME_BASE="miner-build-${ONEX_ROOT_HASH}"
+  ONEX_BUILD_CONTAINER_NAME_BASE="miner-build-${PROJ_ROOT_DIR_HASH}"
   #ONEX_BUILD_CONTAINER_NAME="${ONEX_BUILD_CONTAINER_NAME_BASE}-${ONEX_BUILD_IMAGE_VERSION}"
-  ONEX_RSYNC_CONTAINER_NAME_BASE="miner-rsync-${ONEX_ROOT_HASH}"
+  ONEX_RSYNC_CONTAINER_NAME_BASE="miner-rsync-${PROJ_ROOT_DIR_HASH}"
   #ONEX_RSYNC_CONTAINER_NAME="${ONEX_RSYNC_CONTAINER_NAME_BASE}-${ONEX_BUILD_IMAGE_VERSION}"
-  ONEX_DATA_CONTAINER_NAME_BASE="miner-build-data-${ONEX_ROOT_HASH}"
+  ONEX_DATA_CONTAINER_NAME_BASE="miner-build-data-${PROJ_ROOT_DIR_HASH}"
   #ONEX_DATA_CONTAINER_NAME="${ONEX_DATA_CONTAINER_NAME_BASE}-${ONEX_BUILD_IMAGE_VERSION}"
   #DOCKER_MOUNT_ARGS=(--volumes-from "${ONEX_DATA_CONTAINER_NAME}")
   #LOCAL_OUTPUT_BUILD_CONTEXT="${LOCAL_OUTPUT_IMAGE_STAGING}/${ONEX_BUILD_IMAGE}"
 
   onex::version::get_version_vars
-  onex::version::save_version_vars "${ONEX_ROOT}/.dockerized-miner-version-defs"
+  onex::version::save_version_vars "${PROJ_ROOT_DIR}/.dockerized-miner-version-defs"
 }
 
 # ---------------------------------------------------------------------------
@@ -431,8 +431,8 @@ function onex::build::build_image() {
 
   cp /etc/localtime "${LOCAL_OUTPUT_BUILD_CONTEXT}/"
 
-  cp "${ONEX_ROOT}/build/build-image/Dockerfile" "${LOCAL_OUTPUT_BUILD_CONTEXT}/Dockerfile"
-  cp "${ONEX_ROOT}/build/build-image/rsyncd.sh" "${LOCAL_OUTPUT_BUILD_CONTEXT}/"
+  cp "${PROJ_ROOT_DIR}/build/build-image/Dockerfile" "${LOCAL_OUTPUT_BUILD_CONTEXT}/Dockerfile"
+  cp "${PROJ_ROOT_DIR}/build/build-image/rsyncd.sh" "${LOCAL_OUTPUT_BUILD_CONTEXT}/"
   dd if=/dev/urandom bs=512 count=1 2>/dev/null | LC_ALL=C tr -dc 'A-Za-z0-9' | dd bs=32 count=1 2>/dev/null > "${LOCAL_OUTPUT_BUILD_CONTEXT}/rsyncd.password"
   chmod go= "${LOCAL_OUTPUT_BUILD_CONTEXT}/rsyncd.password"
 
@@ -529,5 +529,5 @@ function onex::build::ensure_data_container() {
 # Build all miner commands.
 function onex::build::build_command() {
   onex::log::status "Running build command..."
-  make -C "${ONEX_ROOT}" build.multiarch BINS="minerctl miner-apiserver miner-authz-server miner-pump miner-watcher"
+  make -C "${PROJ_ROOT_DIR}" build.multiarch BINS="minerctl miner-apiserver miner-authz-server miner-pump miner-watcher"
 }

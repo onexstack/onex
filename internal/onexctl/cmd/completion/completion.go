@@ -9,15 +9,15 @@ import (
 
 	"github.com/spf13/cobra"
 
-	cmdutil "github.com/superproj/onex/internal/onexctl/cmd/util"
-	"github.com/superproj/onex/internal/onexctl/util/templates"
+	cmdutil "github.com/onexstack/onex/internal/onexctl/cmd/util"
+	"github.com/onexstack/onex/internal/onexctl/util/templates"
 )
 
 const defaultBoilerPlate = `
 # Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 # Use of this source code is governed by a MIT style
 # license that can be found in the LICENSE file. The original repo for 
-# this file is https://github.com/superproj/onex.
+# this file is https://github.com/onexstack/onex.
 `
 
 var (
@@ -28,7 +28,7 @@ var (
 		the .bash_profile.
 
 		Detailed instructions on how to do this are available here:
-		http://github.com/superproj/onex/docs/installation/onexctl.md#enabling-shell-autocompletion
+		http://github.com/onexstack/onex/docs/installation/onexctl.md#enabling-shell-autocompletion
 
 		Note for zsh users: [1] zsh completions are only supported in versions of zsh >= 5.2`)
 

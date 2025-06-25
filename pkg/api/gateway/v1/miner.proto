@@ -1,0 +1,80 @@
+// This file defines the Protobuf messages for managing Miners.
+//
+syntax = "proto3"; // Specifies the syntax version used in this file.
+
+package gateway.v1;
+
+import "google/protobuf/timestamp.proto"; // Importing Google's timestamp type for date/time fields.
+
+// Specifies the Go package for generated code.
+option go_package = "github.com/onexstack/onex/pkg/api/gateway/v1;v1";
+
+// Miner represents a miner with its metadata.
+message Miner {
+    string name = 1;
+    string displayName  = 2;
+    string minerType = 3;
+    string chainName = 4;
+    string dataDir = 5;
+    string status = 6;
+    // CreatedAt is the timestamp when the miner was created.
+    google.protobuf.Timestamp createdAt = 7;
+    // UpdatedAt is the timestamp when the miner was last updated.
+    google.protobuf.Timestamp updatedAt = 8;
+}
+
+// CreateMinerRequest represents the request message for creating a new miner.
+message CreateMinerRequest {
+    string displayName  = 1;
+    string minerType = 2;
+    string chainName = 3;
+    string dataDir = 4;
+}
+
+// UpdateMinerRequest represents the request message for updating an existing miner.
+message UpdateMinerRequest {
+    string name = 1;
+    optional string displayName  = 2;
+    optional string deletePolicy = 3;
+}
+
+// DeleteMinerRequest represents the request message for deleting one or more miners.
+message DeleteMinerRequest {
+    string name = 1;
+}
+
+// DeleteMinerResponse represents the response message for a successful miner deletion.
+message DeleteMinerResponse {
+}
+
+// GetMinerRequest represents the request message for retrieving a specific miner.
+message GetMinerRequest {
+    // name is the unique identifier of the miner to retrieve.
+    // @gotags: uri:"name"
+    string name = 1;
+}
+
+// GetMinerResponse represents the response message for a successful retrieval of a miner.
+message GetMinerResponse {
+    // Miner is the retrieved miner object.
+    Miner miner = 1;
+}
+
+// ListMinerRequest represents the request message for listing miners
+// with pagination and optional filters.
+message ListMinerRequest {
+    // Offset is the starting point of the list for pagination.
+    // @gotags: form:"offset"
+    int64 offset = 1;
+    // Limit is the maximum number of miners to return.
+    // @gotags: form:"limit"
+    int64 limit = 2;
+}
+
+// ListMinerResponse represents the response message for listing miners.
+message ListMinerResponse {
+    // TotalCount is the total number of miners matching the query.
+    int64 total = 1;
+    // Miner is the list of miners in the current page.
+    repeated Miner miners = 2;
+}

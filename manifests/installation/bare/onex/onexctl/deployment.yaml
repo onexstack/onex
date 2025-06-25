@@ -41,7 +41,7 @@ spec:
       - command:
         - sleep
         - "31536000" # 1 年
-        image: ccr.ccs.tencentyun.com/superproj/onexctl-amd64:v0.1.0
+        image: ccr.ccs.tencentyun.com/onexstack/onexctl-amd64:v0.1.0
         name: onexctl
         resources:
             limits:

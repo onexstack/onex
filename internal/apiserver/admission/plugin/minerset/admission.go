@@ -27,10 +27,10 @@ import (
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	"k8s.io/apiserver/pkg/admission"
 
-	"github.com/superproj/onex/pkg/apis/apps"
-	clientset "github.com/superproj/onex/pkg/generated/clientset/versioned"
-	"github.com/superproj/onex/pkg/generated/informers"
-	appslisters "github.com/superproj/onex/pkg/generated/listers/apps/v1beta1"
+	"github.com/onexstack/onex/pkg/apis/apps"
+	clientset "github.com/onexstack/onex/pkg/generated/clientset/versioned"
+	"github.com/onexstack/onex/pkg/generated/informers"
+	appslisters "github.com/onexstack/onex/pkg/generated/listers/apps/v1beta1"
 )
 
 // PluginName indicates name of admission plugin.
@@ -140,9 +140,9 @@ func addMinerSetSelector(ms *apps.MinerSet) {
 	ms.Spec.Template.ObjectMeta.Labels[apps.LabelMinerSet] = ms.Name
 }
 
-// SetInternalInformerFactory gets Lister from SharedInformerFactory.
+// SetExternalInformerFactory gets Lister from SharedInformerFactory.
 // The lister knows how to lists MinerSets.
-func (p *Plugin) SetInternalInformerFactory(f informers.SharedInformerFactory) {
+func (p *Plugin) SetExternalInformerFactory(f informers.SharedInformerFactory) {
 	p.lister = f.Apps().V1beta1().MinerSets().Lister()
 	p.SetReadyFunc(f.Apps().V1beta1().MinerSets().Informer().HasSynced)
 }
@@ -155,7 +155,7 @@ func (p *Plugin) SetExternalClientSet(client clientset.Interface) {
 // ValidateInitialization checks whether the plugin was correctly initialized.
 func (p *Plugin) ValidateInitialization() error {
 	if p.lister == nil {
-		return fmt.Errorf("%s requires a machine lister", PluginName)
+		return fmt.Errorf("%s requires a MachineSet lister", PluginName)
 	}
 	return nil
 }

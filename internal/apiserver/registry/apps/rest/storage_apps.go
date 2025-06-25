@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package rest
@@ -13,13 +13,13 @@ import (
 	serverstorage "k8s.io/apiserver/pkg/server/storage"
 	"k8s.io/kubernetes/pkg/api/legacyscheme"
 
-	"github.com/superproj/onex/internal/controlplane/storage"
-	serializerutil "github.com/superproj/onex/internal/pkg/util/serializer"
-	chainstore "github.com/superproj/onex/internal/apiserver/registry/apps/chain/storage"
-	minerstore "github.com/superproj/onex/internal/apiserver/registry/apps/miner/storage"
-	minersetstore "github.com/superproj/onex/internal/apiserver/registry/apps/minerset/storage"
-	"github.com/superproj/onex/pkg/apis/apps"
-	"github.com/superproj/onex/pkg/apis/apps/v1beta1"
+	chainstore "github.com/onexstack/onex/internal/apiserver/registry/apps/chain/storage"
+	minerstore "github.com/onexstack/onex/internal/apiserver/registry/apps/miner/storage"
+	minersetstore "github.com/onexstack/onex/internal/apiserver/registry/apps/minerset/storage"
+	serializerutil "github.com/onexstack/onex/internal/pkg/util/serializer"
+	"github.com/onexstack/onex/pkg/apis/apps"
+	"github.com/onexstack/onex/pkg/apis/apps/v1beta1"
+	"github.com/onexstack/onex/pkg/apiserver/storage"
 )
 
 // RESTStorageProvider is a struct for apps REST storage.

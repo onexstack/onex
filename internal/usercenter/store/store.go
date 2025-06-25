@@ -1,61 +1,59 @@
-// Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
-// Use of this source code is governed by a MIT style
-// license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
-//
-
 package store
 
-//go:generate mockgen -self_package github.com/superproj/onex/internal/usercenter/store -destination mock_store.go -package store github.com/superproj/onex/internal/usercenter/store IStore,SecretStore,UserStore
+//go:generate mockgen -destination mock_store.go -package store onex/internal/usercenter/store IStore,UserStore,SecretStore
 
 import (
 	"context"
 	"sync"
 
 	"github.com/google/wire"
+	"github.com/onexstack/onexstack/pkg/store/where"
 	"gorm.io/gorm"
 )
 
-// ProviderSet is a Wire provider set that initializes new datastore instances
-// and binds the IStore interface to the actual datastore type.
+// ProviderSet is a Wire provider set that declares dependency injection rules.
+// It includes the NewStore constructor function to generate datastore instances.
+// wire.Bind is used to bind the IStore interface to the concrete implementation *datastore,
+// allowing automatic injection of *datastore instances wherever IStore is required.
 var ProviderSet = wire.NewSet(NewStore, wire.Bind(new(IStore), new(*datastore)))
 
-// Singleton instance variables.
 var (
 	once sync.Once
-	S    *datastore
+	// S is a global variable for convenient access to the initialized datastore
+	// instance from other packages.
+	S *datastore
 )
 
-// transactionKey is an unique key used in context to store
-// transaction instances to be shared between multiple operations.
-type transactionKey struct{}
-
-// IStore is an interface that represents methods
-// required to be implemented by a Store implementation.
+// IStore defines the methods that the Store layer needs to implement.
 type IStore interface {
-	TX(context.Context, func(ctx context.Context) error) error
-	Users() UserStore
-	Secrets() SecretStore
+	// DB returns the *gorm.DB instance of the Store layer, which might be used in rare cases.
+	DB(ctx context.Context, wheres ...where.Where) *gorm.DB
+	// TX is used to implement transactions in the Biz layer.
+	TX(ctx context.Context, fn func(ctx context.Context) error) error
+	// User returns an implementation of the UserStore.
+	User() UserStore
+	// Secret returns an implementation of the SecretStore.
+	Secret() SecretStore
 }
 
-// datastore is an implementation of IStore that provides methods
-// to perform operations on a database using gorm library.
+// transactionKey is the key used to store transaction context in context.Context.
+type transactionKey struct{}
+
+// datastore is the concrete implementation of the IStore.
 type datastore struct {
-	// core is the main database instance.
-	// The `core` name indicates this is the main database.
 	core *gorm.DB
 
 	// Additional database instances can be added as needed.
-	// In the example below, a fake database instance is added:
-	// fake *gorm.DB
+	// Example: fake *gorm.DB
 }
 
-// Ensure datastore implements IStore.
+// Ensure datastore implements the IStore.
 var _ IStore = (*datastore)(nil)
 
-// NewStore initializes a new datastore instance using the provided DB gorm instance.
-// It also creates a singleton instance for the datastore.
+// NewStore initializes a singleton instance of type IStore.
+// It ensures that the datastore is only created once using sync.Once.
 func NewStore(db *gorm.DB) *datastore {
+	// Initialize the singleton datastore instance only once.
 	once.Do(func() {
 		S = &datastore{db}
 	})
@@ -63,25 +61,31 @@ func NewStore(db *gorm.DB) *datastore {
 	return S
 }
 
-// Core retrieves the current transactional DB instance if it exists
-// in context or falls back to the main database.
-func (ds *datastore) Core(ctx context.Context) *gorm.DB {
-	tx, ok := ctx.Value(transactionKey{}).(*gorm.DB)
-	if ok {
-		return tx
+// DB filters the database instance based on the input conditions (wheres).
+// If no conditions are provided, the function returns the database instance
+// from the context (transaction instance or core database instance).
+func (store *datastore) DB(ctx context.Context, wheres ...where.Where) *gorm.DB {
+	db := store.core
+	// Attempt to retrieve the transaction instance from the context.
+	if tx, ok := ctx.Value(transactionKey{}).(*gorm.DB); ok {
+		db = tx
 	}
 
-	return ds.core
+	// Apply each provided 'where' condition to the query.
+	for _, whr := range wheres {
+		db = whr.Where(db)
+	}
+	return db
 }
 
-// FakeDB is an empty method to demonstrate how to handle multiple database instances.
-// This method should be implemented to return an actual fake DB instance.
+// FakeDB is used to demonstrate multiple database instances.
+// It returns a nil gorm.DB, indicating a fake database.
 func (ds *datastore) FakeDB(ctx context.Context) *gorm.DB { return nil }
 
-// TX starts a transaction using the main DB context
-// and passes the transactional context to the provided function.
-func (ds *datastore) TX(ctx context.Context, fn func(ctx context.Context) error) error {
-	return ds.core.WithContext(ctx).Transaction(
+// TX starts a new transaction instance.
+// nolint: fatcontext
+func (store *datastore) TX(ctx context.Context, fn func(ctx context.Context) error) error {
+	return store.core.WithContext(ctx).Transaction(
 		func(tx *gorm.DB) error {
 			ctx = context.WithValue(ctx, transactionKey{}, tx)
 			return fn(ctx)
@@ -89,12 +93,12 @@ func (ds *datastore) TX(ctx context.Context, fn func(ctx context.Context) error)
 	)
 }
 
-// Users returns an initialized instance of UserStore.
-func (ds *datastore) Users() UserStore {
-	return newUserStore(ds)
+// User returns an instance that implements the UserStore.
+func (store *datastore) User() UserStore {
+	return newUserStore(store)
 }
 
-// Secrets returns an initialized instance of SecretStore.
-func (ds *datastore) Secrets() SecretStore {
-	return newSecretStore(ds)
+// Secret returns an instance that implements the SecretStore.
+func (store *datastore) Secret() SecretStore {
+	return newSecretStore(store)
 }

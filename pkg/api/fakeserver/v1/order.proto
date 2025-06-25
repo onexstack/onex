@@ -1,0 +1,97 @@
+// This file defines the Protobuf messages and services for managing Orders.
+//
+syntax = "proto3"; // Specifies the syntax version used in this file.
+
+package fakeserver.v1;
+
+import "google/protobuf/timestamp.proto"; // Importing Google's timestamp type for date/time fields.
+
+// Specifies the Go package for generated code.
+option go_package = "github.com/onexstack/onex/pkg/api/fakeserver/v1;v1";
+
+// Orders represents a order with its metadata.
+message Order {
+    // OrderID is the unique identifier for the order.
+    string orderID = 1;
+    // CreatedAt is the timestamp when the order was created.
+    google.protobuf.Timestamp createdAt = 2;
+    // UpdatedAt is the timestamp when the order was last updated.
+    google.protobuf.Timestamp updatedAt = 3;
+    string customer = 4; // 顾客姓名
+    string product = 5; // 产品名称
+    int64 quantity = 6; // 购买数量
+}
+
+// CreateOrderRequest represents the request message for creating a new order.
+message CreateOrderRequest {
+    string customer = 1;
+    string product = 2;
+    int64 quantity = 3;
+}
+
+// CreateOrderResponse represents the response message for a successful order creation.
+message CreateOrderResponse {
+    // OrderID is the unique identifier of the newly created order.
+    string orderID = 1;
+    // TODO: Add additional fields to return if needed.
+}
+
+// UpdateOrderRequest represents the request message for updating an existing order.
+message UpdateOrderRequest {
+    // OrderID is the unique identifier of the order to update.
+    string orderID = 1;
+
+    optional string customer = 2;
+    optional string product = 3;
+    optional int64 quantity = 4;
+}
+
+// UpdateOrderResponse represents the response message for a successful order update.
+message UpdateOrderResponse {
+    // TODO: Add additional fields to return if needed.
+}
+
+// DeleteOrderRequest represents the request message for deleting one or more orders.
+message DeleteOrderRequest {
+    // OrderIDs is the list of unique identifiers for the orders to delete.
+    repeated string orderIDs = 1;
+    // TODO: Add additional fields if needed.
+}
+
+// DeleteOrderResponse represents the response message for a successful order deletion.
+message DeleteOrderResponse {
+    // TODO: Add additional fields to return if needed.
+}
+
+// GetOrderRequest represents the request message for retrieving a specific order.
+message GetOrderRequest {
+    // OrderID is the unique identifier of the order to retrieve.
+    // @gotags: uri:"orderID"
+    string orderID = 1;
+}
+
+// GetOrderResponse represents the response message for a successful retrieval of a order.
+message GetOrderResponse {
+    // Order is the retrieved order object.
+    Order order = 1;
+}
+
+// ListOrderRequest represents the request message for listing orders
+// with pagination and optional filters.
+message ListOrderRequest {
+    // Offset is the starting point of the list for pagination.
+    // @gotags: form:"offset"
+    int64 offset = 1;
+    // Limit is the maximum number of orders to return.
+    // @gotags: form:"limit"
+    int64 limit = 2;
+    // TODO: Add additional query fields if needed.
+}
+
+// ListOrderResponse represents the response message for listing orders.
+message ListOrderResponse {
+    // TotalCount is the total number of orders matching the query.
+    int64 total = 1;
+    // Orders is the list of orders in the current page.
+    repeated Order orders = 2;
+}

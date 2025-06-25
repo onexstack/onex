@@ -3,18 +3,18 @@
 # Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 # Use of this source code is governed by a MIT style
 # license that can be found in the LICENSE file. The original repo for
-# this file is https://github.com/superproj/onex.
+# this file is https://github.com/onexstack/onex.
 #
 
 
-ONEX_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
+PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/..
 
-source "${ONEX_ROOT}/scripts/common.sh"
+source "${PROJ_ROOT_DIR}/scripts/common.sh"
 
 readonly LOCAL_OUTPUT_CONFIGPATH="${LOCAL_OUTPUT_ROOT}/configs"
 mkdir -p ${LOCAL_OUTPUT_CONFIGPATH}
 
-cd ${ONEX_ROOT}/scripts
+cd ${PROJ_ROOT_DIR}/scripts
 
 export ONEX_APISERVER_INSECURE_BIND_ADDRESS=0.0.0.0
 export ONEX_AUTHZ_SERVER_INSECURE_BIND_ADDRESS=0.0.0.0
@@ -30,7 +30,7 @@ export CONFIG_USER_CLIENT_CERTIFICATE=/etc/miner/cert/admin.pem
 export CONFIG_USER_CLIENT_KEY=/etc/miner/cert/admin-key.pem
 export CONFIG_SERVER_CERTIFICATE_AUTHORITY=/etc/miner/cert/ca.pem
 
-for comp in $(ls ${ONEX_ROOT/cmd})
+for comp in $(ls ${PROJ_ROOT_DIR/cmd})
 do
   onex::log::info "generate ${LOCAL_OUTPUT_CONFIGPATH}/${comp}.yaml"
   ./gen-config.sh install/environment.sh ../configs/${comp}.yaml > ${LOCAL_OUTPUT_CONFIGPATH}/${comp}.yaml

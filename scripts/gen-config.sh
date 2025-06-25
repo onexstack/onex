@@ -3,7 +3,7 @@
 # Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 # Use of this source code is governed by a MIT style
 # license that can be found in the LICENSE file. The original repo for
-# this file is https://github.com/superproj/onex.
+# this file is https://github.com/onexstack/onex.
 #
 
 # 本脚本功能：根据 scripts/environment.sh 配置，生成 ONEX 组件 YAML 配置文件。
@@ -12,9 +12,9 @@
 env_file="$1"
 template_file="$2"
 
-ONEX_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
+PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/..
 
-source "${ONEX_ROOT}/scripts/lib/init.sh"
+source "${PROJ_ROOT_DIR}/scripts/lib/init.sh"
 
 if [ $# -ne 2 ];then
     onex::log::error "Usage: gen-config.sh manifests/env.local configs/onex.service.tmpl"

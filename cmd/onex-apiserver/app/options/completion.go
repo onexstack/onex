@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package options
@@ -9,8 +9,8 @@ package options
 import (
 	apiserveroptions "k8s.io/apiserver/pkg/server/options"
 
-	controlplaneoptions "github.com/superproj/onex/internal/controlplane/apiserver/options"
-	"github.com/superproj/onex/internal/controlplane/storage"
+	controlplaneoptions "github.com/onexstack/onex/internal/controlplane/apiserver/options"
+	"github.com/onexstack/onex/pkg/apiserver/storage"
 )
 
 // completedOptions is a private wrapper that enforces a call of Complete() before Run can be invoked.

@@ -1,55 +1,53 @@
-// Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
-// Use of this source code is governed by a MIT style
-// license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
-//
-
 package app
 
 import (
+	"fmt"
+
+	"github.com/onexstack/onexstack/pkg/app"
 	genericapiserver "k8s.io/apiserver/pkg/server"
 
-	"github.com/superproj/onex/cmd/onex-cacheserver/app/options"
-	"github.com/superproj/onex/internal/cacheserver"
-	"github.com/superproj/onex/pkg/app"
+	"github.com/onexstack/onex/cmd/onex-cacheserver/app/options"
 )
 
-const commandDesc = `onex-cacheserver is an example cache server, demonstrating 
-how to develop a caching service.
+const commandDesc = `onex-cacheserver is an example cache server, demonstrating   
+how to develop a caching service.  
 
-Find more onex-cacheserver information at:
-    https://github.com/superproj/onex/blob/master/docs/guide/en-US/cmd/onex-cacheserver.md`
+You can find more information about onex-cacheserver at:  
+https://github.com/onexstack/onex/blob/master/docs/guide/en-US/cmd/onex-cacheserver.md  
+`
 
-// NewApp creates an App object with default parameters.
+// NewApp creates and returns a new App object with default parameters.
 func NewApp() *app.App {
-	opts := options.NewOptions()
-	application := app.NewApp("onex-cacheserver", "Launch a onex cache server",
-		app.WithDescription(commandDesc),
-		app.WithOptions(opts),
-		app.WithDefaultValidArgs(),
-		app.WithRunFunc(run(opts)),
-	)
+	opts := options.NewServerOptions()
 
-	return application
+	return app.NewApp(
+		"onex-cacheserver",               // Application name
+		"Launch an onex cache server",    // Brief description
+		app.WithDescription(commandDesc), // Full descriptive documentation
+		app.WithOptions(opts),            // Application-specific options
+		app.WithDefaultValidArgs(),       // Command-line argument validation setup
+		app.WithRunFunc(run(opts)),       // The run function for starting the app
+	)
 }
 
-func run(opts *options.Options) app.RunFunc {
+// run contains the main logic for initializing and running the server.
+func run(opts *options.ServerOptions) app.RunFunc {
 	return func() error {
+		// Load the configuration options
 		cfg, err := opts.Config()
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to load configuration: %w", err)
 		}
 
-		return Run(cfg, genericapiserver.SetupSignalHandler())
-	}
-}
+		ctx := genericapiserver.SetupSignalContext()
 
-// Run runs the specified APIServer. This should never exit.
-func Run(c *cacheserver.Config, stopCh <-chan struct{}) error {
-	server, err := c.Complete().New(stopCh)
-	if err != nil {
-		return err
-	}
+		// Build the server using the configuration
+		server, err := cfg.NewServer(ctx)
+		if err != nil {
+			return fmt.Errorf("failed to create server: %w", err)
+		}
 
-	return server.Run(stopCh)
+		// Run the server with signal context for graceful shutdown
+		return server.Run(ctx)
+	}
 }

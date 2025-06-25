@@ -3,7 +3,7 @@
 # Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 # Use of this source code is governed by a MIT style
 # license that can be found in the LICENSE file. The original repo for
-# this file is https://github.com/superproj/onex.
+# this file is https://github.com/onexstack/onex.
 #
 
 
@@ -21,7 +21,7 @@
 # ------------
 
 # The golang package that we are building.
-ONEX_GO_PACKAGE=github.com/superproj/onex
+ONEX_GO_PACKAGE=github.com/onexstack/onex
 
 # Returns a sorted newline-separated list containing only duplicated items.
 onex::golang::dups() {
@@ -93,7 +93,7 @@ onex::golang::set_platform_envs() {
 #   env-var FORCE_HOST_GO set to a non-empty value uses the go version in the $PATH and skips ensuring $GO_VERSION is used
 onex::golang::verify_go_version() {
   # default GO_VERSION to content of .go-version
-  GO_VERSION="${GO_VERSION:-"$(cat "${ONEX_ROOT}/.go-version")"}"
+  GO_VERSION="${GO_VERSION:-"$(cat "${PROJ_ROOT_DIR}/.go-version")"}"
   if [ "${GOTOOLCHAIN:-auto}" != 'auto' ]; then
     # no-op, just respect GOTOOLCHAIN
     :
@@ -109,7 +109,7 @@ onex::golang::verify_go_version() {
       export GIMME_ENV_PREFIX=${GIMME_ENV_PREFIX:-"${LOCAL_OUTPUT_ROOT}/.gimme/envs"}
       export GIMME_VERSION_PREFIX=${GIMME_VERSION_PREFIX:-"${LOCAL_OUTPUT_ROOT}/.gimme/versions"}
       # eval because the output of this is shell to set PATH etc.
-      eval "$("${ONEX_ROOT}/third_party/gimme/gimme" "${GO_VERSION}")"
+      eval "$("${PROJ_ROOT_DIR}/third_party/gimme/gimme" "${GO_VERSION}")"
     fi
   fi
 
@@ -196,7 +196,7 @@ onex::golang::build_binaries_for_platform() {
   mkdir -p ${out_dir}
 
   # Execute compilation command
-  go build "${build_args[@]}" -o "${out_dir}/${command}${ext}" "${ONEX_ROOT}/cmd/${command}"
+  go build "${build_args[@]}" -o "${out_dir}/${command}${ext}" "${PROJ_ROOT_DIR}/cmd/${command}"
   V=2 onex::log::info "Output file is: ${out_dir}/${command}${ext}"
 }
 

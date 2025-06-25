@@ -1,7 +1,7 @@
 // Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/superproj/onex.
+// this file is https://github.com/onexstack/onex.
 //
 
 package controllermanager
@@ -27,8 +27,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 
-	clientset "github.com/superproj/onex/pkg/generated/clientset/versioned"
-	v1clientset "github.com/superproj/onex/pkg/generated/clientset/versioned/typed/core/v1"
+	clientset "github.com/onexstack/onex/pkg/generated/clientset/versioned"
+	v1clientset "github.com/onexstack/onex/pkg/generated/clientset/versioned/typed/core/v1"
 	//clientset "k8s.io/client-go/kubernetes"
 	//v1clientset "k8s.io/client-go/kubernetes/typed/core/v1"
 )

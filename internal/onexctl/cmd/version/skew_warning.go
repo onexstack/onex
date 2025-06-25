@@ -23,7 +23,7 @@ import (
 
 	apimachineryversion "k8s.io/apimachinery/pkg/util/version"
 
-	"github.com/superproj/onex/pkg/version"
+	"github.com/onexstack/onexstack/pkg/version"
 )
 
 // supportedMinorVersionSkew is the maximum supported difference between the client and server minor versions.

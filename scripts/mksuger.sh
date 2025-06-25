@@ -3,14 +3,14 @@
 # Copyright 2022 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
 # Use of this source code is governed by a MIT style
 # license that can be found in the LICENSE file. The original repo for
-# this file is https://github.com/superproj/onex.
+# this file is https://github.com/onexstack/onex.
 #
 
 
 set -o errexit
 
-ONEX_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
-source "${ONEX_ROOT}/scripts/common.sh"
+PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/..
+source "${PROJ_ROOT_DIR}/scripts/common.sh"
 
 OVERSION=${OVERSION:-$(uplift tag --current --silent)+$(date +'%Y%m%d%H%M%S')}
 COMPONENTS=()
@@ -43,7 +43,7 @@ load_docker_image() {
   # For example, the version number "v0.18.0+20240121235656" should be transformed into "v0.18.0-20240121235656" for
   # use as a container tag name.
   kind load docker-image --name ${ONEX_KIND_CLUSTER_NAME} --nodes ${NODES} \
-    ccr.ccs.tencentyun.com/superproj/${comp}-amd64:$(echo ${OVERSION} | sed 's/+/-/')
+    ccr.ccs.tencentyun.com/onexstack/${comp}-amd64:$(echo ${OVERSION} | sed 's/+/-/')
 }
 
 # Build docker images
@@ -53,7 +53,7 @@ build_image() {
 
   for comp in "${COMPONENTS[@]}"
   do
-    make -C ${ONEX_ROOT} ${cmd} IMAGES=${comp} VERSION=${OVERSION} MULTISTAGE=0
+    make -C ${PROJ_ROOT_DIR} ${cmd} IMAGES=${comp} VERSION=${OVERSION} MULTISTAGE=0
     [[ "$LOAD" == true ]] && load_docker_image ${comp}
   done
 }
@@ -62,7 +62,7 @@ build_image() {
 build() {
   for comp in "${COMPONENTS[@]}"
   do
-    make -C ${ONEX_ROOT} build BINS=${comp} VERSION=${OVERSION}
+    make -C ${PROJ_ROOT_DIR} build BINS=${comp} VERSION=${OVERSION}
   done
 }
 
@@ -70,7 +70,7 @@ build() {
 deploy() {
   for comp in "${COMPONENTS[@]}"
   do
-    make -C ${ONEX_ROOT} deploy DEPLOYS=${comp} VERSION=${OVERSION}
+    make -C ${PROJ_ROOT_DIR} deploy DEPLOYS=${comp} VERSION=${OVERSION}
     load_docker_image ${comp}
     kubectl rollout restart deployment ${comp}
   done
