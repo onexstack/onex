@@ -8,14 +8,14 @@
 package v1
 
 import (
-	v1 "k8s.io/api/core/v1"
+	corev1 "k8s.io/api/core/v1"
 )
 
 // ContainerResizePolicyApplyConfiguration represents a declarative configuration of the ContainerResizePolicy type for use
 // with apply.
 type ContainerResizePolicyApplyConfiguration struct {
-	ResourceName  *v1.ResourceName                `json:"resourceName,omitempty"`
-	RestartPolicy *v1.ResourceResizeRestartPolicy `json:"restartPolicy,omitempty"`
+	ResourceName  *corev1.ResourceName                `json:"resourceName,omitempty"`
+	RestartPolicy *corev1.ResourceResizeRestartPolicy `json:"restartPolicy,omitempty"`
 }
 
 // ContainerResizePolicyApplyConfiguration constructs a declarative configuration of the ContainerResizePolicy type for use with
@@ -27,7 +27,7 @@ func ContainerResizePolicy() *ContainerResizePolicyApplyConfiguration {
 // WithResourceName sets the ResourceName field in the declarative configuration to the given value
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the ResourceName field is set to the value of the last call.
-func (b *ContainerResizePolicyApplyConfiguration) WithResourceName(value v1.ResourceName) *ContainerResizePolicyApplyConfiguration {
+func (b *ContainerResizePolicyApplyConfiguration) WithResourceName(value corev1.ResourceName) *ContainerResizePolicyApplyConfiguration {
 	b.ResourceName = &value
 	return b
 }
@@ -35,7 +35,7 @@ func (b *ContainerResizePolicyApplyConfiguration) WithResourceName(value v1.Reso
 // WithRestartPolicy sets the RestartPolicy field in the declarative configuration to the given value
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the RestartPolicy field is set to the value of the last call.
-func (b *ContainerResizePolicyApplyConfiguration) WithRestartPolicy(value v1.ResourceResizeRestartPolicy) *ContainerResizePolicyApplyConfiguration {
+func (b *ContainerResizePolicyApplyConfiguration) WithRestartPolicy(value corev1.ResourceResizeRestartPolicy) *ContainerResizePolicyApplyConfiguration {
 	b.RestartPolicy = &value
 	return b
 }

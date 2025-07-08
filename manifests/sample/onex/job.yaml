@@ -1,0 +1,15 @@
+apiVersion: batch.onex.io/v1beta1
+kind: Job
+metadata:
+  name: my-aws-job
+spec:
+  type: AWS
+  providerSpec:
+    instanceType: m4.xlarge
+    placement:
+      region: us-east-1
+      availabilityZone: us-east-1a
+    publicIp: true
+    securityGroups:
+      - sg-0123456789abcdef0
+    subnet: subnet-0abc1234def56789

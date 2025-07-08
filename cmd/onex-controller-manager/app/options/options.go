@@ -20,6 +20,7 @@ import (
 
 	controllermanagerconfig "github.com/onexstack/onex/cmd/onex-controller-manager/app/config"
 	"github.com/onexstack/onex/cmd/onex-controller-manager/names"
+	ctrlmgrconfig "github.com/onexstack/onex/internal/controller/apis/config"
 	"github.com/onexstack/onex/internal/controller/apis/config/latest"
 	clientcmdutil "github.com/onexstack/onex/internal/pkg/util/clientcmd"
 	kubeutil "github.com/onexstack/onex/internal/pkg/util/kube"
@@ -38,8 +39,7 @@ type Options struct {
 	Generic                    *genericconfigoptions.GenericControllerManagerConfigurationOptions
 	GarbageCollectorController *genericconfigoptions.GarbageCollectorControllerOptions
 	MySQL                      *genericconfigoptions.MySQLOptions
-	ChainController            *ChainControllerOptions
-	//NamespaceController        *NamespaceControllerOptions
+	// NamespaceController        *NamespaceControllerOptions
 
 	// ConfigFile is the location of the miner controller server's configuration file.
 	ConfigFile string
@@ -56,7 +56,7 @@ type Options struct {
 
 	// config is the onex controller manager server's configuration object.
 	// The default values.
-	//config *ctrlmgrconfig.OneXControllerManagerConfiguration
+	config *ctrlmgrconfig.OneXControllerManagerConfiguration
 }
 
 // NewOptions creates a new Options with a default config.
@@ -70,11 +70,10 @@ func NewOptions() (*Options, error) {
 		Generic:                    genericconfigoptions.NewGenericControllerManagerConfigurationOptions(&componentConfig.Generic),
 		GarbageCollectorController: genericconfigoptions.NewGarbageCollectorControllerOptions(&componentConfig.GarbageCollectorController),
 		MySQL:                      genericconfigoptions.NewMySQLOptions(&componentConfig.MySQL),
-		ChainController:            NewChainControllerOptions(&componentConfig.ChainController),
 		Kubeconfig:                 clientcmdutil.DefaultKubeconfig(),
 		Metrics:                    metrics.NewOptions(),
 		Logs:                       logs.NewOptions(),
-		//config:     componentConfig,
+		// config:     componentConfig,
 	}
 
 	gcIgnoredResources := make([]genericconfig.GroupResource, 0, len(garbagecollector.DefaultIgnoredResources()))
@@ -94,7 +93,6 @@ func (o *Options) Flags(allControllers []string, disabledControllers []string, c
 	o.Generic.AddFlags(&fss, allControllers, disabledControllers, controllerAliases)
 	o.GarbageCollectorController.AddFlags(fss.FlagSet(names.GarbageCollectorController))
 	o.MySQL.AddFlags(fss.FlagSet("mysql"))
-	o.ChainController.AddFlags(fss.FlagSet(names.ChainController))
 
 	o.Metrics.AddFlags(fss.FlagSet("metrics"))
 	logsapi.AddFlags(o.Logs, fss.FlagSet("logs"))
@@ -110,6 +108,7 @@ func (o *Options) Flags(allControllers []string, disabledControllers []string, c
 	return fss
 }
 
+// Complete completes all the required options.
 func (o *Options) Complete() error {
 	return nil
 }
@@ -120,10 +119,6 @@ func (o *Options) ApplyTo(c *controllermanagerconfig.Config, allControllers []st
 		return err
 	}
 	if err := o.GarbageCollectorController.ApplyTo(&c.ComponentConfig.GarbageCollectorController); err != nil {
-		return err
-	}
-
-	if err := o.ChainController.ApplyTo(&c.ComponentConfig.ChainController); err != nil {
 		return err
 	}
 
@@ -138,7 +133,6 @@ func (o *Options) Validate(allControllers []string, disabledControllers []string
 
 	errs = append(errs, o.Generic.Validate(allControllers, disabledControllers, controllerAliases)...)
 	errs = append(errs, o.GarbageCollectorController.Validate()...)
-	errs = append(errs, o.ChainController.Validate()...)
 
 	// TODO: validate component config, master and kubeconfig
 
@@ -160,8 +154,9 @@ func (o Options) Config(allControllers []string, disabledControllers []string, c
 	}
 
 	c := &controllermanagerconfig.Config{
-		Kubeconfig: kubeutil.SetClientOptionsForController(restConfig),
-		Client:     client,
+		Client:          client,
+		Kubeconfig:      kubeutil.SetClientOptionsForController(restConfig),
+		ComponentConfig: &ctrlmgrconfig.OneXControllerManagerConfiguration{},
 	}
 
 	if err := o.ApplyTo(c, allControllers, disabledControllers, controllerAliases); err != nil {

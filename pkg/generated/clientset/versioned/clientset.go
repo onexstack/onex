@@ -13,6 +13,7 @@ import (
 
 	apiextensionsv1 "github.com/onexstack/onex/pkg/generated/clientset/versioned/typed/apiextensions/v1"
 	appsv1beta1 "github.com/onexstack/onex/pkg/generated/clientset/versioned/typed/apps/v1beta1"
+	batchv1beta1 "github.com/onexstack/onex/pkg/generated/clientset/versioned/typed/batch/v1beta1"
 	coordinationv1 "github.com/onexstack/onex/pkg/generated/clientset/versioned/typed/coordination/v1"
 	corev1 "github.com/onexstack/onex/pkg/generated/clientset/versioned/typed/core/v1"
 	flowcontrolv1 "github.com/onexstack/onex/pkg/generated/clientset/versioned/typed/flowcontrol/v1"
@@ -25,6 +26,7 @@ type Interface interface {
 	Discovery() discovery.DiscoveryInterface
 	ApiextensionsV1() apiextensionsv1.ApiextensionsV1Interface
 	AppsV1beta1() appsv1beta1.AppsV1beta1Interface
+	BatchV1beta1() batchv1beta1.BatchV1beta1Interface
 	CoordinationV1() coordinationv1.CoordinationV1Interface
 	CoreV1() corev1.CoreV1Interface
 	FlowcontrolV1() flowcontrolv1.FlowcontrolV1Interface
@@ -35,6 +37,7 @@ type Clientset struct {
 	*discovery.DiscoveryClient
 	apiextensionsV1 *apiextensionsv1.ApiextensionsV1Client
 	appsV1beta1     *appsv1beta1.AppsV1beta1Client
+	batchV1beta1    *batchv1beta1.BatchV1beta1Client
 	coordinationV1  *coordinationv1.CoordinationV1Client
 	coreV1          *corev1.CoreV1Client
 	flowcontrolV1   *flowcontrolv1.FlowcontrolV1Client
@@ -48,6 +51,11 @@ func (c *Clientset) ApiextensionsV1() apiextensionsv1.ApiextensionsV1Interface {
 // AppsV1beta1 retrieves the AppsV1beta1Client
 func (c *Clientset) AppsV1beta1() appsv1beta1.AppsV1beta1Interface {
 	return c.appsV1beta1
+}
+
+// BatchV1beta1 retrieves the BatchV1beta1Client
+func (c *Clientset) BatchV1beta1() batchv1beta1.BatchV1beta1Interface {
+	return c.batchV1beta1
 }
 
 // CoordinationV1 retrieves the CoordinationV1Client
@@ -117,6 +125,10 @@ func NewForConfigAndClient(c *rest.Config, httpClient *http.Client) (*Clientset,
 	if err != nil {
 		return nil, err
 	}
+	cs.batchV1beta1, err = batchv1beta1.NewForConfigAndClient(&configShallowCopy, httpClient)
+	if err != nil {
+		return nil, err
+	}
 	cs.coordinationV1, err = coordinationv1.NewForConfigAndClient(&configShallowCopy, httpClient)
 	if err != nil {
 		return nil, err
@@ -152,6 +164,7 @@ func New(c rest.Interface) *Clientset {
 	var cs Clientset
 	cs.apiextensionsV1 = apiextensionsv1.New(c)
 	cs.appsV1beta1 = appsv1beta1.New(c)
+	cs.batchV1beta1 = batchv1beta1.New(c)
 	cs.coordinationV1 = coordinationv1.New(c)
 	cs.coreV1 = corev1.New(c)
 	cs.flowcontrolV1 = flowcontrolv1.New(c)

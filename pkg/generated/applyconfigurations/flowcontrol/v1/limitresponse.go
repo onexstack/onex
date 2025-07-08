@@ -8,13 +8,13 @@
 package v1
 
 import (
-	v1 "k8s.io/api/flowcontrol/v1"
+	flowcontrolv1 "k8s.io/api/flowcontrol/v1"
 )
 
 // LimitResponseApplyConfiguration represents a declarative configuration of the LimitResponse type for use
 // with apply.
 type LimitResponseApplyConfiguration struct {
-	Type    *v1.LimitResponseType                   `json:"type,omitempty"`
+	Type    *flowcontrolv1.LimitResponseType        `json:"type,omitempty"`
 	Queuing *QueuingConfigurationApplyConfiguration `json:"queuing,omitempty"`
 }
 
@@ -27,7 +27,7 @@ func LimitResponse() *LimitResponseApplyConfiguration {
 // WithType sets the Type field in the declarative configuration to the given value
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the Type field is set to the value of the last call.
-func (b *LimitResponseApplyConfiguration) WithType(value v1.LimitResponseType) *LimitResponseApplyConfiguration {
+func (b *LimitResponseApplyConfiguration) WithType(value flowcontrolv1.LimitResponseType) *LimitResponseApplyConfiguration {
 	b.Type = &value
 	return b
 }

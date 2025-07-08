@@ -262,6 +262,9 @@ function onex::util::group-version-to-pkg-path() {
     apps/v1beta1)
       echo "${PROJ_ROOT_DIR}/pkg/apis/apps/v1beta1"
       ;;
+    batch/v1beta1)
+      echo "${PROJ_ROOT_DIR}/pkg/apis/batch/v1beta1"
+      ;;
     #coordination/v1)
       #echo "${PROJ_ROOT_DIR}/pkg/apis/coordination/v1"
       #;;

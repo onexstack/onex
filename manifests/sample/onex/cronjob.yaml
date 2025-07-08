@@ -1,0 +1,36 @@
+apiVersion: batch.onex.io/v1beta1
+kind: CronJob
+metadata:
+  name: db-backup
+spec:
+  schedule: "0 2 * * *"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  concurrencyPolicy: "Forbid"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: backup
+            image: alpine:3.20
+            args:
+            - sh
+            - -c
+            - |
+              echo "Starting backup at $(date)"
+              mysqldump -h mysql -u root -p$MYSQL_PWD mydb | gzip > /backup/$(date +%F).sql.gz
+            env:
+            - name: MYSQL_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: password
+            volumeMounts:
+            - name: backup-volume
+              mountPath: /backup
+          volumes:
+          - name: backup-volume
+            persistentVolumeClaim:
+              claimName: backup-pvc

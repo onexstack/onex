@@ -8,10 +8,10 @@
 package v1beta1
 
 import (
-	v1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
-	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/labels"
-	"k8s.io/client-go/tools/cache"
+	appsv1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
+	labels "k8s.io/apimachinery/pkg/labels"
+	listers "k8s.io/client-go/listers"
+	cache "k8s.io/client-go/tools/cache"
 )
 
 // ChainLister helps list Chains.
@@ -19,7 +19,7 @@ import (
 type ChainLister interface {
 	// List lists all Chains in the indexer.
 	// Objects returned here must be treated as read-only.
-	List(selector labels.Selector) (ret []*v1beta1.Chain, err error)
+	List(selector labels.Selector) (ret []*appsv1beta1.Chain, err error)
 	// Chains returns an object that can list and get Chains.
 	Chains(namespace string) ChainNamespaceLister
 	ChainListerExpansion
@@ -27,25 +27,17 @@ type ChainLister interface {
 
 // chainLister implements the ChainLister interface.
 type chainLister struct {
-	indexer cache.Indexer
+	listers.ResourceIndexer[*appsv1beta1.Chain]
 }
 
 // NewChainLister returns a new ChainLister.
 func NewChainLister(indexer cache.Indexer) ChainLister {
-	return &chainLister{indexer: indexer}
-}
-
-// List lists all Chains in the indexer.
-func (s *chainLister) List(selector labels.Selector) (ret []*v1beta1.Chain, err error) {
-	err = cache.ListAll(s.indexer, selector, func(m interface{}) {
-		ret = append(ret, m.(*v1beta1.Chain))
-	})
-	return ret, err
+	return &chainLister{listers.New[*appsv1beta1.Chain](indexer, appsv1beta1.Resource("chain"))}
 }
 
 // Chains returns an object that can list and get Chains.
 func (s *chainLister) Chains(namespace string) ChainNamespaceLister {
-	return chainNamespaceLister{indexer: s.indexer, namespace: namespace}
+	return chainNamespaceLister{listers.NewNamespaced[*appsv1beta1.Chain](s.ResourceIndexer, namespace)}
 }
 
 // ChainNamespaceLister helps list and get Chains.
@@ -53,36 +45,15 @@ func (s *chainLister) Chains(namespace string) ChainNamespaceLister {
 type ChainNamespaceLister interface {
 	// List lists all Chains in the indexer for a given namespace.
 	// Objects returned here must be treated as read-only.
-	List(selector labels.Selector) (ret []*v1beta1.Chain, err error)
+	List(selector labels.Selector) (ret []*appsv1beta1.Chain, err error)
 	// Get retrieves the Chain from the indexer for a given namespace and name.
 	// Objects returned here must be treated as read-only.
-	Get(name string) (*v1beta1.Chain, error)
+	Get(name string) (*appsv1beta1.Chain, error)
 	ChainNamespaceListerExpansion
 }
 
 // chainNamespaceLister implements the ChainNamespaceLister
 // interface.
 type chainNamespaceLister struct {
-	indexer   cache.Indexer
-	namespace string
-}
-
-// List lists all Chains in the indexer for a given namespace.
-func (s chainNamespaceLister) List(selector labels.Selector) (ret []*v1beta1.Chain, err error) {
-	err = cache.ListAllByNamespace(s.indexer, s.namespace, selector, func(m interface{}) {
-		ret = append(ret, m.(*v1beta1.Chain))
-	})
-	return ret, err
-}
-
-// Get retrieves the Chain from the indexer for a given namespace and name.
-func (s chainNamespaceLister) Get(name string) (*v1beta1.Chain, error) {
-	obj, exists, err := s.indexer.GetByKey(s.namespace + "/" + name)
-	if err != nil {
-		return nil, err
-	}
-	if !exists {
-		return nil, errors.NewNotFound(v1beta1.Resource("chain"), name)
-	}
-	return obj.(*v1beta1.Chain), nil
+	listers.ResourceIndexer[*appsv1beta1.Chain]
 }

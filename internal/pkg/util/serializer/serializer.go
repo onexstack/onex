@@ -29,9 +29,6 @@ func NewProtocolShieldSerializers(codecs *serializer.CodecFactory) *protocolShie
 		accepts:      []runtime.SerializerInfo{},
 	}
 	for _, info := range codecs.SupportedMediaTypes() {
-		if info.MediaType == runtime.ContentTypeProtobuf {
-			continue
-		}
 		pss.accepts = append(pss.accepts, info)
 	}
 	return pss

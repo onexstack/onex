@@ -13,8 +13,11 @@ CI_WORKFLOW_TOOLS := code-generator golangci-lint goimports wire
 OTHER_TOOLS := mockgen uplift git-chglog addlicense kratos kind go-apidiff gotests \
 			   cfssl go-gitlint kustomize kafkactl kube-linter kubeconform kubectl \
 			   helm-docs db2struct gentool air swagger license gothanks kubebuilder \
-			   go-junit-report controller-gen protoc-go-inject-tag
+			   go-junit-report controller-gen protoc-go-inject-tag gopls
+
 MANUAL_INSTALL_TOOLS := kafka
+
+TOOLS_NEEDED_BY_LOCAL_DEPLOY := cfssl 
 
 .PHONY: tools.install
 tools.install: install.ci _install.other tools.print-manual-tool ## Install all tools.
@@ -42,6 +45,9 @@ _verify.code-generator.%:
 
 .PHONY: _install.ci
 _install.ci: $(addprefix tools.install., $(CI_WORKFLOW_TOOLS)) ## Install necessary tools used by CI/CD workflow.
+
+.PHONY: _install.local-deploy
+_install.local-deploy: $(addprefix tools.install., $(TOOLS_NEEDED_BY_LOCAL_DEPLOY)) ## Install necessary tools used by CI/CD workflow.
 
 .PHONY: _install.other
 _install.other: $(addprefix tools.install., $(OTHER_TOOLS))
@@ -251,3 +257,7 @@ _install.protoc-gen-go-json:
 .PHONY: _install.go-mod-upgrade
 _install.go-mod-upgrade:
 	@$(GO) install github.com/oligot/go-mod-upgrade@latest
+
+.PHONY: _install.gopls
+_install.gopls:
+	@$(GO) install golang.org/x/tools/gopls@latest

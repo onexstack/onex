@@ -16,8 +16,8 @@ import (
 type pluginInitializer struct {
 	informers informers.SharedInformerFactory
 	client    clientset.Interface
-	//authorizer        authorizer.Authorizer
-	//featureGates      featuregate.FeatureGate
+	// authorizer        authorizer.Authorizer
+	// featureGates      featuregate.FeatureGate
 	stopCh <-chan struct{}
 }
 

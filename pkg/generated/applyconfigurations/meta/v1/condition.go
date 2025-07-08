@@ -8,18 +8,18 @@
 package v1
 
 import (
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // ConditionApplyConfiguration represents a declarative configuration of the Condition type for use
 // with apply.
 type ConditionApplyConfiguration struct {
-	Type               *string             `json:"type,omitempty"`
-	Status             *v1.ConditionStatus `json:"status,omitempty"`
-	ObservedGeneration *int64              `json:"observedGeneration,omitempty"`
-	LastTransitionTime *v1.Time            `json:"lastTransitionTime,omitempty"`
-	Reason             *string             `json:"reason,omitempty"`
-	Message            *string             `json:"message,omitempty"`
+	Type               *string                 `json:"type,omitempty"`
+	Status             *metav1.ConditionStatus `json:"status,omitempty"`
+	ObservedGeneration *int64                  `json:"observedGeneration,omitempty"`
+	LastTransitionTime *metav1.Time            `json:"lastTransitionTime,omitempty"`
+	Reason             *string                 `json:"reason,omitempty"`
+	Message            *string                 `json:"message,omitempty"`
 }
 
 // ConditionApplyConfiguration constructs a declarative configuration of the Condition type for use with
@@ -39,7 +39,7 @@ func (b *ConditionApplyConfiguration) WithType(value string) *ConditionApplyConf
 // WithStatus sets the Status field in the declarative configuration to the given value
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the Status field is set to the value of the last call.
-func (b *ConditionApplyConfiguration) WithStatus(value v1.ConditionStatus) *ConditionApplyConfiguration {
+func (b *ConditionApplyConfiguration) WithStatus(value metav1.ConditionStatus) *ConditionApplyConfiguration {
 	b.Status = &value
 	return b
 }
@@ -55,7 +55,7 @@ func (b *ConditionApplyConfiguration) WithObservedGeneration(value int64) *Condi
 // WithLastTransitionTime sets the LastTransitionTime field in the declarative configuration to the given value
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the LastTransitionTime field is set to the value of the last call.
-func (b *ConditionApplyConfiguration) WithLastTransitionTime(value v1.Time) *ConditionApplyConfiguration {
+func (b *ConditionApplyConfiguration) WithLastTransitionTime(value metav1.Time) *ConditionApplyConfiguration {
 	b.LastTransitionTime = &value
 	return b
 }

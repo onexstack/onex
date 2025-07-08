@@ -68,17 +68,17 @@ func NewConfig(opts options.CompletedOptions) (*Config, error) {
 	c.KubeAPIs = controlPlane
 
 	apiExtensions, err := apiserver.CreateAPIExtensionsConfig(
-		controlPlane.GenericConfig.Config,
-		controlPlane.ExtraConfig.InternalVersionedInformers,
+		controlPlane.Generic.Config,
+		controlPlane.Extra.InternalVersionedInformers,
 		nil,
 		opts.CompletedOptions,
 		3,
 		serviceResolver,
 		webhook.NewDefaultAuthenticationInfoResolverWrapper(
-			controlPlane.ExtraConfig.ProxyTransport,
-			controlPlane.GenericConfig.EgressSelector,
-			controlPlane.GenericConfig.LoopbackClientConfig,
-			controlPlane.GenericConfig.TracerProvider,
+			controlPlane.Extra.ProxyTransport,
+			controlPlane.Generic.EgressSelector,
+			controlPlane.Generic.LoopbackClientConfig,
+			controlPlane.Generic.TracerProvider,
 		),
 	)
 	if err != nil {
@@ -87,12 +87,12 @@ func NewConfig(opts options.CompletedOptions) (*Config, error) {
 	c.ApiExtensions = apiExtensions
 
 	aggregator, err := createAggregatorConfig(
-		controlPlane.GenericConfig.Config,
+		controlPlane.Generic.Config,
 		opts.CompletedOptions,
-		controlPlane.ExtraConfig.InternalVersionedInformers,
+		controlPlane.Extra.InternalVersionedInformers,
 		serviceResolver,
-		controlPlane.ExtraConfig.ProxyTransport,
-		controlPlane.ExtraConfig.PeerProxy,
+		controlPlane.Extra.ProxyTransport,
+		controlPlane.Extra.PeerProxy,
 		nil,
 	)
 	if err != nil {

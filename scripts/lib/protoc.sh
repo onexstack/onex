@@ -26,7 +26,7 @@ PROJ_ROOT_DIR=$(dirname "${BASH_SOURCE[0]}")/../..
 source "${PROJ_ROOT_DIR}/scripts/lib/init.sh"
 
 #PROTOC_VERSION=23.4
-PROTOC_VERSION=29.3
+PROTOC_VERSION=31.1
 
 # Generates $1/api.pb.go from the protobuf file $1/api.proto
 # and formats it correctly

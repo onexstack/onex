@@ -24,24 +24,27 @@ import (
 
 	"github.com/onexstack/onex/cmd/onex-apiserver/app"
 	"github.com/onexstack/onex/internal/apiserver/admission/plugin/minerset"
-	//"github.com/onexstack/onex/internal/controlplane/admission/initializer"
-	"github.com/onexstack/onex/internal/pkg/config/minerprofile"
-	//"github.com/onexstack/onex/internal/pkg/options"
+
 	"github.com/onexstack/onex/internal/apiserver/admission/initializer"
 	appsrest "github.com/onexstack/onex/internal/apiserver/registry/apps/rest"
-	"github.com/onexstack/onex/pkg/apis/apps/v1beta1"
+	batchrest "github.com/onexstack/onex/internal/apiserver/registry/batch/rest"
+	"github.com/onexstack/onex/internal/pkg/config/minerprofile"
+	appsv1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
+	batchv1beta1 "github.com/onexstack/onex/pkg/apis/batch/v1beta1"
 	"github.com/onexstack/onex/pkg/generated/clientset/versioned"
 	"github.com/onexstack/onex/pkg/generated/informers"
 	generatedopenapi "github.com/onexstack/onex/pkg/generated/openapi"
 )
 
 func main() {
+	var informerFactory informers.SharedInformerFactory
+
 	// Please note that the following WithOptions are all required.
 	command := app.NewAPIServerCommand(
 		// Add custom etcd options.
-		app.WithEtcdOptions("/registry/onex.io", v1beta1.SchemeGroupVersion),
+		app.WithEtcdOptions("/registry/onex.io", appsv1beta1.SchemeGroupVersion, batchv1beta1.SchemeGroupVersion),
 		// Add custom resource storage.
-		app.WithRESTStorageProviders(appsrest.RESTStorageProvider{}),
+		app.WithRESTStorageProviders(appsrest.RESTStorageProvider{}, batchrest.RESTStorageProvider{}),
 		// Add custom dns address.
 		app.WithAlternateDNS("onex.io"),
 		// Add custom admission plugins.
@@ -53,11 +56,19 @@ func main() {
 			if err != nil {
 				return nil, err
 			}
-			informerFactory := informers.NewSharedInformerFactory(client, c.LoopbackClientConfig.Timeout)
+			informerFactory = informers.NewSharedInformerFactory(client, c.LoopbackClientConfig.Timeout)
 			// NOTICE: As we create a shared informer, we need to start it later.
-			app.WithSharedInformerFactory(informerFactory)
+			// We can usually start it by adding a PostStartHook.
 			return []admission.PluginInitializer{initializer.New(informerFactory, client)}, nil
 		}),
+		app.WithPostStartHook(
+			"start-external-informers",
+			func(ctx genericapiserver.PostStartHookContext) error {
+				if informerFactory != nil {
+					informerFactory.Start(ctx.Done())
+				}
+				return nil
+			}),
 		app.WithPostStartHook(
 			"initialize-instance-config-client",
 			func(ctx genericapiserver.PostStartHookContext) error {

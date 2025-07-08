@@ -8,10 +8,10 @@
 package v1beta1
 
 import (
-	v1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
-	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/labels"
-	"k8s.io/client-go/tools/cache"
+	appsv1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
+	labels "k8s.io/apimachinery/pkg/labels"
+	listers "k8s.io/client-go/listers"
+	cache "k8s.io/client-go/tools/cache"
 )
 
 // ChargeRequestLister helps list ChargeRequests.
@@ -19,7 +19,7 @@ import (
 type ChargeRequestLister interface {
 	// List lists all ChargeRequests in the indexer.
 	// Objects returned here must be treated as read-only.
-	List(selector labels.Selector) (ret []*v1beta1.ChargeRequest, err error)
+	List(selector labels.Selector) (ret []*appsv1beta1.ChargeRequest, err error)
 	// ChargeRequests returns an object that can list and get ChargeRequests.
 	ChargeRequests(namespace string) ChargeRequestNamespaceLister
 	ChargeRequestListerExpansion
@@ -27,25 +27,17 @@ type ChargeRequestLister interface {
 
 // chargeRequestLister implements the ChargeRequestLister interface.
 type chargeRequestLister struct {
-	indexer cache.Indexer
+	listers.ResourceIndexer[*appsv1beta1.ChargeRequest]
 }
 
 // NewChargeRequestLister returns a new ChargeRequestLister.
 func NewChargeRequestLister(indexer cache.Indexer) ChargeRequestLister {
-	return &chargeRequestLister{indexer: indexer}
-}
-
-// List lists all ChargeRequests in the indexer.
-func (s *chargeRequestLister) List(selector labels.Selector) (ret []*v1beta1.ChargeRequest, err error) {
-	err = cache.ListAll(s.indexer, selector, func(m interface{}) {
-		ret = append(ret, m.(*v1beta1.ChargeRequest))
-	})
-	return ret, err
+	return &chargeRequestLister{listers.New[*appsv1beta1.ChargeRequest](indexer, appsv1beta1.Resource("chargerequest"))}
 }
 
 // ChargeRequests returns an object that can list and get ChargeRequests.
 func (s *chargeRequestLister) ChargeRequests(namespace string) ChargeRequestNamespaceLister {
-	return chargeRequestNamespaceLister{indexer: s.indexer, namespace: namespace}
+	return chargeRequestNamespaceLister{listers.NewNamespaced[*appsv1beta1.ChargeRequest](s.ResourceIndexer, namespace)}
 }
 
 // ChargeRequestNamespaceLister helps list and get ChargeRequests.
@@ -53,36 +45,15 @@ func (s *chargeRequestLister) ChargeRequests(namespace string) ChargeRequestName
 type ChargeRequestNamespaceLister interface {
 	// List lists all ChargeRequests in the indexer for a given namespace.
 	// Objects returned here must be treated as read-only.
-	List(selector labels.Selector) (ret []*v1beta1.ChargeRequest, err error)
+	List(selector labels.Selector) (ret []*appsv1beta1.ChargeRequest, err error)
 	// Get retrieves the ChargeRequest from the indexer for a given namespace and name.
 	// Objects returned here must be treated as read-only.
-	Get(name string) (*v1beta1.ChargeRequest, error)
+	Get(name string) (*appsv1beta1.ChargeRequest, error)
 	ChargeRequestNamespaceListerExpansion
 }
 
 // chargeRequestNamespaceLister implements the ChargeRequestNamespaceLister
 // interface.
 type chargeRequestNamespaceLister struct {
-	indexer   cache.Indexer
-	namespace string
-}
-
-// List lists all ChargeRequests in the indexer for a given namespace.
-func (s chargeRequestNamespaceLister) List(selector labels.Selector) (ret []*v1beta1.ChargeRequest, err error) {
-	err = cache.ListAllByNamespace(s.indexer, s.namespace, selector, func(m interface{}) {
-		ret = append(ret, m.(*v1beta1.ChargeRequest))
-	})
-	return ret, err
-}
-
-// Get retrieves the ChargeRequest from the indexer for a given namespace and name.
-func (s chargeRequestNamespaceLister) Get(name string) (*v1beta1.ChargeRequest, error) {
-	obj, exists, err := s.indexer.GetByKey(s.namespace + "/" + name)
-	if err != nil {
-		return nil, err
-	}
-	if !exists {
-		return nil, errors.NewNotFound(v1beta1.Resource("chargerequest"), name)
-	}
-	return obj.(*v1beta1.ChargeRequest), nil
+	listers.ResourceIndexer[*appsv1beta1.ChargeRequest]
 }

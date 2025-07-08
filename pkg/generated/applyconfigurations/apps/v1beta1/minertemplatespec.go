@@ -26,11 +26,11 @@ func MinerTemplateSpec() *MinerTemplateSpecApplyConfiguration {
 // overwriting an existing map entries in Labels field with the same key.
 func (b *MinerTemplateSpecApplyConfiguration) WithLabels(entries map[string]string) *MinerTemplateSpecApplyConfiguration {
 	b.ensureObjectMetaApplyConfigurationExists()
-	if b.Labels == nil && len(entries) > 0 {
-		b.Labels = make(map[string]string, len(entries))
+	if b.ObjectMetaApplyConfiguration.Labels == nil && len(entries) > 0 {
+		b.ObjectMetaApplyConfiguration.Labels = make(map[string]string, len(entries))
 	}
 	for k, v := range entries {
-		b.Labels[k] = v
+		b.ObjectMetaApplyConfiguration.Labels[k] = v
 	}
 	return b
 }
@@ -41,11 +41,11 @@ func (b *MinerTemplateSpecApplyConfiguration) WithLabels(entries map[string]stri
 // overwriting an existing map entries in Annotations field with the same key.
 func (b *MinerTemplateSpecApplyConfiguration) WithAnnotations(entries map[string]string) *MinerTemplateSpecApplyConfiguration {
 	b.ensureObjectMetaApplyConfigurationExists()
-	if b.Annotations == nil && len(entries) > 0 {
-		b.Annotations = make(map[string]string, len(entries))
+	if b.ObjectMetaApplyConfiguration.Annotations == nil && len(entries) > 0 {
+		b.ObjectMetaApplyConfiguration.Annotations = make(map[string]string, len(entries))
 	}
 	for k, v := range entries {
-		b.Annotations[k] = v
+		b.ObjectMetaApplyConfiguration.Annotations[k] = v
 	}
 	return b
 }

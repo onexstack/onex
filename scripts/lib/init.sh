@@ -43,6 +43,7 @@ source "${SCRIPTS_DIR}/lib/golang.sh"
 # UPDATEME: New group need to update here.
 ONEX_AVAILABLE_GROUP_VERSIONS="${ONEX_AVAILABLE_GROUP_VERSIONS:-\
 apps/v1beta1 \
+batch/v1beta1 \
 }"
 
 # This emulates "readlink -f" which is not available on MacOS X.

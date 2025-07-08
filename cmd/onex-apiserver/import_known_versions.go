@@ -10,4 +10,5 @@ package main
 import (
 	// These imports are the API groups the API server will support.
 	_ "github.com/onexstack/onex/pkg/apis/apps/install"
+	_ "github.com/onexstack/onex/pkg/apis/batch/install"
 )

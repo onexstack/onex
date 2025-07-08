@@ -15,7 +15,6 @@ import (
 	"sort"
 	"time"
 
-	"github.com/jinzhu/copier"
 	"github.com/spf13/cobra"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/meta"
@@ -64,10 +63,8 @@ import (
 	"github.com/onexstack/onex/internal/gateway/store"
 	"github.com/onexstack/onex/internal/pkg/metrics"
 	"github.com/onexstack/onex/internal/pkg/util/ratelimiter"
-	"github.com/onexstack/onex/internal/webhooks"
 	v1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
 	"github.com/onexstack/onex/pkg/record"
-	"github.com/onexstack/onexstack/pkg/db"
 	"github.com/onexstack/onexstack/pkg/version"
 )
 
@@ -105,7 +102,7 @@ func NewControllerManagerCommand() *cobra.Command {
 the core control loops. In applications of robotics and
 automation, a control loop is a non-terminating loop that regulates the state of
 the system. In OneX , a controller is a control loop that watches the shared
-state of the miner through the onex-apiserver and makes changes attempting to move the
+state of the rest resources through the onex-apiserver and makes changes attempting to move the
 current state towards the desired state.`,
 		PersistentPreRunE: func(*cobra.Command, []string) error {
 			// silence client-go warnings.
@@ -194,13 +191,15 @@ func Run(ctx context.Context, c *config.CompletedConfig) error {
 	}
 	cfgz.Set(c.ComponentConfig)
 
-	// Do some initialization here
-	var mysqlOptions db.MySQLOptions
-	_ = copier.Copy(&mysqlOptions, c.ComponentConfig.MySQL)
-	storeClient, err := wireStoreClient(&mysqlOptions)
-	if err != nil {
-		return err
-	}
+	/*
+		// Do some initialization here
+		var mysqlOptions db.MySQLOptions
+		_ = copier.Copy(&mysqlOptions, c.ComponentConfig.MySQL)
+		storeClient, err := wireStoreClient(&mysqlOptions)
+		if err != nil {
+			return err
+		}
+	*/
 
 	var watchNamespaces map[string]cache.Config
 	if c.ComponentConfig.Generic.Namespace != "" {
@@ -269,19 +268,14 @@ func Run(ctx context.Context, c *config.CompletedConfig) error {
 	// Start to register controllers.
 	clientBuilder, rootClientBuilder := createClientBuilders(c)
 
-	cctx, err := CreateControllerContext(ctx, c, rootClientBuilder, clientBuilder, storeClient)
+	cctx, err := CreateControllerContext(ctx, c, rootClientBuilder, clientBuilder)
 	if err != nil {
 		klog.ErrorS(err, "Error building controller context")
 		return err
 	}
 
-	if err := setupChecks(mgr); err != nil {
-		return err
-	}
-
-	if err := addControllers(ctx, cctx, mgr, NewControllerDescriptors()); err != nil {
-		return err
-	}
+	setupChecks(mgr)
+	addControllers(ctx, cctx, mgr, NewControllerDescriptors())
 
 	cctx.InformerFactory.Start(ctx.Done())
 	cctx.ObjectOrMetadataInformerFactory.Start(ctx.Done())
@@ -290,7 +284,7 @@ func Run(ctx context.Context, c *config.CompletedConfig) error {
 	return mgr.Start(ctx)
 }
 
-func addControllers(ctx context.Context, cctx ControllerContext, mgr ctrl.Manager, controllerDescriptors map[string]*ControllerDescriptor) error {
+func addControllers(ctx context.Context, cctx ControllerContext, mgr ctrl.Manager, controllerDescriptors map[string]*ControllerDescriptor) {
 	// Each controller is passed a context where the logger has the name of
 	// the controller set through WithName. That name then becomes the prefix of
 	// of all log messages emitted by that controller.
@@ -300,11 +294,9 @@ func addControllers(ctx context.Context, cctx ControllerContext, mgr ctrl.Manage
 		}
 
 		if err := addController(ctx, cctx, mgr, controllerDesc); err != nil {
-			return err
+			klog.Errorf("Unable to add controller: %v", err)
 		}
 	}
-
-	return nil
 }
 
 func addController(ctx context.Context, cctx ControllerContext, mgr ctrl.Manager, controllerDescriptor *ControllerDescriptor) error {
@@ -340,15 +332,13 @@ func addController(ctx context.Context, cctx ControllerContext, mgr ctrl.Manager
 	return nil
 }
 
-func setupChecks(mgr ctrl.Manager) error {
+func setupChecks(mgr ctrl.Manager) {
 	// add handlers
 	if err := mgr.AddHealthzCheck("healthz", healthz.Ping); err != nil {
-		klog.ErrorS(err, "Unable to create health check")
-		return err
+		klog.Errorf("Unable to create health check: %v", err)
 	}
 	if err := mgr.AddReadyzCheck("readyz", healthz.Ping); err != nil {
-		klog.ErrorS(err, "Unable to create ready check")
-		return err
+		klog.Errorf("Unable to create ready check: %v", err)
 	}
 
 	/*
@@ -360,14 +350,6 @@ func setupChecks(mgr ctrl.Manager) error {
 			klog.Exitf("Unable to create ready check: %v", err)
 		}
 	*/
-	return nil
-}
-
-//nolint:unused
-func setupWebhooks(mgr ctrl.Manager) {
-	if err := (&webhooks.Chain{}).SetupWebhookWithManager(mgr); err != nil {
-		klog.Exitf("Unable to create Chain webhook: %v", err)
-	}
 }
 
 // ControllerContext defines the context object for controller
@@ -543,10 +525,6 @@ func NewControllerDescriptors() map[string]*ControllerDescriptor {
 	// special controllers.
 	register(newGarbageCollectorControllerDescriptor())
 	register(newNamespacedResourcesDeleterControllerDescriptor())
-	register(newChainControllerDescriptor())
-	register(newChainSyncControllerDescriptor())
-	register(newMinerSetSyncControllerDescriptor())
-	register(newMinerSyncControllerDescriptor())
 
 	for _, alias := range aliases.UnsortedList() {
 		if _, ok := controllers[alias]; ok {
@@ -565,7 +543,6 @@ func CreateControllerContext(
 	s *config.CompletedConfig,
 	rootClientBuilder clientbuilder.ControllerClientBuilder,
 	clientBuilder clientbuilder.ControllerClientBuilder,
-	storeClient store.IStore,
 ) (ControllerContext, error) {
 	// Informer transform to trim ManagedFields for memory efficiency.
 	trim := func(obj interface{}) (interface{}, error) {
@@ -609,7 +586,6 @@ func CreateControllerContext(
 		ResyncPeriod:                    ResyncPeriod(s),
 		ControllerManagerMetrics:        controllersmetrics.NewControllerManagerMetrics("onex-controller-manager"),
 		MetadataClient:                  metadataClient,
-		Store:                           storeClient,
 	}
 
 	if cctx.Config.ComponentConfig.GarbageCollectorController.EnableGarbageCollector &&

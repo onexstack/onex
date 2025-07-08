@@ -8,7 +8,7 @@
 package v1beta1
 
 import (
-	v1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
+	appsv1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
 	errors "github.com/onexstack/onex/pkg/errors"
 	v1 "github.com/onexstack/onex/pkg/generated/applyconfigurations/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -21,10 +21,10 @@ type MinerStatusApplyConfiguration struct {
 	LastUpdated        *metav1.Time                          `json:"lastUpdated,omitempty"`
 	FailureReason      *errors.MinerStatusError              `json:"failureReason,omitempty"`
 	FailureMessage     *string                               `json:"failureMessage,omitempty"`
-	Addresses          *v1beta1.MinerAddresses               `json:"addresses,omitempty"`
+	Addresses          *appsv1beta1.MinerAddresses           `json:"addresses,omitempty"`
 	Phase              *string                               `json:"phase,omitempty"`
 	ObservedGeneration *int64                                `json:"observedGeneration,omitempty"`
-	Conditions         *v1beta1.Conditions                   `json:"conditions,omitempty"`
+	Conditions         *appsv1beta1.Conditions               `json:"conditions,omitempty"`
 }
 
 // MinerStatusApplyConfiguration constructs a declarative configuration of the MinerStatus type for use with
@@ -68,7 +68,7 @@ func (b *MinerStatusApplyConfiguration) WithFailureMessage(value string) *MinerS
 // WithAddresses sets the Addresses field in the declarative configuration to the given value
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the Addresses field is set to the value of the last call.
-func (b *MinerStatusApplyConfiguration) WithAddresses(value v1beta1.MinerAddresses) *MinerStatusApplyConfiguration {
+func (b *MinerStatusApplyConfiguration) WithAddresses(value appsv1beta1.MinerAddresses) *MinerStatusApplyConfiguration {
 	b.Addresses = &value
 	return b
 }
@@ -92,7 +92,7 @@ func (b *MinerStatusApplyConfiguration) WithObservedGeneration(value int64) *Min
 // WithConditions sets the Conditions field in the declarative configuration to the given value
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the Conditions field is set to the value of the last call.
-func (b *MinerStatusApplyConfiguration) WithConditions(value v1beta1.Conditions) *MinerStatusApplyConfiguration {
+func (b *MinerStatusApplyConfiguration) WithConditions(value appsv1beta1.Conditions) *MinerStatusApplyConfiguration {
 	b.Conditions = &value
 	return b
 }
