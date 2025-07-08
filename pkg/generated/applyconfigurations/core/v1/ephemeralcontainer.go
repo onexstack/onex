@@ -28,7 +28,7 @@ func EphemeralContainer() *EphemeralContainerApplyConfiguration {
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the Name field is set to the value of the last call.
 func (b *EphemeralContainerApplyConfiguration) WithName(value string) *EphemeralContainerApplyConfiguration {
-	b.Name = &value
+	b.EphemeralContainerCommonApplyConfiguration.Name = &value
 	return b
 }
 
@@ -36,7 +36,7 @@ func (b *EphemeralContainerApplyConfiguration) WithName(value string) *Ephemeral
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the Image field is set to the value of the last call.
 func (b *EphemeralContainerApplyConfiguration) WithImage(value string) *EphemeralContainerApplyConfiguration {
-	b.Image = &value
+	b.EphemeralContainerCommonApplyConfiguration.Image = &value
 	return b
 }
 
@@ -45,7 +45,7 @@ func (b *EphemeralContainerApplyConfiguration) WithImage(value string) *Ephemera
 // If called multiple times, values provided by each call will be appended to the Command field.
 func (b *EphemeralContainerApplyConfiguration) WithCommand(values ...string) *EphemeralContainerApplyConfiguration {
 	for i := range values {
-		b.Command = append(b.Command, values[i])
+		b.EphemeralContainerCommonApplyConfiguration.Command = append(b.EphemeralContainerCommonApplyConfiguration.Command, values[i])
 	}
 	return b
 }
@@ -55,7 +55,7 @@ func (b *EphemeralContainerApplyConfiguration) WithCommand(values ...string) *Ep
 // If called multiple times, values provided by each call will be appended to the Args field.
 func (b *EphemeralContainerApplyConfiguration) WithArgs(values ...string) *EphemeralContainerApplyConfiguration {
 	for i := range values {
-		b.Args = append(b.Args, values[i])
+		b.EphemeralContainerCommonApplyConfiguration.Args = append(b.EphemeralContainerCommonApplyConfiguration.Args, values[i])
 	}
 	return b
 }
@@ -64,7 +64,7 @@ func (b *EphemeralContainerApplyConfiguration) WithArgs(values ...string) *Ephem
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the WorkingDir field is set to the value of the last call.
 func (b *EphemeralContainerApplyConfiguration) WithWorkingDir(value string) *EphemeralContainerApplyConfiguration {
-	b.WorkingDir = &value
+	b.EphemeralContainerCommonApplyConfiguration.WorkingDir = &value
 	return b
 }
 
@@ -76,7 +76,7 @@ func (b *EphemeralContainerApplyConfiguration) WithPorts(values ...*ContainerPor
 		if values[i] == nil {
 			panic("nil value passed to WithPorts")
 		}
-		b.Ports = append(b.Ports, *values[i])
+		b.EphemeralContainerCommonApplyConfiguration.Ports = append(b.EphemeralContainerCommonApplyConfiguration.Ports, *values[i])
 	}
 	return b
 }
@@ -89,7 +89,7 @@ func (b *EphemeralContainerApplyConfiguration) WithEnvFrom(values ...*EnvFromSou
 		if values[i] == nil {
 			panic("nil value passed to WithEnvFrom")
 		}
-		b.EnvFrom = append(b.EnvFrom, *values[i])
+		b.EphemeralContainerCommonApplyConfiguration.EnvFrom = append(b.EphemeralContainerCommonApplyConfiguration.EnvFrom, *values[i])
 	}
 	return b
 }
@@ -102,7 +102,7 @@ func (b *EphemeralContainerApplyConfiguration) WithEnv(values ...*EnvVarApplyCon
 		if values[i] == nil {
 			panic("nil value passed to WithEnv")
 		}
-		b.Env = append(b.Env, *values[i])
+		b.EphemeralContainerCommonApplyConfiguration.Env = append(b.EphemeralContainerCommonApplyConfiguration.Env, *values[i])
 	}
 	return b
 }
@@ -111,7 +111,7 @@ func (b *EphemeralContainerApplyConfiguration) WithEnv(values ...*EnvVarApplyCon
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the Resources field is set to the value of the last call.
 func (b *EphemeralContainerApplyConfiguration) WithResources(value *ResourceRequirementsApplyConfiguration) *EphemeralContainerApplyConfiguration {
-	b.Resources = value
+	b.EphemeralContainerCommonApplyConfiguration.Resources = value
 	return b
 }
 
@@ -123,7 +123,7 @@ func (b *EphemeralContainerApplyConfiguration) WithResizePolicy(values ...*Conta
 		if values[i] == nil {
 			panic("nil value passed to WithResizePolicy")
 		}
-		b.ResizePolicy = append(b.ResizePolicy, *values[i])
+		b.EphemeralContainerCommonApplyConfiguration.ResizePolicy = append(b.EphemeralContainerCommonApplyConfiguration.ResizePolicy, *values[i])
 	}
 	return b
 }
@@ -132,7 +132,7 @@ func (b *EphemeralContainerApplyConfiguration) WithResizePolicy(values ...*Conta
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the RestartPolicy field is set to the value of the last call.
 func (b *EphemeralContainerApplyConfiguration) WithRestartPolicy(value corev1.ContainerRestartPolicy) *EphemeralContainerApplyConfiguration {
-	b.RestartPolicy = &value
+	b.EphemeralContainerCommonApplyConfiguration.RestartPolicy = &value
 	return b
 }
 
@@ -144,7 +144,7 @@ func (b *EphemeralContainerApplyConfiguration) WithVolumeMounts(values ...*Volum
 		if values[i] == nil {
 			panic("nil value passed to WithVolumeMounts")
 		}
-		b.VolumeMounts = append(b.VolumeMounts, *values[i])
+		b.EphemeralContainerCommonApplyConfiguration.VolumeMounts = append(b.EphemeralContainerCommonApplyConfiguration.VolumeMounts, *values[i])
 	}
 	return b
 }
@@ -157,7 +157,7 @@ func (b *EphemeralContainerApplyConfiguration) WithVolumeDevices(values ...*Volu
 		if values[i] == nil {
 			panic("nil value passed to WithVolumeDevices")
 		}
-		b.VolumeDevices = append(b.VolumeDevices, *values[i])
+		b.EphemeralContainerCommonApplyConfiguration.VolumeDevices = append(b.EphemeralContainerCommonApplyConfiguration.VolumeDevices, *values[i])
 	}
 	return b
 }
@@ -166,7 +166,7 @@ func (b *EphemeralContainerApplyConfiguration) WithVolumeDevices(values ...*Volu
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the LivenessProbe field is set to the value of the last call.
 func (b *EphemeralContainerApplyConfiguration) WithLivenessProbe(value *ProbeApplyConfiguration) *EphemeralContainerApplyConfiguration {
-	b.LivenessProbe = value
+	b.EphemeralContainerCommonApplyConfiguration.LivenessProbe = value
 	return b
 }
 
@@ -174,7 +174,7 @@ func (b *EphemeralContainerApplyConfiguration) WithLivenessProbe(value *ProbeApp
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the ReadinessProbe field is set to the value of the last call.
 func (b *EphemeralContainerApplyConfiguration) WithReadinessProbe(value *ProbeApplyConfiguration) *EphemeralContainerApplyConfiguration {
-	b.ReadinessProbe = value
+	b.EphemeralContainerCommonApplyConfiguration.ReadinessProbe = value
 	return b
 }
 
@@ -182,7 +182,7 @@ func (b *EphemeralContainerApplyConfiguration) WithReadinessProbe(value *ProbeAp
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the StartupProbe field is set to the value of the last call.
 func (b *EphemeralContainerApplyConfiguration) WithStartupProbe(value *ProbeApplyConfiguration) *EphemeralContainerApplyConfiguration {
-	b.StartupProbe = value
+	b.EphemeralContainerCommonApplyConfiguration.StartupProbe = value
 	return b
 }
 
@@ -190,7 +190,7 @@ func (b *EphemeralContainerApplyConfiguration) WithStartupProbe(value *ProbeAppl
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the Lifecycle field is set to the value of the last call.
 func (b *EphemeralContainerApplyConfiguration) WithLifecycle(value *LifecycleApplyConfiguration) *EphemeralContainerApplyConfiguration {
-	b.Lifecycle = value
+	b.EphemeralContainerCommonApplyConfiguration.Lifecycle = value
 	return b
 }
 
@@ -198,7 +198,7 @@ func (b *EphemeralContainerApplyConfiguration) WithLifecycle(value *LifecycleApp
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the TerminationMessagePath field is set to the value of the last call.
 func (b *EphemeralContainerApplyConfiguration) WithTerminationMessagePath(value string) *EphemeralContainerApplyConfiguration {
-	b.TerminationMessagePath = &value
+	b.EphemeralContainerCommonApplyConfiguration.TerminationMessagePath = &value
 	return b
 }
 
@@ -206,7 +206,7 @@ func (b *EphemeralContainerApplyConfiguration) WithTerminationMessagePath(value 
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the TerminationMessagePolicy field is set to the value of the last call.
 func (b *EphemeralContainerApplyConfiguration) WithTerminationMessagePolicy(value corev1.TerminationMessagePolicy) *EphemeralContainerApplyConfiguration {
-	b.TerminationMessagePolicy = &value
+	b.EphemeralContainerCommonApplyConfiguration.TerminationMessagePolicy = &value
 	return b
 }
 
@@ -214,7 +214,7 @@ func (b *EphemeralContainerApplyConfiguration) WithTerminationMessagePolicy(valu
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the ImagePullPolicy field is set to the value of the last call.
 func (b *EphemeralContainerApplyConfiguration) WithImagePullPolicy(value corev1.PullPolicy) *EphemeralContainerApplyConfiguration {
-	b.ImagePullPolicy = &value
+	b.EphemeralContainerCommonApplyConfiguration.ImagePullPolicy = &value
 	return b
 }
 
@@ -222,7 +222,7 @@ func (b *EphemeralContainerApplyConfiguration) WithImagePullPolicy(value corev1.
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the SecurityContext field is set to the value of the last call.
 func (b *EphemeralContainerApplyConfiguration) WithSecurityContext(value *SecurityContextApplyConfiguration) *EphemeralContainerApplyConfiguration {
-	b.SecurityContext = value
+	b.EphemeralContainerCommonApplyConfiguration.SecurityContext = value
 	return b
 }
 
@@ -230,7 +230,7 @@ func (b *EphemeralContainerApplyConfiguration) WithSecurityContext(value *Securi
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the Stdin field is set to the value of the last call.
 func (b *EphemeralContainerApplyConfiguration) WithStdin(value bool) *EphemeralContainerApplyConfiguration {
-	b.Stdin = &value
+	b.EphemeralContainerCommonApplyConfiguration.Stdin = &value
 	return b
 }
 
@@ -238,7 +238,7 @@ func (b *EphemeralContainerApplyConfiguration) WithStdin(value bool) *EphemeralC
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the StdinOnce field is set to the value of the last call.
 func (b *EphemeralContainerApplyConfiguration) WithStdinOnce(value bool) *EphemeralContainerApplyConfiguration {
-	b.StdinOnce = &value
+	b.EphemeralContainerCommonApplyConfiguration.StdinOnce = &value
 	return b
 }
 
@@ -246,7 +246,7 @@ func (b *EphemeralContainerApplyConfiguration) WithStdinOnce(value bool) *Epheme
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the TTY field is set to the value of the last call.
 func (b *EphemeralContainerApplyConfiguration) WithTTY(value bool) *EphemeralContainerApplyConfiguration {
-	b.TTY = &value
+	b.EphemeralContainerCommonApplyConfiguration.TTY = &value
 	return b
 }
 

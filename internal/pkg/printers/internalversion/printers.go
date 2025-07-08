@@ -21,6 +21,7 @@ import (
 	printersutil "github.com/onexstack/onex/internal/pkg/util/printers"
 	"github.com/onexstack/onex/pkg/apis/apps"
 	"github.com/onexstack/onex/pkg/apis/apps/v1beta1"
+	"github.com/onexstack/onex/pkg/apis/batch"
 )
 
 // AddHandlers adds print handlers for default OneX types dealing with internal versions.
@@ -101,6 +102,24 @@ func AddHandlers(h printers.PrintHandler) {
 
 	h.TableHandler(chainColumnDefinitions, printChain)
 	h.TableHandler(chainColumnDefinitions, printChainList)
+
+	cronJobColumnDefinitions := []metav1.TableColumnDefinition{
+		{Name: "Name", Type: "string", Format: "name", Description: metav1.ObjectMeta{}.SwaggerDoc()["name"]},
+		// {Name: "Status", Type: "string", Description: "The status of the miner"},
+		{Name: "Age", Type: "string", Description: metav1.ObjectMeta{}.SwaggerDoc()["creationTimestamp"]},
+	}
+
+	h.TableHandler(cronJobColumnDefinitions, printCronJob)
+	h.TableHandler(cronJobColumnDefinitions, printCronJobList)
+
+	jobColumnDefinitions := []metav1.TableColumnDefinition{
+		{Name: "Name", Type: "string", Format: "name", Description: metav1.ObjectMeta{}.SwaggerDoc()["name"]},
+		// {Name: "Status", Type: "string", Description: "The status of the miner"},
+		{Name: "Age", Type: "string", Description: metav1.ObjectMeta{}.SwaggerDoc()["creationTimestamp"]},
+	}
+
+	h.TableHandler(jobColumnDefinitions, printJob)
+	h.TableHandler(jobColumnDefinitions, printJobList)
 }
 
 func printNamespace(obj *api.Namespace, options printers.GenerateOptions) ([]metav1.TableRow, error) {
@@ -378,4 +397,64 @@ func formatEventSourceComponentInstance(component, instance string) string {
 		return component
 	}
 	return component + ", " + instance
+}
+
+func printCronJob(obj *batch.CronJob, options printers.GenerateOptions) ([]metav1.TableRow, error) {
+	row := metav1.TableRow{
+		Object: runtime.RawExtension{Object: obj},
+	}
+
+	row.Cells = append(
+		row.Cells,
+		obj.Name,
+		printersutil.TranslateTimestampSince(obj.CreationTimestamp),
+	)
+
+	if options.Wide {
+		// row.Cells = append(row.Cells, getMinerInternalIP(obj), getMinerExternalIP(obj), getInstanceID(obj))
+	}
+
+	return []metav1.TableRow{row}, nil
+}
+
+func printCronJobList(list *batch.CronJobList, options printers.GenerateOptions) ([]metav1.TableRow, error) {
+	rows := make([]metav1.TableRow, 0, len(list.Items))
+	for i := range list.Items {
+		r, err := printCronJob(&list.Items[i], options)
+		if err != nil {
+			return nil, err
+		}
+		rows = append(rows, r...)
+	}
+	return rows, nil
+}
+
+func printJob(obj *batch.Job, options printers.GenerateOptions) ([]metav1.TableRow, error) {
+	row := metav1.TableRow{
+		Object: runtime.RawExtension{Object: obj},
+	}
+
+	row.Cells = append(
+		row.Cells,
+		obj.Name,
+		printersutil.TranslateTimestampSince(obj.CreationTimestamp),
+	)
+
+	if options.Wide {
+		// row.Cells = append(row.Cells, getMinerInternalIP(obj), getMinerExternalIP(obj), getInstanceID(obj))
+	}
+
+	return []metav1.TableRow{row}, nil
+}
+
+func printJobList(list *batch.JobList, options printers.GenerateOptions) ([]metav1.TableRow, error) {
+	rows := make([]metav1.TableRow, 0, len(list.Items))
+	for i := range list.Items {
+		r, err := printJob(&list.Items[i], options)
+		if err != nil {
+			return nil, err
+		}
+		rows = append(rows, r...)
+	}
+	return rows, nil
 }

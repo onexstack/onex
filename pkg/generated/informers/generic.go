@@ -11,6 +11,7 @@ import (
 	fmt "fmt"
 
 	v1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
+	batchv1beta1 "github.com/onexstack/onex/pkg/apis/batch/v1beta1"
 	coordinationv1 "k8s.io/api/coordination/v1"
 	corev1 "k8s.io/api/core/v1"
 	flowcontrolv1 "k8s.io/api/flowcontrol/v1"
@@ -58,6 +59,12 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1beta1().Miners().Informer()}, nil
 	case v1beta1.SchemeGroupVersion.WithResource("minersets"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1beta1().MinerSets().Informer()}, nil
+
+		// Group=batch.onex.io, Version=v1beta1
+	case batchv1beta1.SchemeGroupVersion.WithResource("cronjobs"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Batch().V1beta1().CronJobs().Informer()}, nil
+	case batchv1beta1.SchemeGroupVersion.WithResource("jobs"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Batch().V1beta1().Jobs().Informer()}, nil
 
 		// Group=coordination.k8s.io, Version=v1
 	case coordinationv1.SchemeGroupVersion.WithResource("leases"):

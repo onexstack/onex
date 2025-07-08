@@ -14,6 +14,8 @@ import (
 	fakeapiextensionsv1 "github.com/onexstack/onex/pkg/generated/clientset/versioned/typed/apiextensions/v1/fake"
 	appsv1beta1 "github.com/onexstack/onex/pkg/generated/clientset/versioned/typed/apps/v1beta1"
 	fakeappsv1beta1 "github.com/onexstack/onex/pkg/generated/clientset/versioned/typed/apps/v1beta1/fake"
+	batchv1beta1 "github.com/onexstack/onex/pkg/generated/clientset/versioned/typed/batch/v1beta1"
+	fakebatchv1beta1 "github.com/onexstack/onex/pkg/generated/clientset/versioned/typed/batch/v1beta1/fake"
 	coordinationv1 "github.com/onexstack/onex/pkg/generated/clientset/versioned/typed/coordination/v1"
 	fakecoordinationv1 "github.com/onexstack/onex/pkg/generated/clientset/versioned/typed/coordination/v1/fake"
 	corev1 "github.com/onexstack/onex/pkg/generated/clientset/versioned/typed/core/v1"
@@ -121,6 +123,11 @@ func (c *Clientset) ApiextensionsV1() apiextensionsv1.ApiextensionsV1Interface {
 // AppsV1beta1 retrieves the AppsV1beta1Client
 func (c *Clientset) AppsV1beta1() appsv1beta1.AppsV1beta1Interface {
 	return &fakeappsv1beta1.FakeAppsV1beta1{Fake: &c.Fake}
+}
+
+// BatchV1beta1 retrieves the BatchV1beta1Client
+func (c *Clientset) BatchV1beta1() batchv1beta1.BatchV1beta1Interface {
+	return &fakebatchv1beta1.FakeBatchV1beta1{Fake: &c.Fake}
 }
 
 // CoordinationV1 retrieves the CoordinationV1Client

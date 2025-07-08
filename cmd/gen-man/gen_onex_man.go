@@ -21,10 +21,9 @@ import (
 
 	apiservapp "github.com/onexstack/onex/cmd/onex-apiserver/app"
 	ctrlmgrapp "github.com/onexstack/onex/cmd/onex-controller-manager/app"
-	//fakeserverapp "github.com/onexstack/onex/cmd/onex-fakeserver/app"
+
+	// fakeserverapp "github.com/onexstack/onex/cmd/onex-fakeserver/app"
 	gwapp "github.com/onexstack/onex/cmd/onex-gateway/app"
-	minerctrlapp "github.com/onexstack/onex/cmd/onex-miner-controller/app"
-	minersetctrlapp "github.com/onexstack/onex/cmd/onex-minerset-controller/app"
 	nwapp "github.com/onexstack/onex/cmd/onex-nightwatch/app"
 	pumpapp "github.com/onexstack/onex/cmd/onex-pump/app"
 	toyblcapp "github.com/onexstack/onex/cmd/onex-toyblc/app"
@@ -112,20 +111,6 @@ func main() {
 		genMarkdown(ctrlmgr, "", outDir)
 		for _, c := range ctrlmgr.Commands() {
 			genMarkdown(c, "onex-controller-manager", outDir)
-		}
-	case "onex-minerset-controller":
-		// generate manpage for onex-minerset-controller
-		minersetctrl := minersetctrlapp.NewControllerCommand()
-		genMarkdown(minersetctrl, "", outDir)
-		for _, c := range minersetctrl.Commands() {
-			genMarkdown(c, "onex-minerset-controller", outDir)
-		}
-	case "onex-miner-controller":
-		// generate manpage for onex-miner-controller
-		minerctrl := minerctrlapp.NewControllerCommand()
-		genMarkdown(minerctrl, "", outDir)
-		for _, c := range minerctrl.Commands() {
-			genMarkdown(c, "onex-miner-controller", outDir)
 		}
 	case "onexctl":
 		// generate manpage for onexctl

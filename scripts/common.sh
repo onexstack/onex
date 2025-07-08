@@ -80,6 +80,8 @@ declare -Ax ONEX_SERVER_SIDE_COMPONENTS=(
   ["pump"]="onex-pump"
   ["tblc"]="onex-toyblc"
   ["cm"]="onex-controller-manager"
+  ["blc-ctrl"]="onex-blockchain-controller"
+  ["job"]="onex-job-controller"
   ["msc"]="onex-minerset-controller"
   ["mc"]="onex-miner-controller"
   # a demo http server and grpc server

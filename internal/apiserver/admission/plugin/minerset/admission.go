@@ -51,8 +51,10 @@ type Plugin struct {
 	client clientset.Interface
 }
 
-var _ admission.MutationInterface = &Plugin{}
-var _ admission.ValidationInterface = &Plugin{}
+var (
+	_ admission.MutationInterface   = &Plugin{}
+	_ admission.ValidationInterface = &Plugin{}
+)
 
 // Admit makes an admission decision based on the request attributes
 func (p *Plugin) Admit(ctx context.Context, attributes admission.Attributes, o admission.ObjectInterfaces) (err error) {

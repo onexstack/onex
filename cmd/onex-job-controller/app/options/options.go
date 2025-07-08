@@ -4,40 +4,35 @@
 // this file is https://github.com/onexstack/onex.
 //
 
-// Package options provides the flags used for the miner controller.
+// Package options provides the flags used for the job controller.
 package options
 
 import (
-	"fmt"
-
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	utilfeature "k8s.io/apiserver/pkg/util/feature"
-	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/kubernetes/fake"
 	restclient "k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	cliflag "k8s.io/component-base/cli/flag"
 	componentbaseoptions "k8s.io/component-base/config/options"
 	"k8s.io/component-base/logs"
 	logsapi "k8s.io/component-base/logs/api/v1"
-	"sigs.k8s.io/controller-runtime/pkg/cluster"
 
-	controllerconfig "github.com/onexstack/onex/cmd/onex-miner-controller/app/config"
-	minercontrollerconfig "github.com/onexstack/onex/internal/controller/miner/apis/config"
-	"github.com/onexstack/onex/internal/controller/miner/apis/config/latest"
-	"github.com/onexstack/onex/internal/controller/miner/apis/config/validation"
+	controllerconfig "github.com/onexstack/onex/cmd/onex-job-controller/app/config"
+	jobcontrollerconfig "github.com/onexstack/onex/internal/controller/job/apis/config"
+	"github.com/onexstack/onex/internal/controller/job/apis/config/latest"
+	"github.com/onexstack/onex/internal/controller/job/apis/config/validation"
 	clientcmdutil "github.com/onexstack/onex/internal/pkg/util/clientcmd"
 	kubeutil "github.com/onexstack/onex/internal/pkg/util/kube"
 )
 
 const (
-	// ControllerUserAgent is the userAgent name when starting onex-miner controller.
-	ControllerUserAgent = "onex-miner-controller"
+	// ControllerUserAgent is the userAgent name when starting onex-job controller.
+	ControllerUserAgent = "onex-job-controller"
 )
 
-// Options is the main context object for the onex-miner controller.
+// Options is the main context object for the onex-job-controller.
 type Options struct {
-	// ConfigFile is the location of the miner controller server's configuration file.
+	// ConfigFile is the location of the job controller server's configuration file.
 	ConfigFile string
 
 	// WriteConfigTo is the path where the default configuration will be written.
@@ -51,9 +46,9 @@ type Options struct {
 
 	Logs *logs.Options
 
-	// config is the miner controller server's configuration object.
+	// config is the job controller server's configuration object.
 	// The default values.
-	config *minercontrollerconfig.MinerControllerConfiguration
+	config *jobcontrollerconfig.JobControllerConfiguration
 }
 
 // NewOptions creates a new Options with a default config.
@@ -85,7 +80,7 @@ func (o *Options) Complete() error {
 		o.config = cfg
 	}
 
-	return utilfeature.DefaultMutableFeatureGate.SetFromMap(o.config.FeatureGates)
+	return nil
 }
 
 func (o *Options) ApplyDeprecated() {}
@@ -93,7 +88,7 @@ func (o *Options) ApplyDeprecated() {}
 // Flags returns flags for a specific APIServer by section name.
 func (o *Options) Flags() (fss cliflag.NamedFlagSets) {
 	// o.Logs.AddFlags(fss.FlagSet("logs"))
-	componentbaseoptions.BindLeaderElectionFlags(&o.config.LeaderElection, fss.FlagSet("leader elect"))
+	componentbaseoptions.BindLeaderElectionFlags(&o.config.Generic.LeaderElection, fss.FlagSet("leader elect"))
 	///o.config.Cloud.AddFlags(fss.FlagSet("cloud"))
 
 	fs := fss.FlagSet("misc")
@@ -115,24 +110,20 @@ func (o *Options) Validate() error {
 	if err := validation.Validate(o.config).ToAggregate(); err != nil {
 		errs = append(errs, err.Errors()...)
 	}
-
-	// TODO: validate master and kubeconfig
-	if o.config.Parallelism <= 0 {
-		errs = append(errs, fmt.Errorf("--parallelism must be greater than or equal to 0"))
-	}
+	// errs = append(errs, o.config.ChainController.Validate()...)
 
 	// errs = append(errs, o.Cloud.Validate()...)
 
 	return utilerrors.NewAggregate(errs)
 }
 
-// ApplyTo fills up miner controller config with options.
+// ApplyTo fills up job controller config with options.
 func (o *Options) ApplyTo(c *controllerconfig.Config) error {
 	c.ComponentConfig = o.config
 	return nil
 }
 
-// Config return a miner controller config objective.
+// Config return a job controller config objective.
 func (o *Options) Config() (*controllerconfig.Config, error) {
 	kubeconfig, err := clientcmd.BuildConfigFromFlags(o.Master, o.Kubeconfig)
 	if err != nil {
@@ -147,43 +138,9 @@ func (o *Options) Config() (*controllerconfig.Config, error) {
 		Kubeconfig: kubeutil.SetClientOptionsForController(addAgent(kubeconfig)),
 	}
 
-	c.ProviderClient = fake.NewSimpleClientset()
-	//nolint:nestif
-	if !o.config.DryRun {
-		var providerKubeconfig *restclient.Config
-		if !o.config.InCluster {
-			providerKubeconfig, err = clientcmd.BuildConfigFromFlags("", o.config.ProviderKubeconfig)
-		} else {
-			providerKubeconfig, err = restclient.InClusterConfig()
-		}
-		if err != nil {
-			return nil, err
-		}
-
-		providerKubeconfig = kubeutil.SetClientOptionsForController(addAgent(providerKubeconfig))
-		c.ProviderClient, c.ProviderCluster, err = prepareProvider(providerKubeconfig)
-		if err != nil {
-			return nil, err
-		}
-	}
-
 	if err := o.ApplyTo(c); err != nil {
 		return nil, err
 	}
 
 	return c, nil
-}
-
-func prepareProvider(kubeconfig *restclient.Config) (kubernetes.Interface, cluster.Cluster, error) {
-	providerClient, err := kubernetes.NewForConfig(kubeconfig)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	providerCluster, err := cluster.New(kubeconfig)
-	if err != nil {
-		return providerClient, nil, err
-	}
-
-	return providerClient, providerCluster, nil
 }

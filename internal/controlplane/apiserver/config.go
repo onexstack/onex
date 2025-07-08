@@ -21,6 +21,8 @@ import (
 	"k8s.io/apimachinery/pkg/util/sets"
 	kversion "k8s.io/apimachinery/pkg/version"
 	"k8s.io/apiserver/pkg/admission"
+	"k8s.io/client-go/rest"
+
 	//"k8s.io/apiserver/pkg/admission"
 	"k8s.io/apiserver/pkg/endpoints/discovery/aggregated"
 	openapinamer "k8s.io/apiserver/pkg/endpoints/openapi"
@@ -29,14 +31,13 @@ import (
 	genericapiserver "k8s.io/apiserver/pkg/server"
 	"k8s.io/apiserver/pkg/server/filters"
 	serverstorage "k8s.io/apiserver/pkg/server/storage"
-	"k8s.io/apiserver/pkg/storageversion"
 	utilfeature "k8s.io/apiserver/pkg/util/feature"
 	"k8s.io/apiserver/pkg/util/openapi"
 	utilpeerproxy "k8s.io/apiserver/pkg/util/peerproxy"
 	"k8s.io/client-go/informers"
+	coordinationv1informers "k8s.io/client-go/informers/coordination/v1"
 	clientset "k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/transport"
-	"k8s.io/klog/v2"
 	openapicommon "k8s.io/kube-openapi/pkg/common"
 	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	api "k8s.io/kubernetes/pkg/apis/core"
@@ -55,6 +56,14 @@ const (
 	// DefaultPeerEndpointReconcilerTTL is the default TTL timeout for peer endpoint
 	// leases on the storage layer
 	DefaultPeerEndpointReconcilerTTL = 15 * time.Second
+
+	// IdentityLeaseComponentLabelKey is used to apply a component label to identity lease objects, indicating:
+	//   1. the lease is an identity lease (different from leader election leases)
+	//   2. which component owns this lease
+	IdentityLeaseComponentLabelKey = "apiserver.kubernetes.io/identity"
+
+	// KubeAPIServer defines variable used internally when referring to kube-apiserver component
+	KubeAPIServer = "kube-apiserver"
 )
 
 // BuildGenericConfig takes the master server options and produces the genericapiserver.Config associated with it.
@@ -126,7 +135,7 @@ func BuildGenericConfig(
 
 	// wrap the definitions to revert any changes from disabled features
 	getOpenAPIDefinitions = openapi.GetOpenAPIDefinitionsWithoutDisabledFeatures(getOpenAPIDefinitions)
-	//namer := openapinamer.NewDefinitionNamer(legacyscheme.Scheme)
+	// namer := openapinamer.NewDefinitionNamer(legacyscheme.Scheme)
 	namer := openapinamer.NewDefinitionNamer(schemes...)
 	genericConfig.OpenAPIConfig = genericapiserver.DefaultOpenAPIConfig(getOpenAPIDefinitions, namer)
 	genericConfig.OpenAPIConfig.Info.Title = "OneX"
@@ -150,7 +159,6 @@ func BuildGenericConfig(
 	}
 
 	storageFactoryConfig := storage.NewStorageFactoryConfig()
-	storageFactoryConfig.CurrentVersion = genericConfig.EffectiveVersion
 	storageFactoryConfig.APIResourceConfig = genericConfig.MergedResourceConfig
 	storageFactoryConfig.DefaultResourceEncoding.SetEffectiveVersion(genericConfig.EffectiveVersion)
 	storageFactory, lastErr = storageFactoryConfig.Complete(s.RecommendedOptions.Etcd).New()
@@ -192,10 +200,7 @@ func BuildGenericConfig(
 		return
 	}
 
-	if utilfeature.DefaultFeatureGate.Enabled(genericfeatures.AggregatedDiscoveryEndpoint) {
-		genericConfig.AggregatedDiscoveryGroupManager = aggregated.NewResourceManager("apis")
-	}
-
+	genericConfig.AggregatedDiscoveryGroupManager = aggregated.NewResourceManager("apis")
 	return
 }
 
@@ -211,39 +216,43 @@ func CreatePeerEndpointLeaseReconciler(c genericapiserver.Config, storageFactory
 	return reconciler, err
 }
 
-func BuildPeerProxy(versionedInformer informers.SharedInformerFactory, svm storageversion.Manager,
-	proxyClientCertFile string, proxyClientKeyFile string, peerCAFile string, peerAdvertiseAddress reconcilers.PeerAdvertiseAddress,
-	apiServerID string, reconciler reconcilers.PeerEndpointLeaseReconciler, serializer runtime.NegotiatedSerializer) (utilpeerproxy.Interface, error) {
+func BuildPeerProxy(
+	leaseInformer coordinationv1informers.LeaseInformer,
+	loopbackClientConfig *rest.Config,
+	proxyClientCertFile string,
+	proxyClientKeyFile string,
+	peerCAFile string,
+	peerAdvertiseAddress reconcilers.PeerAdvertiseAddress,
+	apiServerID string,
+	reconciler reconcilers.PeerEndpointLeaseReconciler,
+	serializer runtime.NegotiatedSerializer,
+) (utilpeerproxy.Interface, error) {
 	if proxyClientCertFile == "" {
 		return nil, fmt.Errorf("error building peer proxy handler, proxy-cert-file not specified")
 	}
 	if proxyClientKeyFile == "" {
 		return nil, fmt.Errorf("error building peer proxy handler, proxy-key-file not specified")
 	}
-	// create proxy client config
-	clientConfig := &transport.Config{
+
+	proxyClientConfig := &transport.Config{
 		TLS: transport.TLSConfig{
 			Insecure:   false,
 			CertFile:   proxyClientCertFile,
 			KeyFile:    proxyClientKeyFile,
 			CAFile:     peerCAFile,
 			ServerName: "kubernetes.default.svc",
-		}}
-
-	// build proxy transport
-	proxyRoundTripper, transportBuildingError := transport.New(clientConfig)
-	if transportBuildingError != nil {
-		klog.Error(transportBuildingError.Error())
-		return nil, transportBuildingError
+		},
 	}
+
 	return utilpeerproxy.NewPeerProxyHandler(
-		versionedInformer,
-		svm,
-		proxyRoundTripper,
 		apiServerID,
+		IdentityLeaseComponentLabelKey+"="+KubeAPIServer,
+		leaseInformer,
 		reconciler,
 		serializer,
-	), nil
+		loopbackClientConfig,
+		proxyClientConfig,
+	)
 }
 
 func convertVersion(info version.Info) *kversion.Info {

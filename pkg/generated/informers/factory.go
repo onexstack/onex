@@ -15,6 +15,7 @@ import (
 	versioned "github.com/onexstack/onex/pkg/generated/clientset/versioned"
 	apiextensions "github.com/onexstack/onex/pkg/generated/informers/apiextensions"
 	apps "github.com/onexstack/onex/pkg/generated/informers/apps"
+	batch "github.com/onexstack/onex/pkg/generated/informers/batch"
 	coordination "github.com/onexstack/onex/pkg/generated/informers/coordination"
 	core "github.com/onexstack/onex/pkg/generated/informers/core"
 	flowcontrol "github.com/onexstack/onex/pkg/generated/informers/flowcontrol"
@@ -249,6 +250,7 @@ type SharedInformerFactory interface {
 
 	Apiextensions() apiextensions.Interface
 	Apps() apps.Interface
+	Batch() batch.Interface
 	Coordination() coordination.Interface
 	Core() core.Interface
 	Flowcontrol() flowcontrol.Interface
@@ -260,6 +262,10 @@ func (f *sharedInformerFactory) Apiextensions() apiextensions.Interface {
 
 func (f *sharedInformerFactory) Apps() apps.Interface {
 	return apps.New(f, f.namespace, f.tweakListOptions)
+}
+
+func (f *sharedInformerFactory) Batch() batch.Interface {
+	return batch.New(f, f.namespace, f.tweakListOptions)
 }
 
 func (f *sharedInformerFactory) Coordination() coordination.Interface {

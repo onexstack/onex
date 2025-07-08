@@ -12,8 +12,8 @@ import (
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/kubernetes/pkg/api/legacyscheme"
 
-	"github.com/onexstack/onex/internal/controller/miner/apis/config"
-	"github.com/onexstack/onex/internal/controller/miner/apis/config/v1beta1"
+	"github.com/onexstack/onex/internal/controller/job/apis/config"
+	"github.com/onexstack/onex/internal/controller/job/apis/config/v1beta1"
 )
 
 var (

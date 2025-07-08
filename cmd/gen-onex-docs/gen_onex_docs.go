@@ -15,10 +15,8 @@ import (
 
 	apiservapp "github.com/onexstack/onex/cmd/onex-apiserver/app"
 	ctrlmgrapp "github.com/onexstack/onex/cmd/onex-controller-manager/app"
-	//fakeserverapp "github.com/onexstack/onex/cmd/onex-fakeserver/app"
+	// fakeserverapp "github.com/onexstack/onex/cmd/onex-fakeserver/app"
 	gwapp "github.com/onexstack/onex/cmd/onex-gateway/app"
-	minerctrlapp "github.com/onexstack/onex/cmd/onex-miner-controller/app"
-	minersetctrlapp "github.com/onexstack/onex/cmd/onex-minerset-controller/app"
 	watchapp "github.com/onexstack/onex/cmd/onex-nightwatch/app"
 	pumpapp "github.com/onexstack/onex/cmd/onex-pump/app"
 	toyblcapp "github.com/onexstack/onex/cmd/onex-toyblc/app"
@@ -78,14 +76,6 @@ func main() {
 		// generate docs for onex-controller-manager
 		ctrlmgr := ctrlmgrapp.NewControllerManagerCommand()
 		_ = doc.GenMarkdownTree(ctrlmgr, outDir)
-	case "onex-minerset-controller":
-		// generate docs for onex-minerset-controller
-		minersetctrl := minersetctrlapp.NewControllerCommand()
-		_ = doc.GenMarkdownTree(minersetctrl, outDir)
-	case "onex-miner-controller":
-		// generate docs for onex-miner-controller
-		minerctrl := minerctrlapp.NewControllerCommand()
-		_ = doc.GenMarkdownTree(minerctrl, outDir)
 	case "onexctl":
 		// generate docs for onexctl
 		onexctl := onexctlcmd.NewDefaultOneXCtlCommand()

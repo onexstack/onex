@@ -7,32 +7,18 @@
 package validation
 
 import (
+	genericvalidation "github.com/onexstack/onex/pkg/config/validation"
 	"k8s.io/apimachinery/pkg/util/validation/field"
-	utilfeature "k8s.io/apiserver/pkg/util/feature"
 	componentbasevalidation "k8s.io/component-base/config/validation"
 
-	"github.com/onexstack/onex/internal/controller/miner/apis/config"
-	"github.com/onexstack/onex/internal/pkg/util/validation"
+	"github.com/onexstack/onex/internal/controller/job/apis/config"
 )
 
-// Validate ensures validation of the MinerControllerConfiguration struct.
-func Validate(cc *config.MinerControllerConfiguration) field.ErrorList {
+// Validate ensures validation of the JobControllerConfiguration struct.
+func Validate(cc *config.JobControllerConfiguration) field.ErrorList {
 	allErrs := field.ErrorList{}
-	newPath := field.NewPath("MinerControllerConfiguration")
-
-	effectiveFeatures := utilfeature.DefaultFeatureGate.DeepCopy()
-	if err := effectiveFeatures.SetFromMap(cc.FeatureGates); err != nil {
-		allErrs = append(allErrs, field.Invalid(newPath.Child("featureGates"), cc.FeatureGates, err.Error()))
-	}
-	allErrs = append(allErrs, componentbasevalidation.ValidateLeaderElectionConfiguration(&cc.LeaderElection, field.NewPath("leaderElection"))...)
-
-	if cc.HealthzBindAddress != "" {
-		allErrs = append(allErrs, validation.ValidateHostPort(cc.HealthzBindAddress, newPath.Child("healthzBindAddress"))...)
-	}
-
-	if cc.MetricsBindAddress != "" {
-		allErrs = append(allErrs, validation.ValidateHostPort(cc.MetricsBindAddress, newPath.Child("metricsBindAddress"))...)
-	}
+	allErrs = append(allErrs, componentbasevalidation.ValidateLeaderElectionConfiguration(&cc.Generic.LeaderElection, field.NewPath("generic", "leaderElection"))...)
+	allErrs = append(allErrs, genericvalidation.ValidateGenericControllerManagerConfiguration(&cc.Generic, field.NewPath("generic"))...)
 
 	return allErrs
 }

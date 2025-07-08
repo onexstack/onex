@@ -12,7 +12,7 @@ import (
 )
 
 // GroupName is the group name used in this package.
-const GroupName = "minercontroller.config.onex.io"
+const GroupName = "jobcontroller.config.onex.io"
 
 // SchemeGroupVersion is group version used to register these objects.
 var SchemeGroupVersion = schema.GroupVersion{Group: GroupName, Version: "v1beta1"}
@@ -29,7 +29,7 @@ var (
 // addKnownTypes registers known types to the given scheme.
 func addKnownTypes(scheme *runtime.Scheme) error {
 	scheme.AddKnownTypes(SchemeGroupVersion,
-		&MinerControllerConfiguration{},
+		&JobControllerConfiguration{},
 	)
 	return nil
 }

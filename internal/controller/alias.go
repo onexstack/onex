@@ -11,20 +11,17 @@ import (
 
 	"github.com/redis/go-redis/v9"
 	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/metadata"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/cluster"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 
 	"github.com/onexstack/onex/internal/controller/apis/config"
-	chaincontroller "github.com/onexstack/onex/internal/controller/chain"
-	minercontroller "github.com/onexstack/onex/internal/controller/miner"
-	minerconfig "github.com/onexstack/onex/internal/controller/miner/apis/config"
-	minersetcontroller "github.com/onexstack/onex/internal/controller/minerset"
-	namespacecontroller "github.com/onexstack/onex/internal/controller/namespace"
-	synccontroller "github.com/onexstack/onex/internal/controller/sync"
+	"github.com/onexstack/onex/internal/controller/blockchain/apis/config"
+	chaincontroller "github.com/onexstack/onex/internal/controller/blockchain/chain"
+	minercontroller "github.com/onexstack/onex/internal/controller/blockchain/miner"
+	minersetcontroller "github.com/onexstack/onex/internal/controller/blockchain/minerset"
+	synccontroller "github.com/onexstack/onex/internal/controller/blockchain/sync"
 	"github.com/onexstack/onex/internal/gateway/store"
-	clientset "github.com/onexstack/onex/pkg/generated/clientset/versioned"
 )
 
 // Following types provides access to reconcilers implemented in internal/controller, thus
@@ -51,7 +48,7 @@ type MinerReconciler struct {
 	ProviderClient  kubernetes.Interface
 	ProviderCluster cluster.Cluster
 	RedisClient     *redis.Client
-	ComponentConfig *minerconfig.MinerControllerConfiguration
+	ComponentConfig *config.BlockchainControllerConfiguration
 
 	// WatchFilterValue is the label value used to filter events prior to reconciliation.
 	WatchFilterValue string

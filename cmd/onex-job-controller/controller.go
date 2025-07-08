@@ -17,7 +17,7 @@ import (
 	_ "k8s.io/component-base/metrics/prometheus/clientgo" // load all the prometheus client-go plugin
 	_ "k8s.io/component-base/metrics/prometheus/version"  // for version metric registration
 
-	"github.com/onexstack/onex/cmd/onex-miner-controller/app"
+	"github.com/onexstack/onex/cmd/onex-job-controller/app"
 )
 
 func main() {

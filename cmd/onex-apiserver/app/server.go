@@ -28,8 +28,10 @@ import (
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/apiserver/pkg/admission"
 	genericapifilters "k8s.io/apiserver/pkg/endpoints/filters"
+	"k8s.io/apiserver/pkg/reconcilers"
 	genericapiserver "k8s.io/apiserver/pkg/server"
 	genericoptions "k8s.io/apiserver/pkg/server/options"
+	serverstorage "k8s.io/apiserver/pkg/server/storage"
 	"k8s.io/apiserver/pkg/storage/storagebackend"
 	utilfeature "k8s.io/apiserver/pkg/util/feature"
 	"k8s.io/apiserver/pkg/util/notfoundhandler"
@@ -46,10 +48,12 @@ import (
 	aggregatorscheme "k8s.io/kube-aggregator/pkg/apiserver/scheme"
 	"k8s.io/kube-openapi/pkg/common"
 	"k8s.io/kubernetes/pkg/api/legacyscheme"
+	api "k8s.io/kubernetes/pkg/apis/core"
 	"k8s.io/kubernetes/pkg/features"
 
 	"github.com/onexstack/onex/cmd/onex-apiserver/app/options"
 	"github.com/onexstack/onex/internal/controlplane"
+	"github.com/onexstack/onex/internal/controlplane/apiserver"
 	controlplaneapiserver "github.com/onexstack/onex/internal/controlplane/apiserver"
 	"github.com/onexstack/onex/pkg/apiserver/storage"
 	"github.com/onexstack/onexstack/pkg/version"
@@ -59,8 +63,10 @@ func init() {
 	utilruntime.Must(logsapi.AddFeatureGates(utilfeature.DefaultMutableFeatureGate))
 }
 
-type Option func(*options.ServerRunOptions)
-type RegisterFunc func(plugins *admission.Plugins)
+type (
+	Option       func(*options.ServerRunOptions)
+	RegisterFunc func(plugins *admission.Plugins)
+)
 
 // WithLegacyCode returns an Option that sets the external group versions in the ServerRunOptions.
 func WithEtcdOptions(prefix string, versions ...schema.GroupVersion) Option {
@@ -109,13 +115,6 @@ func WithAdmissionInitializers(initializer func(c *genericapiserver.RecommendedC
 func WithPostStartHook(name string, hook genericapiserver.PostStartHookFunc) Option {
 	return func(s *options.ServerRunOptions) {
 		s.ExternalPostStartHooks[name] = hook
-	}
-}
-
-// WithSharedInformerFactory returns an Option function that sets the external SharedInformerFactory in the ServerRunOptions.
-func WithSharedInformerFactory(informers controlplane.ExternalSharedInformerFactory) Option {
-	return func(s *options.ServerRunOptions) {
-		s.ExternalVersionedInformers = informers
 	}
 }
 
@@ -238,7 +237,7 @@ func Run(ctx context.Context, opts options.CompletedOptions) error {
 
 // CreateServerChain creates the apiservers connected via delegation.
 func CreateServerChain(config CompletedConfig) (*aggregatorapiserver.APIAggregator, error) {
-	notFoundHandler := notfoundhandler.New(config.KubeAPIs.GenericConfig.Serializer, genericapifilters.NoMuxAndDiscoveryIncompleteKey)
+	notFoundHandler := notfoundhandler.New(config.KubeAPIs.Generic.Serializer, genericapifilters.NoMuxAndDiscoveryIncompleteKey)
 	apiExtensionsServer, err := config.ApiExtensions.New(genericapiserver.NewEmptyDelegateWithCustomHandler(notFoundHandler))
 	if err != nil {
 		return nil, err
@@ -292,43 +291,41 @@ func CreateOneXAPIServerConfig(opts options.CompletedOptions) (
 	opts.Metrics.Apply()
 
 	config := &controlplane.Config{
-		GenericConfig: genericConfig,
-		ExtraConfig: controlplane.ExtraConfig{
+		Generic: genericConfig,
+		Extra: controlplane.Extra{
 			APIResourceConfigSource: storageFactory.APIResourceConfigSource,
 			StorageFactory:          storageFactory,
 			EventTTL:                opts.EventTTL,
 			EnableLogsSupport:       opts.EnableLogsHandler,
 			ProxyTransport:          proxyTransport,
-			//ExternalGroupResources: opts.ExternalGroupResources,
+			// ExternalGroupResources: opts.ExternalGroupResources,
 			ExternalRESTStorageProviders: opts.ExternalRESTStorageProviders,
 			MasterCount:                  opts.MasterCount,
-			//VersionedInformers:           opts.SharedInformerFactory,
+			// VersionedInformers:           opts.SharedInformerFactory,
 			// Here we will use the config file of "onex" to create a client-go informers.
-			//KubeVersionedInformers:     kubeSharedInformers,
+			// KubeVersionedInformers:     kubeSharedInformers,
 			InternalVersionedInformers: opts.InternalVersionedInformers,
-			ExternalVersionedInformers: opts.ExternalVersionedInformers,
 			ExternalPostStartHooks:     opts.ExternalPostStartHooks,
 		},
 	}
 
 	if utilfeature.DefaultFeatureGate.Enabled(features.UnknownVersionInteroperabilityProxy) {
-		config.ExtraConfig.PeerEndpointLeaseReconciler, err = controlplaneapiserver.CreatePeerEndpointLeaseReconciler(genericConfig.Config, storageFactory)
+		var err error
+		config.PeerEndpointLeaseReconciler, err = CreatePeerEndpointLeaseReconciler(*genericConfig, storageFactory)
 		if err != nil {
 			return nil, nil, err
 		}
-		// build peer proxy config only if peer ca file exists
 		if opts.PeerCAFile != "" {
-			config.ExtraConfig.PeerProxy, err = controlplaneapiserver.BuildPeerProxy(
-				kubeSharedInformers,
-				genericConfig.StorageVersionManager,
+			leaseInformer := kubeSharedInformers.Coordination().V1().Leases()
+			config.PeerProxy, err = apiserver.BuildPeerProxy(
+				leaseInformer,
+				genericConfig.LoopbackClientConfig,
 				opts.ProxyClientCertFile,
-				opts.ProxyClientKeyFile,
-				opts.PeerCAFile,
+				opts.ProxyClientKeyFile, opts.PeerCAFile,
 				opts.PeerAdvertiseAddress,
 				genericConfig.APIServerID,
-				config.ExtraConfig.PeerEndpointLeaseReconciler,
-				config.GenericConfig.Serializer,
-			)
+				config.Extra.PeerEndpointLeaseReconciler,
+				config.Generic.Serializer)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -384,4 +381,16 @@ func buildServiceResolver(enabledAggregatorRouting bool, hostname string, inform
 		serviceResolver = aggregatorapiserver.NewLoopbackServiceResolver(serviceResolver, localHost)
 	}
 	return serviceResolver
+}
+
+// CreatePeerEndpointLeaseReconciler creates a apiserver endpoint lease reconciliation loop
+// The peer endpoint leases are used to find network locations of apiservers for peer proxy
+func CreatePeerEndpointLeaseReconciler(c genericapiserver.RecommendedConfig, storageFactory serverstorage.StorageFactory) (reconcilers.PeerEndpointLeaseReconciler, error) {
+	ttl := apiserver.DefaultPeerEndpointReconcilerTTL
+	config, err := storageFactory.NewConfig(api.Resource("apiServerPeerIPInfo"), &api.Endpoints{})
+	if err != nil {
+		return nil, fmt.Errorf("error creating storage factory config: %w", err)
+	}
+	reconciler, err := reconcilers.NewPeerEndpointLeaseReconciler(config, "/peerserverleases/", ttl)
+	return reconciler, err
 }

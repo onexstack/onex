@@ -18,12 +18,10 @@ import (
 // Public to allow building arbitrary schemes.
 // All generated defaulters are covering - they call all nested defaulters.
 func RegisterDefaults(scheme *runtime.Scheme) error {
-	scheme.AddTypeDefaultingFunc(&MinerControllerConfiguration{}, func(obj interface{}) {
-		SetObjectDefaults_MinerControllerConfiguration(obj.(*MinerControllerConfiguration))
-	})
+	scheme.AddTypeDefaultingFunc(&JobControllerConfiguration{}, func(obj interface{}) { SetObjectDefaults_JobControllerConfiguration(obj.(*JobControllerConfiguration)) })
 	return nil
 }
 
-func SetObjectDefaults_MinerControllerConfiguration(in *MinerControllerConfiguration) {
-	SetDefaults_MinerControllerConfiguration(in)
+func SetObjectDefaults_JobControllerConfiguration(in *JobControllerConfiguration) {
+	SetDefaults_JobControllerConfiguration(in)
 }

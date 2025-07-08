@@ -43,10 +43,5 @@ package names
 //  4. defining a new service account for a new controller (old controllers may have inconsistent service accounts to stay backwards compatible)
 const (
 	GarbageCollectorController           = "garbage-collector-controller"
-	NamespacedResourcesDeleterController = "namespaced-resource-deleter"
-	ChainController                      = "chain-controller"
-	ChainSyncController                  = "chain-sync-controller"
-	MinerSetSyncController               = "minerset-sync-controller"
-	MinerSyncController                  = "miner-sync-controller"
-	ResourceCleanController              = "resource-clean-controller"
+	NamespacedResourcesDeleterController = "namespaced-resource-deleter-controller"
 )

@@ -9,6 +9,7 @@ package scheme
 
 import (
 	appsv1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
+	batchv1beta1 "github.com/onexstack/onex/pkg/apis/batch/v1beta1"
 	coordinationv1 "k8s.io/api/coordination/v1"
 	corev1 "k8s.io/api/core/v1"
 	flowcontrolv1 "k8s.io/api/flowcontrol/v1"
@@ -26,6 +27,7 @@ var ParameterCodec = runtime.NewParameterCodec(Scheme)
 var localSchemeBuilder = runtime.SchemeBuilder{
 	apiextensionsv1.AddToScheme,
 	appsv1beta1.AddToScheme,
+	batchv1beta1.AddToScheme,
 	coordinationv1.AddToScheme,
 	corev1.AddToScheme,
 	flowcontrolv1.AddToScheme,

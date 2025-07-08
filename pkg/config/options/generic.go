@@ -8,11 +8,12 @@ package options
 
 import (
 	"fmt"
+	"strings"
+
 	"k8s.io/apimachinery/pkg/util/sets"
 	cliflag "k8s.io/component-base/cli/flag"
 	"k8s.io/component-base/config/options"
 	utilflag "k8s.io/kubernetes/pkg/util/flag"
-	"strings"
 
 	genericconfig "github.com/onexstack/onex/pkg/config"
 )
@@ -90,6 +91,7 @@ func (o *GenericControllerManagerConfigurationOptions) ApplyTo(
 		}
 		cfg.Controllers[i] = controllerName
 	}
+	fmt.Println("111111111111111111111111-999", cfg.Controllers)
 
 	return nil
 }

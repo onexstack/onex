@@ -7,24 +7,24 @@
 package latest
 
 import (
-	"github.com/onexstack/onex/internal/controller/miner/apis/config"
-	"github.com/onexstack/onex/internal/controller/miner/apis/config/scheme"
-	"github.com/onexstack/onex/internal/controller/miner/apis/config/v1beta1"
+	"github.com/onexstack/onex/internal/controller/job/apis/config"
+	"github.com/onexstack/onex/internal/controller/job/apis/config/scheme"
+	"github.com/onexstack/onex/internal/controller/job/apis/config/v1beta1"
 )
 
 // Default creates a default configuration of the latest versioned type.
-// This function needs to be updated whenever we bump the miner controller's component config version.
-func Default() (*config.MinerControllerConfiguration, error) {
-	versionedCfg := v1beta1.MinerControllerConfiguration{}
+// This function needs to be updated whenever we bump the job controller's component config version.
+func Default() (*config.JobControllerConfiguration, error) {
+	versionedCfg := v1beta1.JobControllerConfiguration{}
 
 	scheme.Scheme.Default(&versionedCfg)
-	cfg := config.MinerControllerConfiguration{}
+	cfg := config.JobControllerConfiguration{}
 	if err := scheme.Scheme.Convert(&versionedCfg, &cfg, nil); err != nil {
 		return nil, err
 	}
-	// We don't set this field in internal/controller/miner/apis/config/{version}/conversion.go
+	// We don't set this field in internal/controller/job/apis/config/{version}/conversion.go
 	// because the field will be cleared later by API machinery during
-	// conversion. See MinerControllerConfiguration internal type definition for
+	// conversion. See JobControllerConfiguration internal type definition for
 	// more details.
 	cfg.TypeMeta.APIVersion = v1beta1.SchemeGroupVersion.String()
 	return &cfg, nil

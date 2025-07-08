@@ -9,7 +9,6 @@ package controlplane
 import (
 	"fmt"
 	"net/http"
-	"reflect"
 	"time"
 
 	coordinationv1 "k8s.io/api/coordination/v1"
@@ -53,17 +52,8 @@ const (
 	repairLoopInterval = 3 * time.Minute
 )
 
-type ExternalSharedInformerFactory interface {
-	// Start initializes all requested informers. They are handled in goroutines
-	// which run until the stop channel gets closed.
-	Start(stopCh <-chan struct{})
-	// WaitForCacheSync blocks until all started informers' caches were synced
-	// or the stop channel gets closed.
-	WaitForCacheSync(stopCh <-chan struct{}) map[reflect.Type]bool
-}
-
-// ExtraConfig defines extra configuration for the onex-apiserver.
-type ExtraConfig struct {
+// Extra defines extra configuration for the onex-apiserver.
+type Extra struct {
 	// Place you custom config here.
 	APIResourceConfigSource serverstorage.APIResourceConfigSource
 	StorageFactory          serverstorage.StorageFactory
@@ -79,27 +69,26 @@ type ExtraConfig struct {
 
 	// For external resources and rest storage providers.
 	ExternalRESTStorageProviders []storage.RESTStorageProvider
-	//ExternalGroupResources       []schema.GroupResource
+	// ExternalGroupResources       []schema.GroupResource
 
 	// Number of masters running; all masters must be started with the
 	// same value for this field. (Numbers > 1 currently untested.)
 	MasterCount int
 
-	//KubeVersionedInformers     kubeinformers.SharedInformerFactory
+	// KubeVersionedInformers     kubeinformers.SharedInformerFactory
 	InternalVersionedInformers kubeinformers.SharedInformerFactory
-	ExternalVersionedInformers ExternalSharedInformerFactory
 	ExternalPostStartHooks     map[string]genericapiserver.PostStartHookFunc
 }
 
 // Config defines configuration for the onex-apiserver.
 type Config struct {
-	GenericConfig *genericapiserver.RecommendedConfig
-	ExtraConfig   ExtraConfig
+	Generic *genericapiserver.RecommendedConfig
+	Extra
 }
 
 type completedConfig struct {
-	GenericConfig genericapiserver.CompletedConfig
-	ExtraConfig   ExtraConfig
+	Generic genericapiserver.CompletedConfig
+	*Extra
 }
 
 // CompletedConfig embeds a private pointer that cannot be instantiated outside of this package.
@@ -110,33 +99,36 @@ type CompletedConfig struct {
 // Instance contains state for a onex-apiserver instance.
 type Instance struct {
 	GenericAPIServer *genericapiserver.GenericAPIServer
+
+	APIResourceConfigSource serverstorage.APIResourceConfigSource
 }
 
 // Complete fills in any fields not set that are required to have valid data. It's mutating the receiver.
 func (c *Config) Complete() CompletedConfig {
 	return CompletedConfig{&completedConfig{
-		GenericConfig: c.GenericConfig.Complete(),
-		ExtraConfig:   c.ExtraConfig,
+		Generic: c.Generic.Complete(),
+		Extra:   &c.Extra,
 	}}
 }
 
 // New returns a new instance of APIServer from the given config.
 // Certain config fields will be set to a default value if unset.
 func (c completedConfig) New(delegationTarget genericapiserver.DelegationTarget) (*Instance, error) {
-	s, err := c.GenericConfig.New("onex-apiserver", delegationTarget)
+	s, err := c.Generic.New("onex-apiserver", delegationTarget)
 	if err != nil {
 		return nil, err
 	}
 
-	if c.ExtraConfig.EnableLogsSupport {
+	if c.EnableLogsSupport {
 		routes.Logs{}.Install(s.Handler.GoRestfulContainer)
 	}
 
 	m := &Instance{
-		GenericAPIServer: s,
+		GenericAPIServer:        s,
+		APIResourceConfigSource: c.APIResourceConfigSource,
 	}
 
-	clientset, err := clientset.NewForConfig(c.GenericConfig.LoopbackClientConfig)
+	clientset, err := clientset.NewForConfig(c.Generic.LoopbackClientConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -144,7 +136,7 @@ func (c completedConfig) New(delegationTarget genericapiserver.DelegationTarget)
 	// Install onex legacy rest storage
 	// This part of the code is different from kube-apiserver because
 	// we do not need to install all kube-apiserver legacy APIs.
-	if err := m.InstallLegacyAPI(&c, c.GenericConfig.RESTOptionsGetter); err != nil {
+	if err := m.InstallLegacyAPI(&c, c.Generic.RESTOptionsGetter); err != nil {
 		return nil, err
 	}
 
@@ -158,15 +150,15 @@ func (c completedConfig) New(delegationTarget genericapiserver.DelegationTarget)
 	restStorageProviders := []storage.RESTStorageProvider{
 		// &admissionrest.StorageProvider{LoopbackClientConfig: c.GenericConfig.LoopbackClientConfig},
 		coordinationrest.RESTStorageProvider{},
-		flowcontrolrest.RESTStorageProvider{InformerFactory: c.ExtraConfig.InternalVersionedInformers},
+		flowcontrolrest.RESTStorageProvider{InformerFactory: c.InternalVersionedInformers},
 	}
-	restStorageProviders = append(restStorageProviders, c.ExtraConfig.ExternalRESTStorageProviders...)
-	if err := m.InstallAPIs(c.ExtraConfig.APIResourceConfigSource, c.GenericConfig.RESTOptionsGetter, restStorageProviders...); err != nil {
+	restStorageProviders = append(restStorageProviders, c.ExternalRESTStorageProviders...)
+	if err := m.InstallAPIs(c.APIResourceConfigSource, c.Generic.RESTOptionsGetter, restStorageProviders...); err != nil {
 		return nil, err
 	}
 
 	m.GenericAPIServer.AddPostStartHookOrDie("start-system-namespaces-controller", func(hookContext genericapiserver.PostStartHookContext) error {
-		go systemnamespaces.NewController(clientset, c.ExtraConfig.InternalVersionedInformers.Core().V1().Namespaces()).Run(hookContext.Done())
+		go systemnamespaces.NewController(clientset, c.InternalVersionedInformers.Core().V1().Namespaces()).Run(hookContext.Done())
 		return nil
 	})
 
@@ -178,30 +170,24 @@ func (c completedConfig) New(delegationTarget genericapiserver.DelegationTarget)
 		"start-internal-informers",
 		func(context genericapiserver.PostStartHookContext) error {
 			// remove dependence with kube-apiserver
-			//c.ExtraConfig.KubeVersionedInformers.Start(context.StopCh)
-			c.ExtraConfig.InternalVersionedInformers.Start(context.Done())
+			// c.KubeVersionedInformers.Start(context.StopCh)
+			c.InternalVersionedInformers.Start(context.Done())
 			return nil
 		},
 	)
 
-	m.GenericAPIServer.AddPostStartHookOrDie(
-		"start-external-informers",
-		func(context genericapiserver.PostStartHookContext) error {
-			if c.ExtraConfig.ExternalVersionedInformers != nil {
-				c.ExtraConfig.ExternalVersionedInformers.Start(context.Done())
-			}
-			return nil
-		},
-	)
+	for name, hook := range c.ExternalPostStartHooks {
+		m.GenericAPIServer.AddPostStartHookOrDie(name, hook)
+	}
 
 	if utilfeature.DefaultFeatureGate.Enabled(apiserverfeatures.APIServerIdentity) {
 		// put some post start hook here
 		// refer to: https://github.com/kubernetes/kubernetes/blob/v1.29.3/pkg/controlplane/instance.go#L515
 	}
 	// Add PostStartHooks for Unknown Version Proxy filter.
-	if c.ExtraConfig.PeerProxy != nil {
-		c.GenericConfig.AddPostStartHookOrDie("unknown-version-proxy-filter", func(context genericapiserver.PostStartHookContext) error {
-			err := c.ExtraConfig.PeerProxy.WaitForCacheSync(context.Done())
+	if c.PeerProxy != nil {
+		c.Generic.AddPostStartHookOrDie("unknown-version-proxy-filter", func(context genericapiserver.PostStartHookContext) error {
+			err := c.PeerProxy.WaitForCacheSync(context.Done())
 			return err
 		})
 	}
@@ -214,11 +200,11 @@ func (m *Instance) InstallLegacyAPI(c *completedConfig, restOptionsGetter generi
 	// This is different from the implementation of kube-apiserver, where we directly configure the
 	// LegacyRESTStorageProvider field. Although it's a bit heavy-handed, it's definitely more convenient.
 	legacyRESTStorageProvider := corerest.LegacyRESTStorageProvider{
-		EventTTL: c.ExtraConfig.EventTTL,
+		EventTTL: c.EventTTL,
 		// If necessary in the future, you can uncomment the following comment codes
-		// StorageFactory:       c.ExtraConfig.StorageFactory,
+		// StorageFactory:       c.StorageFactory,
 		// LoopbackClientConfig: c.GenericConfig.LoopbackClientConfig,
-		// Informers:            c.ExtraConfig.VersionedInformers,
+		// Informers:            c.VersionedInformers,
 	}
 
 	apiGroupInfo, err := legacyRESTStorageProvider.NewLegacyRESTStorage(restOptionsGetter)
@@ -267,10 +253,13 @@ func (m *Instance) InstallAPIs(
 			continue
 		}
 
-		// Remove resources that serving kinds that are removed.
+		// Remove resources that serving kinds that are removed or not introduced yet at the current version.
 		// We do this here so that we don't accidentally serve versions without resources or openapi information that for kinds we don't serve.
 		// This is a spot above the construction of individual storage handlers so that no sig accidentally forgets to check.
-		resourceExpirationEvaluator.RemoveDeletedKinds(groupName, apiGroupInfo.Scheme, apiGroupInfo.VersionedResourcesStorageMap)
+		err = resourceExpirationEvaluator.RemoveUnavailableKinds(groupName, apiGroupInfo.Scheme, apiGroupInfo.VersionedResourcesStorageMap, m.APIResourceConfigSource)
+		if err != nil {
+			return err
+		}
 		if len(apiGroupInfo.VersionedResourcesStorageMap) == 0 {
 			klog.V(1).Infof("Removing API group %v because it is time to stop serving it because it has no versions per APILifecycle.", groupName)
 			continue

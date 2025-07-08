@@ -9,9 +9,11 @@ package applyconfigurations
 
 import (
 	v1beta1 "github.com/onexstack/onex/pkg/apis/apps/v1beta1"
+	batchv1beta1 "github.com/onexstack/onex/pkg/apis/batch/v1beta1"
 	apiextensionsv1 "github.com/onexstack/onex/pkg/generated/applyconfigurations/apiextensions/v1"
 	appsv1beta1 "github.com/onexstack/onex/pkg/generated/applyconfigurations/apps/v1beta1"
 	applyconfigurationsautoscalingv1 "github.com/onexstack/onex/pkg/generated/applyconfigurations/autoscaling/v1"
+	applyconfigurationsbatchv1beta1 "github.com/onexstack/onex/pkg/generated/applyconfigurations/batch/v1beta1"
 	applyconfigurationscoordinationv1 "github.com/onexstack/onex/pkg/generated/applyconfigurations/coordination/v1"
 	applyconfigurationscorev1 "github.com/onexstack/onex/pkg/generated/applyconfigurations/core/v1"
 	applyconfigurationsflowcontrolv1 "github.com/onexstack/onex/pkg/generated/applyconfigurations/flowcontrol/v1"
@@ -122,6 +124,26 @@ func ForKind(kind schema.GroupVersionKind) interface{} {
 		return &applyconfigurationsautoscalingv1.ScaleSpecApplyConfiguration{}
 	case autoscalingv1.SchemeGroupVersion.WithKind("ScaleStatus"):
 		return &applyconfigurationsautoscalingv1.ScaleStatusApplyConfiguration{}
+
+		// Group=batch.onex.io, Version=v1beta1
+	case batchv1beta1.SchemeGroupVersion.WithKind("CronJob"):
+		return &applyconfigurationsbatchv1beta1.CronJobApplyConfiguration{}
+	case batchv1beta1.SchemeGroupVersion.WithKind("CronJobSpec"):
+		return &applyconfigurationsbatchv1beta1.CronJobSpecApplyConfiguration{}
+	case batchv1beta1.SchemeGroupVersion.WithKind("CronJobStatus"):
+		return &applyconfigurationsbatchv1beta1.CronJobStatusApplyConfiguration{}
+	case batchv1beta1.SchemeGroupVersion.WithKind("Job"):
+		return &applyconfigurationsbatchv1beta1.JobApplyConfiguration{}
+	case batchv1beta1.SchemeGroupVersion.WithKind("JobCondition"):
+		return &applyconfigurationsbatchv1beta1.JobConditionApplyConfiguration{}
+	case batchv1beta1.SchemeGroupVersion.WithKind("JobSpec"):
+		return &applyconfigurationsbatchv1beta1.JobSpecApplyConfiguration{}
+	case batchv1beta1.SchemeGroupVersion.WithKind("JobStatus"):
+		return &applyconfigurationsbatchv1beta1.JobStatusApplyConfiguration{}
+	case batchv1beta1.SchemeGroupVersion.WithKind("JobTemplateSpec"):
+		return &applyconfigurationsbatchv1beta1.JobTemplateSpecApplyConfiguration{}
+	case batchv1beta1.SchemeGroupVersion.WithKind("ProviderSpec"):
+		return &applyconfigurationsbatchv1beta1.ProviderSpecApplyConfiguration{}
 
 		// Group=coordination.k8s.io, Version=v1
 	case coordinationv1.SchemeGroupVersion.WithKind("Lease"):
@@ -334,6 +356,8 @@ func ForKind(kind schema.GroupVersionKind) interface{} {
 		return &applyconfigurationscorev1.NodeSpecApplyConfiguration{}
 	case corev1.SchemeGroupVersion.WithKind("NodeStatus"):
 		return &applyconfigurationscorev1.NodeStatusApplyConfiguration{}
+	case corev1.SchemeGroupVersion.WithKind("NodeSwapStatus"):
+		return &applyconfigurationscorev1.NodeSwapStatusApplyConfiguration{}
 	case corev1.SchemeGroupVersion.WithKind("NodeSystemInfo"):
 		return &applyconfigurationscorev1.NodeSystemInfoApplyConfiguration{}
 	case corev1.SchemeGroupVersion.WithKind("ObjectFieldSelector"):

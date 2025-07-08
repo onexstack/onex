@@ -16,12 +16,12 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/klog/v2"
 
-	"github.com/onexstack/onex/internal/controller/miner/apis/config"
-	"github.com/onexstack/onex/internal/controller/miner/apis/config/scheme"
-	configv1beta1 "github.com/onexstack/onex/internal/controller/miner/apis/config/v1beta1"
+	"github.com/onexstack/onex/internal/controller/job/apis/config"
+	"github.com/onexstack/onex/internal/controller/job/apis/config/scheme"
+	configv1beta1 "github.com/onexstack/onex/internal/controller/job/apis/config/v1beta1"
 )
 
-func LoadConfigFromFile(file string) (*config.MinerControllerConfiguration, error) {
+func LoadConfigFromFile(file string) (*config.JobControllerConfiguration, error) {
 	data, err := os.ReadFile(file)
 	if err != nil {
 		return nil, err
@@ -30,25 +30,25 @@ func LoadConfigFromFile(file string) (*config.MinerControllerConfiguration, erro
 	return loadConfig(data)
 }
 
-func loadConfig(data []byte) (*config.MinerControllerConfiguration, error) {
+func loadConfig(data []byte) (*config.JobControllerConfiguration, error) {
 	// The UniversalDecoder runs defaulting and returns the internal type by default.
 	obj, gvk, err := scheme.Codecs.UniversalDecoder().Decode(data, nil, nil)
 	if err != nil {
 		return nil, err
 	}
-	if cfgObj, ok := obj.(*config.MinerControllerConfiguration); ok {
+	if cfgObj, ok := obj.(*config.JobControllerConfiguration); ok {
 		// We don't set this field in pkg/scheduler/apis/config/{version}/conversion.go
 		// because the field will be cleared later by API machinery during
-		// conversion. See MinerControllerConfiguration internal type definition for
+		// conversion. See JobControllerConfiguration internal type definition for
 		// more details.
 		cfgObj.TypeMeta.APIVersion = gvk.GroupVersion().String()
 		return cfgObj, nil
 	}
-	return nil, fmt.Errorf("couldn't decode as MinerControllerConfiguration, got %s: ", gvk)
+	return nil, fmt.Errorf("couldn't decode as JobControllerConfiguration, got %s: ", gvk)
 }
 
 // LogOrWriteConfig logs the completed component config and writes it into the given file name as YAML, if either is enabled.
-func LogOrWriteConfig(fileName string, cfg *config.MinerControllerConfiguration) error {
+func LogOrWriteConfig(fileName string, cfg *config.JobControllerConfiguration) error {
 	if !(klog.V(2).Enabled() || len(fileName) > 0) {
 		return nil
 	}
@@ -81,7 +81,7 @@ func LogOrWriteConfig(fileName string, cfg *config.MinerControllerConfiguration)
 	return nil
 }
 
-func encodeConfig(cfg *config.MinerControllerConfiguration) (*bytes.Buffer, error) {
+func encodeConfig(cfg *config.JobControllerConfiguration) (*bytes.Buffer, error) {
 	buf := new(bytes.Buffer)
 	const mediaType = runtime.ContentTypeYAML
 	info, ok := runtime.SerializerInfoForMediaType(scheme.Codecs.SupportedMediaTypes(), mediaType)

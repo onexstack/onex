@@ -8,8 +8,8 @@
 package internal
 
 import (
-	"fmt"
-	"sync"
+	fmt "fmt"
+	sync "sync"
 
 	typed "sigs.k8s.io/structured-merge-diff/v4/typed"
 )
@@ -59,6 +59,26 @@ var schemaYAML = typed.YAMLObject(`types:
       namedType: __untyped_deduced_
     elementRelationship: separable
 - name: com.github.onexstack.onex.pkg.apis.apps.v1beta1.MinerSet
+  scalar: untyped
+  list:
+    elementType:
+      namedType: __untyped_atomic_
+    elementRelationship: atomic
+  map:
+    elementType:
+      namedType: __untyped_deduced_
+    elementRelationship: separable
+- name: com.github.onexstack.onex.pkg.apis.batch.v1beta1.CronJob
+  scalar: untyped
+  list:
+    elementType:
+      namedType: __untyped_atomic_
+    elementRelationship: atomic
+  map:
+    elementType:
+      namedType: __untyped_deduced_
+    elementRelationship: separable
+- name: com.github.onexstack.onex.pkg.apis.batch.v1beta1.Job
   scalar: untyped
   list:
     elementType:
@@ -173,9 +193,15 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: leaseTransitions
       type:
         scalar: numeric
+    - name: preferredHolder
+      type:
+        scalar: string
     - name: renewTime
       type:
         namedType: io.k8s.apimachinery.pkg.apis.meta.v1.MicroTime
+    - name: strategy
+      type:
+        scalar: string
 - name: io.k8s.api.core.v1.AWSElasticBlockStoreVolumeSource
   map:
     fields:
@@ -236,6 +262,7 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: cachingMode
       type:
         scalar: string
+      default: ReadWrite
     - name: diskName
       type:
         scalar: string
@@ -247,12 +274,15 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: fsType
       type:
         scalar: string
+      default: ext4
     - name: kind
       type:
         scalar: string
+      default: Shared
     - name: readOnly
       type:
         scalar: boolean
+      default: false
 - name: io.k8s.api.core.v1.AzureFilePersistentVolumeSource
   map:
     fields:
@@ -437,15 +467,6 @@ var schemaYAML = typed.YAMLObject(`types:
       type:
         scalar: string
       default: ""
-- name: io.k8s.api.core.v1.ClaimSource
-  map:
-    fields:
-    - name: resourceClaimName
-      type:
-        scalar: string
-    - name: resourceClaimTemplateName
-      type:
-        scalar: string
 - name: io.k8s.api.core.v1.ClientIPConfig
   map:
     fields:
@@ -829,6 +850,14 @@ var schemaYAML = typed.YAMLObject(`types:
         map:
           elementType:
             namedType: io.k8s.apimachinery.pkg.api.resource.Quantity
+    - name: allocatedResourcesStatus
+      type:
+        list:
+          elementType:
+            namedType: io.k8s.api.core.v1.ResourceStatus
+          elementRelationship: associative
+          keys:
+          - name
     - name: containerID
       type:
         scalar: string
@@ -866,6 +895,12 @@ var schemaYAML = typed.YAMLObject(`types:
       type:
         namedType: io.k8s.api.core.v1.ContainerState
       default: {}
+    - name: stopSignal
+      type:
+        scalar: string
+    - name: user
+      type:
+        namedType: io.k8s.api.core.v1.ContainerUser
     - name: volumeMounts
       type:
         list:
@@ -874,6 +909,12 @@ var schemaYAML = typed.YAMLObject(`types:
           elementRelationship: associative
           keys:
           - mountPath
+- name: io.k8s.api.core.v1.ContainerUser
+  map:
+    fields:
+    - name: linux
+      type:
+        namedType: io.k8s.api.core.v1.LinuxContainerUser
 - name: io.k8s.api.core.v1.DaemonEndpoint
   map:
     fields:
@@ -1443,6 +1484,7 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: ip
       type:
         scalar: string
+      default: ""
 - name: io.k8s.api.core.v1.HostPathVolumeSource
   map:
     fields:
@@ -1475,6 +1517,7 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: iscsiInterface
       type:
         scalar: string
+      default: default
     - name: lun
       type:
         scalar: numeric
@@ -1517,6 +1560,7 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: iscsiInterface
       type:
         scalar: string
+      default: default
     - name: lun
       type:
         scalar: numeric
@@ -1537,6 +1581,15 @@ var schemaYAML = typed.YAMLObject(`types:
       type:
         scalar: string
       default: ""
+- name: io.k8s.api.core.v1.ImageVolumeSource
+  map:
+    fields:
+    - name: pullPolicy
+      type:
+        scalar: string
+    - name: reference
+      type:
+        scalar: string
 - name: io.k8s.api.core.v1.KeyToPath
   map:
     fields:
@@ -1560,6 +1613,9 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: preStop
       type:
         namedType: io.k8s.api.core.v1.LifecycleHandler
+    - name: stopSignal
+      type:
+        scalar: string
 - name: io.k8s.api.core.v1.LifecycleHandler
   map:
     fields:
@@ -1633,6 +1689,23 @@ var schemaYAML = typed.YAMLObject(`types:
           elementType:
             namedType: io.k8s.api.core.v1.LimitRangeItem
           elementRelationship: atomic
+- name: io.k8s.api.core.v1.LinuxContainerUser
+  map:
+    fields:
+    - name: gid
+      type:
+        scalar: numeric
+      default: 0
+    - name: supplementalGroups
+      type:
+        list:
+          elementType:
+            scalar: numeric
+          elementRelationship: atomic
+    - name: uid
+      type:
+        scalar: numeric
+      default: 0
 - name: io.k8s.api.core.v1.LoadBalancerIngress
   map:
     fields:
@@ -1861,6 +1934,12 @@ var schemaYAML = typed.YAMLObject(`types:
       type:
         namedType: io.k8s.api.core.v1.DaemonEndpoint
       default: {}
+- name: io.k8s.api.core.v1.NodeFeatures
+  map:
+    fields:
+    - name: supplementalGroupsPolicy
+      type:
+        scalar: boolean
 - name: io.k8s.api.core.v1.NodeRuntimeHandler
   map:
     fields:
@@ -1875,6 +1954,9 @@ var schemaYAML = typed.YAMLObject(`types:
   map:
     fields:
     - name: recursiveReadOnlyMounts
+      type:
+        scalar: boolean
+    - name: userNamespaces
       type:
         scalar: boolean
 - name: io.k8s.api.core.v1.NodeSelector
@@ -1986,6 +2068,9 @@ var schemaYAML = typed.YAMLObject(`types:
       type:
         namedType: io.k8s.api.core.v1.NodeDaemonEndpoints
       default: {}
+    - name: features
+      type:
+        namedType: io.k8s.api.core.v1.NodeFeatures
     - name: images
       type:
         list:
@@ -2017,6 +2102,12 @@ var schemaYAML = typed.YAMLObject(`types:
           elementType:
             scalar: string
           elementRelationship: atomic
+- name: io.k8s.api.core.v1.NodeSwapStatus
+  map:
+    fields:
+    - name: capacity
+      type:
+        scalar: numeric
 - name: io.k8s.api.core.v1.NodeSystemInfo
   map:
     fields:
@@ -2056,6 +2147,9 @@ var schemaYAML = typed.YAMLObject(`types:
       type:
         scalar: string
       default: ""
+    - name: swap
+      type:
+        namedType: io.k8s.api.core.v1.NodeSwapStatus
     - name: systemUUID
       type:
         scalar: string
@@ -2482,6 +2576,9 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: message
       type:
         scalar: string
+    - name: observedGeneration
+      type:
+        scalar: numeric
     - name: reason
       type:
         scalar: string
@@ -2529,6 +2626,7 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: ip
       type:
         scalar: string
+      default: ""
 - name: io.k8s.api.core.v1.PodOS
   map:
     fields:
@@ -2550,10 +2648,12 @@ var schemaYAML = typed.YAMLObject(`types:
       type:
         scalar: string
       default: ""
-    - name: source
+    - name: resourceClaimName
       type:
-        namedType: io.k8s.api.core.v1.ClaimSource
-      default: {}
+        scalar: string
+    - name: resourceClaimTemplateName
+      type:
+        scalar: string
 - name: io.k8s.api.core.v1.PodResourceClaimStatus
   map:
     fields:
@@ -2592,6 +2692,9 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: runAsUser
       type:
         scalar: numeric
+    - name: seLinuxChangePolicy
+      type:
+        scalar: string
     - name: seLinuxOptions
       type:
         namedType: io.k8s.api.core.v1.SELinuxOptions
@@ -2604,6 +2707,9 @@ var schemaYAML = typed.YAMLObject(`types:
           elementType:
             scalar: numeric
           elementRelationship: atomic
+    - name: supplementalGroupsPolicy
+      type:
+        scalar: string
     - name: sysctls
       type:
         list:
@@ -2729,6 +2835,9 @@ var schemaYAML = typed.YAMLObject(`types:
           elementRelationship: associative
           keys:
           - name
+    - name: resources
+      type:
+        namedType: io.k8s.api.core.v1.ResourceRequirements
     - name: restartPolicy
       type:
         scalar: string
@@ -2834,6 +2943,9 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: nominatedNodeName
       type:
         scalar: string
+    - name: observedGeneration
+      type:
+        scalar: numeric
     - name: phase
       type:
         scalar: string
@@ -3015,6 +3127,7 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: keyring
       type:
         scalar: string
+      default: /etc/ceph/keyring
     - name: monitors
       type:
         list:
@@ -3024,6 +3137,7 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: pool
       type:
         scalar: string
+      default: rbd
     - name: readOnly
       type:
         scalar: boolean
@@ -3033,6 +3147,7 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: user
       type:
         scalar: string
+      default: admin
 - name: io.k8s.api.core.v1.RBDVolumeSource
   map:
     fields:
@@ -3046,6 +3161,7 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: keyring
       type:
         scalar: string
+      default: /etc/ceph/keyring
     - name: monitors
       type:
         list:
@@ -3055,6 +3171,7 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: pool
       type:
         scalar: string
+      default: rbd
     - name: readOnly
       type:
         scalar: boolean
@@ -3064,6 +3181,7 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: user
       type:
         scalar: string
+      default: admin
 - name: io.k8s.api.core.v1.ReplicationController
   map:
     fields:
@@ -3111,9 +3229,11 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: minReadySeconds
       type:
         scalar: numeric
+      default: 0
     - name: replicas
       type:
         scalar: numeric
+      default: 1
     - name: selector
       type:
         map:
@@ -3157,6 +3277,9 @@ var schemaYAML = typed.YAMLObject(`types:
       type:
         scalar: string
       default: ""
+    - name: request
+      type:
+        scalar: string
 - name: io.k8s.api.core.v1.ResourceFieldSelector
   map:
     fields:
@@ -3171,6 +3294,16 @@ var schemaYAML = typed.YAMLObject(`types:
         scalar: string
       default: ""
     elementRelationship: atomic
+- name: io.k8s.api.core.v1.ResourceHealth
+  map:
+    fields:
+    - name: health
+      type:
+        scalar: string
+    - name: resourceID
+      type:
+        scalar: string
+      default: ""
 - name: io.k8s.api.core.v1.ResourceQuota
   map:
     fields:
@@ -3243,6 +3376,21 @@ var schemaYAML = typed.YAMLObject(`types:
         map:
           elementType:
             namedType: io.k8s.apimachinery.pkg.api.resource.Quantity
+- name: io.k8s.api.core.v1.ResourceStatus
+  map:
+    fields:
+    - name: name
+      type:
+        scalar: string
+      default: ""
+    - name: resources
+      type:
+        list:
+          elementType:
+            namedType: io.k8s.api.core.v1.ResourceHealth
+          elementRelationship: associative
+          keys:
+          - resourceID
 - name: io.k8s.api.core.v1.SELinuxOptions
   map:
     fields:
@@ -3264,6 +3412,7 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: fsType
       type:
         scalar: string
+      default: xfs
     - name: gateway
       type:
         scalar: string
@@ -3283,6 +3432,7 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: storageMode
       type:
         scalar: string
+      default: ThinProvisioned
     - name: storagePool
       type:
         scalar: string
@@ -3299,6 +3449,7 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: fsType
       type:
         scalar: string
+      default: xfs
     - name: gateway
       type:
         scalar: string
@@ -3318,6 +3469,7 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: storageMode
       type:
         scalar: string
+      default: ThinProvisioned
     - name: storagePool
       type:
         scalar: string
@@ -3916,6 +4068,9 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: hostPath
       type:
         namedType: io.k8s.api.core.v1.HostPathVolumeSource
+    - name: image
+      type:
+        namedType: io.k8s.api.core.v1.ImageVolumeSource
     - name: iscsi
       type:
         namedType: io.k8s.api.core.v1.ISCSIVolumeSource

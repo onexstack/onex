@@ -14,7 +14,6 @@ import (
 	cliflag "k8s.io/component-base/cli/flag"
 	"k8s.io/kube-openapi/pkg/common"
 
-	"github.com/onexstack/onex/internal/controlplane"
 	controlplaneoptions "github.com/onexstack/onex/internal/controlplane/apiserver/options"
 	"github.com/onexstack/onex/pkg/apiserver/storage"
 )
@@ -37,7 +36,6 @@ type Extra struct {
 
 	// For external resources
 	ExternalRESTStorageProviders []storage.RESTStorageProvider
-	ExternalVersionedInformers   controlplane.ExternalSharedInformerFactory
 	ExternalPostStartHooks       map[string]genericapiserver.PostStartHookFunc
 	GetOpenAPIDefinitions        common.GetOpenAPIDefinitions
 }

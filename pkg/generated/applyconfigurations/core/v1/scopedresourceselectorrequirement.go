@@ -8,15 +8,15 @@
 package v1
 
 import (
-	v1 "k8s.io/api/core/v1"
+	corev1 "k8s.io/api/core/v1"
 )
 
 // ScopedResourceSelectorRequirementApplyConfiguration represents a declarative configuration of the ScopedResourceSelectorRequirement type for use
 // with apply.
 type ScopedResourceSelectorRequirementApplyConfiguration struct {
-	ScopeName *v1.ResourceQuotaScope    `json:"scopeName,omitempty"`
-	Operator  *v1.ScopeSelectorOperator `json:"operator,omitempty"`
-	Values    []string                  `json:"values,omitempty"`
+	ScopeName *corev1.ResourceQuotaScope    `json:"scopeName,omitempty"`
+	Operator  *corev1.ScopeSelectorOperator `json:"operator,omitempty"`
+	Values    []string                      `json:"values,omitempty"`
 }
 
 // ScopedResourceSelectorRequirementApplyConfiguration constructs a declarative configuration of the ScopedResourceSelectorRequirement type for use with
@@ -28,7 +28,7 @@ func ScopedResourceSelectorRequirement() *ScopedResourceSelectorRequirementApply
 // WithScopeName sets the ScopeName field in the declarative configuration to the given value
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the ScopeName field is set to the value of the last call.
-func (b *ScopedResourceSelectorRequirementApplyConfiguration) WithScopeName(value v1.ResourceQuotaScope) *ScopedResourceSelectorRequirementApplyConfiguration {
+func (b *ScopedResourceSelectorRequirementApplyConfiguration) WithScopeName(value corev1.ResourceQuotaScope) *ScopedResourceSelectorRequirementApplyConfiguration {
 	b.ScopeName = &value
 	return b
 }
@@ -36,7 +36,7 @@ func (b *ScopedResourceSelectorRequirementApplyConfiguration) WithScopeName(valu
 // WithOperator sets the Operator field in the declarative configuration to the given value
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the Operator field is set to the value of the last call.
-func (b *ScopedResourceSelectorRequirementApplyConfiguration) WithOperator(value v1.ScopeSelectorOperator) *ScopedResourceSelectorRequirementApplyConfiguration {
+func (b *ScopedResourceSelectorRequirementApplyConfiguration) WithOperator(value corev1.ScopeSelectorOperator) *ScopedResourceSelectorRequirementApplyConfiguration {
 	b.Operator = &value
 	return b
 }

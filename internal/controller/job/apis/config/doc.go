@@ -5,6 +5,6 @@
 //
 
 // +k8s:deepcopy-gen=package
-// +groupName=minercontroller.config.onex.io
+// +groupName=jobcontroller.config.onex.io
 
-package config // import "github.com/onexstack/onex/internal/controller/miner/apis/config"
+package config // import "github.com/onexstack/onex/internal/controller/job/apis/config"

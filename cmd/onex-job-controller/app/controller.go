@@ -12,7 +12,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/jinzhu/copier"
 	"github.com/spf13/cobra"
 	corev1 "k8s.io/api/core/v1"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
@@ -33,14 +32,11 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 
-	"github.com/onexstack/onex/cmd/onex-miner-controller/app/config"
-	"github.com/onexstack/onex/cmd/onex-miner-controller/app/options"
-	minercontroller "github.com/onexstack/onex/internal/controller/miner"
+	"github.com/onexstack/onex/cmd/onex-job-controller/app/config"
+	"github.com/onexstack/onex/cmd/onex-job-controller/app/options"
+	cronjobcontroller "github.com/onexstack/onex/internal/controller/job/cronjob"
 	"github.com/onexstack/onex/internal/pkg/util/ratelimiter"
-	"github.com/onexstack/onex/pkg/apis/apps/v1beta1"
-	"github.com/onexstack/onex/pkg/apis/apps/v1beta1/index"
-	"github.com/onexstack/onex/pkg/record"
-	"github.com/onexstack/onexstack/pkg/db"
+	"github.com/onexstack/onex/pkg/apis/batch/v1beta1"
 	"github.com/onexstack/onexstack/pkg/version"
 )
 
@@ -58,7 +54,7 @@ func NewControllerCommand() *cobra.Command {
 	}
 
 	cmd := &cobra.Command{
-		Use: "onex-miner-controller",
+		Use: "onex-job-controller",
 		Long: `The cloud miner controller is a daemon that embeds
 the core control loops. In applications of robotics and
 automation, a control loop is a non-terminating loop that regulates the state of
@@ -67,7 +63,7 @@ state of the miner through the onex-apiserver and makes changes attempting to mo
 current state towards the desired state.`,
 		PersistentPreRunE: func(*cobra.Command, []string) error {
 			// silence client-go warnings.
-			// onex-miner-controller generically watches APIs (including deprecated ones),
+			// onex-job-controller generically watches APIs (including deprecated ones),
 			// and CI ensures it works properly against matching onex-apiserver versions.
 			restclient.SetDefaultWarningHandler(restclient.NoWarnings{})
 			return nil
@@ -99,14 +95,13 @@ current state towards the desired state.`,
 				return err
 			}
 
-			cc := c.Complete()
-			if err := options.LogOrWriteConfig(o.WriteConfigTo, cc.ComponentConfig); err != nil {
+			if err := options.LogOrWriteConfig(o.WriteConfigTo, c.ComponentConfig); err != nil {
 				return err
 			}
 
 			// add feature enablement metrics
 			utilfeature.DefaultMutableFeatureGate.AddMetrics()
-			return Run(genericapiserver.SetupSignalContext(), cc)
+			return Run(genericapiserver.SetupSignalContext(), c)
 		},
 		Args: func(cmd *cobra.Command, args []string) error {
 			for _, arg := range args {
@@ -137,48 +132,42 @@ current state towards the desired state.`,
 }
 
 // Run runs the controller options. This should never exit.
-func Run(ctx context.Context, c *config.CompletedConfig) error {
+func Run(ctx context.Context, c *config.Config) error {
 	// To help debugging, immediately log version
 	klog.InfoS("Starting miner controller", "version", version.Get().String())
 
 	klog.InfoS("Golang settings", "GOGC", os.Getenv("GOGC"), "GOMAXPROCS", os.Getenv("GOMAXPROCS"), "GOTRACEBACK", os.Getenv("GOTRACEBACK"))
 
-	// Do some initialization here
-	var redisOptions db.RedisOptions
-	_ = copier.Copy(&redisOptions, &c.ComponentConfig.Redis)
-	rdb, err := db.NewRedis(&redisOptions)
-	if err != nil {
-		return err
-	}
-
 	var watchNamespaces map[string]cache.Config
-	if c.ComponentConfig.Namespace != "" {
+	if c.ComponentConfig.Generic.Namespace != "" {
 		watchNamespaces = map[string]cache.Config{
-			c.ComponentConfig.Namespace: {},
+			c.ComponentConfig.Generic.Namespace: {},
 		}
 	}
 
-	// Create a new Cmd to provide shared dependencies and start components
-	mgr, err := ctrl.NewManager(c.Kubeconfig, ctrl.Options{
-		LeaderElection:             c.ComponentConfig.LeaderElection.LeaderElect,
-		LeaderElectionID:           c.ComponentConfig.LeaderElection.ResourceName,
-		LeaseDuration:              &c.ComponentConfig.LeaderElection.LeaseDuration.Duration,
-		RenewDeadline:              &c.ComponentConfig.LeaderElection.RenewDeadline.Duration,
-		RetryPeriod:                &c.ComponentConfig.LeaderElection.RetryPeriod.Duration,
-		LeaderElectionResourceLock: c.ComponentConfig.LeaderElection.ResourceLock,
-		LeaderElectionNamespace:    c.ComponentConfig.LeaderElection.ResourceNamespace,
-		HealthProbeBindAddress:     c.ComponentConfig.HealthzBindAddress,
+	ctrlOptions := ctrl.Options{
+		LeaderElection:             c.ComponentConfig.Generic.LeaderElection.LeaderElect,
+		LeaderElectionID:           c.ComponentConfig.Generic.LeaderElection.ResourceName,
+		LeaseDuration:              &c.ComponentConfig.Generic.LeaderElection.LeaseDuration.Duration,
+		RenewDeadline:              &c.ComponentConfig.Generic.LeaderElection.RenewDeadline.Duration,
+		RetryPeriod:                &c.ComponentConfig.Generic.LeaderElection.RetryPeriod.Duration,
+		LeaderElectionResourceLock: c.ComponentConfig.Generic.LeaderElection.ResourceLock,
+		LeaderElectionNamespace:    c.ComponentConfig.Generic.LeaderElection.ResourceNamespace,
+		HealthProbeBindAddress:     c.ComponentConfig.Generic.HealthzBindAddress,
 		Metrics: metricsserver.Options{
 			SecureServing: false,
-			BindAddress:   c.ComponentConfig.MetricsBindAddress,
+			BindAddress:   c.ComponentConfig.Generic.MetricsBindAddress,
 		},
 		Cache: cache.Options{
 			DefaultNamespaces: watchNamespaces,
-			SyncPeriod:        &c.ComponentConfig.SyncPeriod.Duration,
+			SyncPeriod:        &c.ComponentConfig.Generic.SyncPeriod.Duration,
 		},
-	})
+	}
+
+	// Create a new Cmd to provide shared dependencies and start components
+	mgr, err := ctrl.NewManager(c.Kubeconfig, ctrlOptions)
 	if err != nil {
-		klog.ErrorS(err, "Unable to new miner controller")
+		klog.ErrorS(err, "Unable to new blockchain controller")
 		return err
 	}
 
@@ -186,48 +175,29 @@ func Run(ctx context.Context, c *config.CompletedConfig) error {
 	_ = v1beta1.AddToScheme(mgr.GetScheme())
 	_ = corev1.AddToScheme(mgr.GetScheme())
 
-	// Initialize event recorder.
-	record.InitFromRecorder(mgr.GetEventRecorderFor("onex-miner-controller"))
+	setupChecks(mgr)
 
-	if err := index.AddDefaultIndexes(ctx, mgr); err != nil {
-		klog.ErrorS(err, "Unable to setup indexes")
-		return err
-	}
-
-	if !c.ComponentConfig.DryRun {
-		// controller-runtime for multi-cluster support, reference:
-		// https://github.com/kubernetes-sigs/controller-runtime/blob/main/designs/move-cluster-specific-code-out-of-manager.md
-		if err := mgr.Add(c.ProviderCluster); err != nil {
-			return err
-		}
-	}
-
-	if err = (&minercontroller.Reconciler{
-		DryRun:           c.ComponentConfig.DryRun,
-		ProviderClient:   c.ProviderClient,
-		ProviderCluster:  c.ProviderCluster,
-		RedisClient:      rdb,
-		ComponentConfig:  c.ComponentConfig,
-		WatchFilterValue: c.ComponentConfig.WatchFilterValue,
+	// Setup cronJob controller
+	if err := (&cronjobcontroller.Reconciler{
+		WatchFilterValue: c.ComponentConfig.Generic.WatchFilterValue,
 	}).SetupWithManager(ctx, mgr, controller.Options{
-		MaxConcurrentReconciles: int(c.ComponentConfig.Parallelism),
+		MaxConcurrentReconciles: int(c.ComponentConfig.Generic.Parallelism),
 		RecoverPanic:            ptr.To(true),
 		RateLimiter:             ratelimiter.DefaultControllerRateLimiter(),
 	}); err != nil {
-		klog.ErrorS(err, "Unable to create controller", "controller", "miner")
-		return err
-	}
-
-	// add handlers
-	if err := mgr.AddReadyzCheck("healthz", healthz.Ping); err != nil {
-		klog.ErrorS(err, "Unable to set up health check")
-		return err
-	}
-
-	if err := mgr.AddHealthzCheck("readyz", healthz.Ping); err != nil {
-		klog.ErrorS(err, "Unable to set up ready check")
+		klog.ErrorS(err, "Unable to create controller", "controller", "minerset")
 		return err
 	}
 
 	return mgr.Start(ctx)
+}
+
+func setupChecks(mgr ctrl.Manager) {
+	if err := mgr.AddReadyzCheck("healthz", healthz.Ping); err != nil {
+		klog.Exitf("Unable to set up health check: %v", err)
+	}
+
+	if err := mgr.AddHealthzCheck("readyz", healthz.Ping); err != nil {
+		klog.Exitf("Unable to set up ready check: %v", err)
+	}
 }

@@ -10,10 +10,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 
 	"github.com/onexstack/onex/cmd/onex-controller-manager/names"
-	chaincontroller "github.com/onexstack/onex/internal/controller/chain"
 	namespacecontroller "github.com/onexstack/onex/internal/controller/namespace"
-	resourcecleancontroller "github.com/onexstack/onex/internal/controller/resourceclean"
-	synccontroller "github.com/onexstack/onex/internal/controller/sync"
 )
 
 func newGarbageCollectorControllerDescriptor() *ControllerDescriptor {
@@ -32,87 +29,10 @@ func newNamespacedResourcesDeleterControllerDescriptor() *ControllerDescriptor {
 	}
 }
 
-func newChainControllerDescriptor() *ControllerDescriptor {
-	return &ControllerDescriptor{
-		name:    names.ChainController,
-		aliases: []string{"chain"},
-		addFunc: addChainController,
-	}
-}
-
-func newChainSyncControllerDescriptor() *ControllerDescriptor {
-	return &ControllerDescriptor{
-		name:    names.ChainController,
-		aliases: []string{"chain-sync"},
-		addFunc: addChainSyncController,
-	}
-}
-
-func newMinerSetSyncControllerDescriptor() *ControllerDescriptor {
-	return &ControllerDescriptor{
-		name:    names.ChainController,
-		aliases: []string{"minerset-sync"},
-		addFunc: addMinerSetSyncController,
-	}
-}
-
-func newMinerSyncControllerDescriptor() *ControllerDescriptor {
-	return &ControllerDescriptor{
-		name:    names.ChainController,
-		aliases: []string{"minerset-sync"},
-		addFunc: addMinerSyncController,
-	}
-}
-
-func newResourceCleanControllerDescriptor() *ControllerDescriptor {
-	return &ControllerDescriptor{
-		name:    names.ResourceCleanController,
-		aliases: []string{"resource-clean"},
-		addFunc: addResourceCleanController,
-	}
-}
-
 // add functions
 func addNamespacedResourcesDeleterController(ctx context.Context, mgr ctrl.Manager, cctx ControllerContext) (bool, error) {
 	return true, namespacecontroller.NewNamespacedResourcesDeleter(mgr, cctx.Config.Client, cctx.MetadataClient).
 		SetupWithManager(mgr, cctx.ControllerManagerOptions)
-}
-
-func addChainController(ctx context.Context, mgr ctrl.Manager, cctx ControllerContext) (bool, error) {
-	return true, (&chaincontroller.Reconciler{
-		ComponentConfig:  &cctx.Config.ComponentConfig.ChainController,
-		WatchFilterValue: cctx.Config.ComponentConfig.Generic.WatchFilterValue,
-	}).SetupWithManager(ctx, mgr, cctx.ControllerManagerOptions)
-}
-
-func addChainSyncController(ctx context.Context, mgr ctrl.Manager, cctx ControllerContext) (bool, error) {
-	return true, (&synccontroller.ChainSyncReconciler{
-		Store: cctx.Store,
-	}).SetupWithManager(ctx, mgr, cctx.ControllerManagerOptions)
-}
-
-func addMinerSetSyncController(ctx context.Context, mgr ctrl.Manager, cctx ControllerContext) (bool, error) {
-	return true, (&synccontroller.MinerSetSyncReconciler{
-		Store: cctx.Store,
-	}).SetupWithManager(ctx, mgr, cctx.ControllerManagerOptions)
-}
-
-func addMinerSyncController(ctx context.Context, mgr ctrl.Manager, cctx ControllerContext) (bool, error) {
-	return true, (&synccontroller.MinerSyncReconciler{
-		Store: cctx.Store,
-	}).SetupWithManager(ctx, mgr, cctx.ControllerManagerOptions)
-}
-
-func addResourceCleanController(ctx context.Context, mgr ctrl.Manager, cctx ControllerContext) (bool, error) {
-	mgr.Add(resourcecleancontroller.NewCleanReconciler(
-		mgr.GetClient(),
-		cctx.Store,
-		&resourcecleancontroller.Miner{},
-		&resourcecleancontroller.MinerSet{},
-		&resourcecleancontroller.Chain{},
-	))
-
-	return true, nil
 }
 
 // garbageCollector used to defines a garbage collector controller.
